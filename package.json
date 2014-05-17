@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/praekelt/sapphire/issues"
   },
-  "homepage": "https://github.com/praekelt/sapphire"
+  "homepage": "https://github.com/praekelt/sapphire",
+  "devDependencies": {
+    "gulp": "^3.6.2"
+  }
 }
