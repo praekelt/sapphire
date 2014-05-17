@@ -1,24 +1,37 @@
 var gulp = require('gulp');
+var less = require('gulp-less');
 var karma = require('gulp-karma');
 var browserify = require('gulp-browserify');
 
 
 gulp.task('scripts', function () {
   gulp
-    .src("./src/scripts/sapphire.js")
+    .src('./src/scripts/sapphire.js')
     .pipe(browserify({standalone: 'sapphire'}))
     .pipe(gulp.dest("./build"));
 });
 
 
-gulp.task('build', function () {
-  gulp.start('scripts');
+gulp.task('styles', function () {
+  return gulp
+    .src('./src/styles/sapphire.less')
+    .pipe(less())
+    .pipe(gulp.dest('./build'));
 });
 
 
-gulp.task('test', function() {
+gulp.task('build', function () {
+  gulp.start('scripts', 'styles');
+});
+
+
+gulp.task('test', ['styles'], function() {
   return gulp
-    .src(['src/scripts/**/*.js', 'test/**/*.test.js'])
+    .src([
+      './build/sapphire.css',
+      './src/scripts/**/*.js',
+      './test/**/*.test.js'
+    ])
     .pipe(karma({
       action: 'run',
       frameworks: ['mocha', 'chai', 'commonjs'],
@@ -40,5 +53,3 @@ gulp.task('default', function () {
 gulp.task('watch', function() {
   gulp.watch('src/scripts/**/*.js', ['scripts']);
 });
-
-
