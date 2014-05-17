@@ -1,0 +1,24 @@
+{
+  "name": "sapphire",
+  "version": "0.0.0",
+  "description": "A js library for drawing dashboards.",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/praekelt/sapphire.git"
+  },
+  "keywords": [
+    "dashboards",
+    "widgets",
+    "charts",
+    "d3"
+  ],
+  "author": "Praekelt Foundation",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/praekelt/sapphire/issues"
+  },
+  "homepage": "https://github.com/praekelt/sapphire"
+}
