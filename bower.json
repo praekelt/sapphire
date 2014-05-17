@@ -1,0 +1,20 @@
+{
+  "name": "sapphire",
+  "version": "0.0.0",
+  "homepage": "https://github.com/praekelt/sapphire",
+  "authors": ["Praekelt Foundation"],
+  "description": "A js library for drawing dashboards.",
+  "keywords": [
+    "dashboards",
+    "widgets",
+    "charts",
+    "d3"
+  ],
+  "license": "BSD",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "tests"
+  ]
+}
