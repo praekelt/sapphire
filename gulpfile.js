@@ -1,13 +1,15 @@
 var gulp = require('gulp');
 var less = require('gulp-less');
 var karma = require('gulp-karma');
-var browserify = require('gulp-browserify');
+var browserify = require('browserify');
+var source = require('vinyl-source-stream');
 
 
 gulp.task('scripts', function () {
-  gulp
-    .src('./src/scripts/sapphire.js')
-    .pipe(browserify({standalone: 'sapphire'}))
+  browserify('./src/scripts/sapphire.js')
+    .exclude('d3')
+    .bundle({standalone: 'sapphire'})
+    .pipe(source('sapphire.js'))
     .pipe(gulp.dest("./build"));
 });
 
