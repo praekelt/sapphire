@@ -11,7 +11,7 @@ gulp.task('scripts', function () {
   return browserify('./src/scripts/sapphire.js', {bundleExternal: false})
     .bundle({standalone: 'sapphire'})
     .pipe(source('sapphire.js'))
-    .pipe(streamify(wrap({src: './gulp/umd.jst'}, {deps: ['d3']})))
+    .pipe(streamify(wrap({src: './gulp/umd.jst'}, {deps: ['d3', 'strain']})))
     .pipe(gulp.dest("./build"));
 });
 
@@ -33,6 +33,7 @@ gulp.task('test', ['styles'], function() {
   return gulp
     .src([
       './bower_components/d3/d3.js',
+      './bower_components/strain/strain.js',
       './build/sapphire.css',
       './src/scripts/**/*.js',
       './test/**/*.test.js'
