@@ -1,15 +1,17 @@
 var gulp = require('gulp');
+var wrap = require('gulp-wrap');
 var less = require('gulp-less');
 var karma = require('gulp-karma');
+var streamify = require('gulp-streamify');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 
 
 gulp.task('scripts', function () {
-  browserify('./src/scripts/sapphire.js')
-    .exclude('d3')
+  return browserify('./src/scripts/sapphire.js', {bundleExternal: false})
     .bundle({standalone: 'sapphire'})
     .pipe(source('sapphire.js'))
+    .pipe(streamify(wrap({src: './gulp/umd.jst'}, {deps: ['d3']})))
     .pipe(gulp.dest("./build"));
 });
 
@@ -30,6 +32,7 @@ gulp.task('build', function () {
 gulp.task('test', ['styles'], function() {
   return gulp
     .src([
+      './bower_components/d3/d3.js',
       './build/sapphire.css',
       './src/scripts/**/*.js',
       './test/**/*.test.js'

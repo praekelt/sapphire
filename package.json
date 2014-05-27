@@ -24,11 +24,12 @@
   "devDependencies": {
     "browserify": "^4.1.5",
     "chai": "^1.9.1",
+    "debowerify": "^0.7.1",
     "gulp": "^3.6.2",
     "gulp-karma": "0.0.4",
     "gulp-less": "^1.2.3",
     "gulp-streamify": "0.0.5",
-    "gulp-wrap-umd": "^0.2.0",
+    "gulp-wrap": "^0.3.0",
     "karma": "^0.12.16",
     "karma-chai": "^0.1.0",
     "karma-commonjs": "0.0.7",
