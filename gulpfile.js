@@ -9,7 +9,7 @@ var version = require('./bower').version;
 
 
 gulp.task('scripts', function () {
-  return browserify('./src/scripts/sapphire.js')
+  return browserify('./src/scripts/index.js')
     .bundle({standalone: 'sapphire'})
     .pipe(source('sapphire.js'))
     .pipe(streamify(wrap({src: './gulp/wrapper.jst'}, {
@@ -21,7 +21,7 @@ gulp.task('scripts', function () {
 
 
 gulp.task('scripts:debug', function () {
-  return browserify('./src/scripts/sapphire.js')
+  return browserify('./src/scripts/index.js')
     .bundle({
       standalone: 'sapphire',
       debug: true
