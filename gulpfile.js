@@ -5,13 +5,17 @@ var karma = require('gulp-karma');
 var streamify = require('gulp-streamify');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
+var version = require('./bower').version;
 
 
 gulp.task('scripts', function () {
   return browserify('./src/scripts/sapphire.js')
     .bundle({standalone: 'sapphire'})
     .pipe(source('sapphire.js'))
-    .pipe(streamify(wrap({src: './gulp/umd.jst'}, {deps: ['d3', 'strain']})))
+    .pipe(streamify(wrap({src: './gulp/wrapper.jst'}, {
+      version: version,
+      deps: ['d3', 'strain']
+    })))
     .pipe(gulp.dest("./build"));
 });
 

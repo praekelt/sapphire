@@ -1,4 +1,4 @@
-// sapphire
+// sapphire <%= version %>
 <%var depnames = deps.map(function(d) { return '"' + d + '"'; });%>
 
 (function(factory) {
@@ -10,5 +10,5 @@
     factory(<%= deps.join(', ') %>);
   }
 }(function(<%= deps.join(', ') %>) {
-  <%= contents %>
+<%= contents %>
 }));
