@@ -1,8 +1,15 @@
 module.exports = strain()
   .static('init', function(fn) {
     strain.init.call(this, function(el) {
-      if (el) { this.el(el); }
-      fn.call(this, el);
+      if (el) {
+        this.el(el);
+      }
+
+      fn.apply(this, arguments);
+
+      if (el && this.el().datum()) {
+        this.draw();
+      }
     });
   })
 

@@ -13,12 +13,23 @@ describe("sapphire.view", function() {
 
   describe("initialisation", function() {
     it("should set the view's selection", function() {
-      var view = sapphire.view
-        .extend()
-        .init(function() {})
-        .new(el);
-
+      var view = sapphire.view(el);
       expect(view.el()).to.equal(el);
+    });
+
+    it("should draw itself if its element has data bound", function() {
+      var draws = 0;
+
+      var viewtype = sapphire.view
+        .extend()
+        .draw(function() { draws++; });
+
+      viewtype(el);
+      expect(draws).to.be.equal(0);
+
+      el.datum({foo: 'bar'});
+      viewtype(el);
+      expect(draws).to.be.equal(1);
     });
   });
 
