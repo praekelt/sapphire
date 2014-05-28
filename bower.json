@@ -2,7 +2,9 @@
   "name": "sapphire",
   "version": "0.0.0",
   "homepage": "https://github.com/praekelt/sapphire",
-  "authors": ["Praekelt Foundation"],
+  "authors": [
+    "Praekelt Foundation"
+  ],
   "description": "A js library for drawing dashboards.",
   "keywords": [
     "dashboards",
@@ -16,5 +18,9 @@
     "node_modules",
     "bower_components",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "d3": "~3.4.8",
+    "strain": "~0.4.1"
+  }
 }

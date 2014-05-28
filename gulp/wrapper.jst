@@ -1,0 +1,14 @@
+// sapphire <%= version %>
+<%var depnames = deps.map(function(d) { return '"' + d + '"'; });%>
+
+(function(factory) {
+  if (typeof define === 'function' && define.amd) {
+    define([<%= depnames.join(', ') %>], factory);
+  } else if (typeof exports === 'object') {
+    factory([<%= depnames.join(', ') %>].map(require));
+  } else {
+    factory(<%= deps.join(', ') %>);
+  }
+}(function(<%= deps.join(', ') %>) {
+<%= contents %>
+}));

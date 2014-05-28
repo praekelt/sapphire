@@ -1,13 +1,32 @@
 var gulp = require('gulp');
+var wrap = require('gulp-wrap');
 var less = require('gulp-less');
 var karma = require('gulp-karma');
-var browserify = require('gulp-browserify');
+var streamify = require('gulp-streamify');
+var browserify = require('browserify');
+var source = require('vinyl-source-stream');
+var version = require('./bower').version;
 
 
 gulp.task('scripts', function () {
-  gulp
-    .src('./src/scripts/sapphire.js')
-    .pipe(browserify({standalone: 'sapphire'}))
+  return browserify('./src/scripts/index.js')
+    .bundle({standalone: 'sapphire'})
+    .pipe(source('sapphire.js'))
+    .pipe(streamify(wrap({src: './gulp/wrapper.jst'}, {
+      version: version,
+      deps: ['d3', 'strain']
+    })))
+    .pipe(gulp.dest("./build"));
+});
+
+
+gulp.task('scripts:debug', function () {
+  return browserify('./src/scripts/index.js')
+    .bundle({
+      standalone: 'sapphire',
+      debug: true
+    })
+    .pipe(source('sapphire.debug.js'))
     .pipe(gulp.dest("./build"));
 });
 
@@ -21,25 +40,26 @@ gulp.task('styles', function () {
 
 
 gulp.task('build', function () {
-  gulp.start('scripts', 'styles');
+  gulp.start('scripts', 'scripts:debug', 'styles');
 });
 
 
-gulp.task('test', ['styles'], function() {
+gulp.task('test', ['scripts:debug', 'styles'], function() {
   return gulp
     .src([
+      './bower_components/d3/d3.js',
+      './bower_components/strain/strain.js',
       './build/sapphire.css',
-      './src/scripts/**/*.js',
+      './build/sapphire.debug.js',
       './test/**/*.test.js'
     ])
     .pipe(karma({
       action: 'run',
-      frameworks: ['mocha', 'chai', 'commonjs'],
+      frameworks: ['mocha', 'chai'],
       reporters: ['mocha'],
       browsers: ['PhantomJS'],
       preprocessors: {
-        'src/scripts/**/*.js': ['commonjs'],
-        'test/*.js': ['commonjs']
+        './build/sapphire.debug.js': ['sourcemap']
       }
     }));
 });
