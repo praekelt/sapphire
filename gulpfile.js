@@ -8,10 +8,23 @@ var source = require('vinyl-source-stream');
 
 
 gulp.task('scripts', function () {
-  return browserify('./src/scripts/sapphire.js', {bundleExternal: false})
+  return browserify('./src/scripts/sapphire.js')
+    .exclude('d3')
+    .exclude('strain')
     .bundle({standalone: 'sapphire'})
     .pipe(source('sapphire.js'))
     .pipe(streamify(wrap({src: './gulp/umd.jst'}, {deps: ['d3', 'strain']})))
+    .pipe(gulp.dest("./build"));
+});
+
+
+gulp.task('scripts:debug', function () {
+  return browserify('./src/scripts/sapphire.js')
+    .bundle({
+      standalone: 'sapphire',
+      debug: true
+    })
+    .pipe(source('sapphire.debug.js'))
     .pipe(gulp.dest("./build"));
 });
 
@@ -25,7 +38,7 @@ gulp.task('styles', function () {
 
 
 gulp.task('build', function () {
-  gulp.start('scripts', 'styles');
+  gulp.start('scripts', 'scripts:debug', 'styles');
 });
 
 
