@@ -194,13 +194,177 @@ function orderedGrid(d3) {
 }
 
 },{}],2:[function(_dereq_,module,exports){
+var widgets = _dereq_('./widgets');
+
+
+module.exports = _dereq_('./view').extend()
+  .prop('types')
+
+  .confprop('title')
+  .set(d3.functor)
+  .title(function(d) { return d.title; })
+
+  .confprop('key')
+  .set(d3.functor)
+  .key(function(d, i) {
+    return 'key' in d
+      ? d.key
+      : i;
+  })
+
+  .confprop('type')
+  .set(d3.functor)
+  .type(function(d) { return d.type; })
+
+  .confprop('widgets')
+  .set(d3.functor)
+  .widgets(function(d) { return d.widgets; })
+
+  .init(function() {
+    var types = d3.map();
+
+    d3.keys(widgets).forEach(function(k) {
+      types.set(k, widgets[k].extend());
+    });
+
+    this.types(types);
+  })
+
+  .draw(function() {
+    var self = this;
+
+    var widgets = this.el()
+      .html(null)
+      .append('div')
+        .datum(this.widgets())
+        .attr('class', 'widgets');
+
+    var widget = widgets.selectAll('.widget')
+      .data(function(d) { return d; }, this.key());
+
+    widget.enter().append('div')
+      .attr('class', 'widget')
+      .attr('data-key', this.key());
+
+    widget.each(function(d, i) {
+      var type = self.type().call(this, d, i);
+
+      if (!self.types().has(type)) {
+        throw new Error("Unrecognised dashboard widget type '" + type + "'");
+      }
+
+      self.types()
+        .get(type)
+        .new(this);
+    });
+
+    widget.exit().remove();
+  });
+
+},{"./view":4,"./widgets":5}],3:[function(_dereq_,module,exports){
 d3.layout.grid = _dereq_('d3-grid-layout')(d3);
+exports.view = _dereq_('./view');
+exports.widgets = _dereq_('./widgets');
+exports.dashboard = _dereq_('./dashboard');
 
+},{"./dashboard":2,"./view":4,"./widgets":5,"d3-grid-layout":1}],4:[function(_dereq_,module,exports){
+module.exports = strain()
+  .static('init', function(fn) {
+    strain.init.call(this, function(el) {
+      if (el) {
+        this.el(el);
+      }
 
-module.exports = function() {
-};
+      fn.apply(this, arguments);
 
-},{"d3-grid-layout":1}]},{},[2])
-(2)
+      if (el && this.el().datum()) {
+        this.draw();
+      }
+    });
+  })
+
+  .static('confprop', function(name) {
+    this.prop(name);
+
+    this.static(name, function(v) {
+      this.prop(name).default(v);
+    });
+  })
+
+  .static('draw', function(fn) {
+    this.meth('draw', function(datum) {
+      if (arguments.length) {
+        this.el().datum(datum);
+      }
+
+      return fn.call(this);
+    });
+  })
+
+  .prop('el')
+  .set(function(v) {
+    return !(v instanceof d3.selection)
+      ? d3.select(v)
+      : v;
+  })
+
+  .init(function() {})
+  .draw(function() {})
+
+  .invoke(function(datum) {
+    return this.draw(datum);
+  });
+
+},{}],5:[function(_dereq_,module,exports){
+exports.lastvalue = _dereq_('./lastvalue');
+
+},{"./lastvalue":6}],6:[function(_dereq_,module,exports){
+module.exports = _dereq_('../view').extend()
+  .confprop('title')
+  .set(d3.functor)
+  .title(function(d) { return d.title; })
+
+  .confprop('values')
+  .set(d3.functor)
+  .values(function(d) { return d.values; })
+
+  .confprop('x')
+  .set(d3.functor)
+  .x(function(d) { return d.x; })
+
+  .confprop('y')
+  .set(d3.functor)
+  .y(function(d) { return d.y; })
+
+  .confprop('format')
+  .format(d3.format())
+
+  .confprop('noval')
+  .noval(0)
+
+  .draw(function() {
+    var self = this;
+
+    this.el()
+      .html(null)
+      .append('div')
+        .datum(this.values())
+        .attr('class', 'values')
+        .append('text')
+          .datum(function(d, i) {
+            return d[d.length - 1];
+          })
+          .attr('class', 'last')
+          .text(function(d, i) {
+            var v = d
+              ? self.y().call(this, d, i)
+              : self.noval();
+
+              return self.format()(v);
+          });
+  });
+
+},{"../view":4}]},{},[3])
+(3)
 });
 }));
