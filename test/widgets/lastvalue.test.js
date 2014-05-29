@@ -41,4 +41,20 @@ describe("sapphire.widgets.lastvalue", function() {
     expect(el.selectAll('.last').size()).to.equal(1);
     expect(el.select('.last').text()).to.equal('1910');
   });
+
+  it("should show the 'none' value if values are available", function() {
+    var lastvalue = sapphire.widgets.lastvalue(el).none(23);
+
+    lastvalue({
+      values: [{
+        x: 123,
+        y: 345
+      }, {
+        x: 678,
+        y: 910
+      }]
+    });
+
+    expect(el.select('.last').text()).to.equal('910');
+  });
 });
