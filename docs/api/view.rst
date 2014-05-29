@@ -7,9 +7,9 @@ and ``.prop()`` are also available on view components.
 
 .. function:: sapphire.view([el])
 
-  Creates a new dashboard. ``el`` can be any argument accepted by d3.select_.
+  Creates a new view. ``el`` can be any argument accepted by d3.select_.
   If ``el`` is not given, it needs to be set using :func:`view.el` before the
-  dashboard can be drawn. If ``el`` has a datum bound to it, the view will be
+  view can be drawn. If ``el`` has a datum bound to it, the view will be
   drawn upon creation.
 
 
