@@ -1,6 +1,11 @@
 sapphire
 ========
 
+A js library for drawing dashboards.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+
+   api/index
+   accessors
+   configuration
