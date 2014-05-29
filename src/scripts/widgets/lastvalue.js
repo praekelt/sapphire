@@ -1,6 +1,7 @@
 module.exports = require('./widget').extend()
   .confprop('title')
   .set(d3.functor)
+  .title(function(d) { return d.title; })
 
   .confprop('values')
   .set(d3.functor)
@@ -29,13 +30,13 @@ module.exports = require('./widget').extend()
         .datum(this.values())
         .attr('class', 'values')
         .append('text')
-          .datum(function(d) {
+          .datum(function(d, i) {
             return d[d.length - 1];
           })
           .attr('class', 'last')
-          .text(function(d) {
+          .text(function(d, i) {
             var v = d
-              ? self.y().call(this, d)
+              ? self.y().call(this, d, i)
               : self.noval();
 
               return self.format()(v);
