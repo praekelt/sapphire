@@ -1,5 +1,5 @@
 ``sapphire.widgets.lastvalue``
-=============================
+==============================
 
 A widget displaying the last ``y`` value in a series of datapoints.
 
