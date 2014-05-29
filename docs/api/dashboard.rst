@@ -18,7 +18,7 @@ Component for drawing a dashboard of widgets laid out in a grid.
 
   .. code-block:: javascript
 
-    var lastvalue = sapphire.widgets.lastvalue('#lastvalue');
+    var dashboard = sapphire.dashboard('#lastvalue');
 
     dashboard({
       widgets: [{
@@ -90,7 +90,10 @@ Component for drawing a dashboard of widgets laid out in a grid.
 
   .. code-block:: javascript
 
-    var dashboard = sapphire.dashboard('#dashboard');
+    var dashboard = sapphire.dashboard('#dashboard')
+      .type(function(d) {
+        return d.typename;
+      });
 
     dashboard.types().set('dummy', sapphire.view.extend()
       .draw(function() {
@@ -100,7 +103,7 @@ Component for drawing a dashboard of widgets laid out in a grid.
     dashboard({
       ...
       widgets: [{
-        type: 'dummy',
+        typename: 'dummy',
         text: 'foo'
       }]
     });
