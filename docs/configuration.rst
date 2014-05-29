@@ -16,8 +16,8 @@ Accessors be can specified as their actual values:
   var dashboard = sapphire.dashboard('#dashboard')
     .title('A Humble Dashboard');
 
-Or as a function that, given the current datum (`d`), index (`i`) and element
-(`this`), returns the desired value:
+Or as a function that, given the current datum (``d``), index (``i``) and element
+(``this``), returns the desired value:
 
 
 .. code-block:: javascript
@@ -80,7 +80,7 @@ remove this repetition:
   var c = sapphire.lastvalue('#c');
 
 If you need to apply different configuration to different widgets of the same
-type, you can achieve this making derivatives of the bundled widget type:
+type, you can achieve this by making derivatives of the bundled widget type:
 
 .. code-block:: javascript
 
@@ -103,8 +103,8 @@ type, you can achieve this making derivatives of the bundled widget type:
 
   var jedi1 = jedi('#jedi1');
   var jedi2 = jedi('#jedi2');
-  var sith1 = jedi('#sith1');
-  var sith2 = jedi('#sith2');
+  var sith1 = sith('#sith1');
+  var sith2 = sith('#sith2');
 
 
 dashboard configuration
@@ -162,7 +162,7 @@ Finally, you can also add your own widget types to a dashboard:
 
   var dashboard = sapphire.dashboard('#dashboard');
 
-  dashboard.types().set('lastvalue', sapphire.lastvalue.extend()
+  dashboard.types().set('lastvalue', sapphire.widgets.lastvalue.extend()
     .values(function(d) {
       return d.datapoints;
     }));
