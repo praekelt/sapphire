@@ -23,6 +23,7 @@ Component for drawing a dashboard of widgets laid out in a grid.
     dashboard({
       widgets: [{
         title: 'A lastvalue widget',
+        type: 'lastvalue',
         values [{
           x: 123,
           y: 345
