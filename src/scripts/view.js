@@ -22,7 +22,13 @@ module.exports = strain()
   })
 
   .static('draw', function(fn) {
-    this.meth('draw', fn);
+    this.meth('draw', function(datum) {
+      if (arguments.length) {
+        this.el().datum(datum);
+      }
+
+      return fn.call(this);
+    });
   })
 
   .prop('el')
@@ -36,9 +42,5 @@ module.exports = strain()
   .draw(function() {})
 
   .invoke(function(datum) {
-    if (arguments.length) {
-      d3.select(this.el().node()).datum(datum);
-    }
-
-    this.draw();
+    return this.draw(datum);
   });
