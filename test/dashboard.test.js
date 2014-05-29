@@ -1,7 +1,7 @@
 describe("sapphire.dashboard", function() {
   var el;
 
-  var dummy = sapphire.widgets.widget.extend()
+  var dummy = sapphire.view.extend()
     .confprop('text')
     .set(d3.functor)
     .text(function(d) { return d.text; })
