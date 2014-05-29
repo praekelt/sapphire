@@ -135,14 +135,14 @@ A widget displaying the last ``y`` value in a series of datapoints.
     var lastvalue = sapphire.lastvalue('#lastvalue').format(d3.format('.2s'));
 
 
-.. function:: lastvalue.noval([v])
+.. function:: lastvalue.none([v])
 
-  Property for the default value to display as the last value when
+  Property for the value to display as the last value when
   :func:`lastvalue.values` returns an empty array.
 
   .. code-block:: javascript
 
-    var lastvalue = sapphire.lastvalue('#lastvalue').noval(0);
+    var lastvalue = sapphire.lastvalue('#lastvalue').none(0);
 
 
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements

@@ -18,8 +18,8 @@ module.exports = require('../view').extend()
   .confprop('format')
   .format(d3.format())
 
-  .confprop('noval')
-  .noval(0)
+  .confprop('none')
+  .none(0)
 
   .draw(function() {
     var self = this;
@@ -37,7 +37,7 @@ module.exports = require('../view').extend()
           .text(function(d, i) {
             var v = d
               ? self.y().call(this, d, i)
-              : self.noval();
+              : self.none();
 
               return self.format()(v);
           });
