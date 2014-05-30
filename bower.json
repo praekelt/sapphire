@@ -21,6 +21,6 @@
   ],
   "dependencies": {
     "d3": "~3.4.8",
-    "strain": "~0.4.1"
+    "strain": "^0.6"
   }
 }
