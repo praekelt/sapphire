@@ -162,11 +162,6 @@ Finally, you can also add your own widget types to a dashboard:
 
   var dashboard = sapphire.dashboard('#dashboard');
 
-  dashboard.types().set('lastvalue', sapphire.widgets.lastvalue.extend()
-    .values(function(d) {
-      return d.datapoints;
-    }));
-
   dashboard.types().set('dummy', sapphire.view.extend()
     .draw(function() {
       this.el().text(function(d) { return d.text; });
@@ -175,16 +170,6 @@ Finally, you can also add your own widget types to a dashboard:
   dashboard({
     title: 'A Small Dashboard',
     widgets: [{
-      type: 'lastvalue',
-      title: 'Default lastvalue',
-      datapoints: [{
-        x: 123,
-        y: 345
-      }, {
-        x: 567,
-        y: 789
-      }]
-    }, {
       type: 'dummy',
       text: 'foo'
     }]
