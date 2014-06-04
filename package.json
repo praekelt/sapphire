@@ -24,7 +24,6 @@
   "devDependencies": {
     "browserify": "^4.1.5",
     "chai": "^1.9.1",
-    "d3-grid-layout": "^0.1.0",
     "gulp": "^3.6.2",
     "gulp-karma": "0.0.4",
     "gulp-less": "^1.2.3",
