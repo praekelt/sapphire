@@ -11,189 +11,6 @@
   }
 }(function(d3, strain) {
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.sapphire=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
-module.exports = orderedGrid
-
-function orderedGrid(d3) {
-  function layout(starters) {
-    var grid = {}
-      , event = d3.dispatch('tick')
-      , idCounter = 0
-      , nodes = []
-      , index = {}
-      , width = 500
-      , height = 500
-      , ratio = width / height
-      , diameter = 50
-      , alpha = 0
-      , speed = 0.02
-      , ease = d3.ease('linear')
-      , align = [0, 0]
-      , localWidth
-      , localHeight
-      , sort
-      , rows
-      , cols
-
-    grid.sort = function(fn) {
-      if (!arguments.length) return sort
-      sort = fn; return grid
-    }
-
-    // Alignment
-    // [horizontal, vertical] or both with a single boolean
-    // -1 is left
-    //  0 is centered
-    // +1 is right
-    grid.align = function(c) {
-      if (!arguments.length) return c
-      align = Array.isArray(c) ? c : [c, c]
-      align[0] = align[0] * 0.5 + 0.5
-      align[1] = align[1] * 0.5 + 0.5
-      return grid
-    }
-
-    grid.width = function(w) {
-      if (!arguments.length) return width
-      ratio = width / height
-      width = w; return grid
-    }
-    grid.height = function(h) {
-      if (!arguments.length) return height
-      ratio = width / height
-      height = h; return grid
-    }
-
-    grid.rows = function() {
-      return rows
-    }
-    grid.cols = function() {
-      return cols
-    }
-    grid.size = function() {
-      return [localWidth, localHeight]
-    }
-
-    // Speed of movement when rearranging
-    // the node layout
-    grid.speed = function(s) {
-      if (!arguments.length) return speed
-      speed = s; return grid
-    }
-
-    // The distance between nodes on the grid
-    grid.radius = function(d) {
-      if (!arguments.length) return diameter
-      diameter = d / 2; return grid
-    }
-
-    // add multiple values to the grid
-    grid.add = function(arr) {
-      for (var i = 0, l = arr.length; i < l; i += 1) grid.push(arr[i], true)
-      return grid.update()
-    }
-
-    // add a single value to the grid
-    grid.push = function(node, _noLayout) {
-      if (typeof node !== 'object') node = {
-        id: node
-      }
-
-      node.id = String(node.id || idCounter++)
-
-      if (index[node.id]) return
-
-      node.x = node.x || width/2   // x-position
-      node.y = node.y || height/2  // y-position
-      node.sx = node.sx || width/2  // starting x-position (for animation)
-      node.sy = node.sy || height/2 // starting y-position
-      node.gx = node.gx || width/2  // goal x-position
-      node.gy = node.gy || height/2 // goal y-position
-
-      index[node.id] = node
-      nodes.push(node)
-
-      return _noLayout ? grid : grid.update()
-    }
-
-    // Update the arrangement of the nodes
-    // to fit into a grid. Called automatically
-    // after push/add
-    grid.update = function() {
-      var gridLength = nodes.length
-
-      rows = Math.max(Math.floor(Math.sqrt(gridLength * height / width)), 1)
-      cols = Math.ceil(gridLength / rows)
-      localWidth = Math.min(width, diameter * cols)
-      localHeight = Math.min(height, diameter * rows)
-
-      var offsetX = (width - localWidth) * align[0]
-        , offsetY = (height - localHeight) * align[1]
-        , i = 0
-        , node
-
-      if (sort) nodes.sort(sort)
-
-      toploop:
-      for (var x = 0.5; x < cols; x += 1)
-      for (var y = 0.5; y < rows; y += 1, i += 1) {
-        node = nodes[i]
-        if (!node) break toploop
-        node.gx = offsetX + localWidth * x / cols
-        node.gy = offsetY + localHeight * y / rows
-        node.sx = node.x
-        node.sy = node.y
-      }
-
-      d3.timer(grid.tick)
-      alpha = 1
-
-      return grid
-    }
-
-    grid.nodes = function(arr) {
-      if (!arguments.length) return nodes
-      nodes = arr
-      return grid
-    }
-
-    grid.ease = function(fn) {
-      if (!arguments.length) return fn
-      if (typeof fn == 'function') {
-        ease = fn
-      } else {
-        ease = d3.ease.apply(d3, Array.prototype.slice.call(arguments))
-      }
-      return grid
-    }
-
-    grid.tick = function() {
-      var i = nodes.length
-        , node
-        , scaled = ease(alpha * alpha)
-
-      while (i--) {
-        node = nodes[i]
-        node.x = scaled * (node.sx - node.gx) + node.gx
-        node.y = scaled * (node.sy - node.gy) + node.gy
-        if (Math.abs(node.x) < 0.0001) node.x = 0
-        if (Math.abs(node.y) < 0.0001) node.y = 0
-      }
-
-      event.tick({ type: 'tick' })
-
-      if (alpha < 0) return true
-      alpha -= speed
-    }
-
-    grid.add(starters || [])
-
-    return d3.rebind(grid, event, "on")
-  }
-
-  return layout
-}
-
-},{}],2:[function(_dereq_,module,exports){
 var widgets = _dereq_('./widgets');
 
 
@@ -261,13 +78,165 @@ module.exports = _dereq_('./view').extend()
     widget.exit().remove();
   });
 
-},{"./view":4,"./widgets":5}],3:[function(_dereq_,module,exports){
-d3.layout.grid = _dereq_('d3-grid-layout')(d3);
+},{"./view":4,"./widgets":5}],2:[function(_dereq_,module,exports){
+module.exports = strain()
+  .prop('col')
+  .set(d3.functor)
+  .default(function(d) {
+    return access(d, 'col');
+  })
+
+  .prop('row')
+  .set(d3.functor)
+  .default(function(d) {
+    return access(d, 'row');
+  })
+
+  .prop('numcols')
+  .default(8)
+
+  .prop('scale')
+  .default(10)
+
+  .prop('padding')
+  .default(5)
+
+  .prop('colspan')
+  .set(d3.functor)
+  .default(function(d) {
+    return access(d, 'colspan', 1);
+  })
+
+  .prop('rowspan')
+  .set(d3.functor)
+  .default(function(d) {
+    return access(d, 'rowspan', 1);
+  })
+
+  .invoke(function(data) {
+    var self = this;
+    var best = counter().numcols(this.numcols());
+
+    data = (data || []).map(function(d, i) {
+      d = {
+        data: d,
+        col: ensure(self.col().call(self, d, i), best.col()), 
+        row: ensure(self.row().call(self, d, i), best.row()),
+        rowspan: self.rowspan().call(self, d, i),
+        colspan: self.colspan().call(self, d, i)
+      };
+
+      best.inc(d);
+      return d;
+    });
+
+    var quadtree = d3.geom.quadtree()
+      .x(function(d) { return d.col; })
+      .y(function(d) { return d.row; });
+
+    var root = quadtree(data);
+
+    data.forEach(function(d) {
+      root.visit(uncollide(d));
+      d.x = d.col * self.scale();
+      d.y = d.row * self.scale();
+      d.width = (d.colspan * self.scale()) - self.padding();
+      d.height = (d.rowspan * self.scale()) - self.padding();
+    });
+
+    return data;
+  });
+
+
+var counter = strain()
+  .prop('numcols')
+
+  .prop('rowspan')
+  .default(0)
+
+  .prop('col')
+  .default(0)
+
+  .prop('row')
+  .default(0)
+
+  .meth('inc', function(d) {
+    var col = d.col + d.colspan;
+    var row = this.row();
+
+    if (col >= this.numcols()) {
+      col = 0;
+      row += this.rowspan();
+      this.rowspan(0);
+    }
+
+    this
+      .col(col)
+      .row(row)
+      .rowspan(Math.max(this.rowspan(), d.rowspan));
+  });
+
+
+function box(d) {
+  return {
+    x1: d.col,
+    x2: d.col + d.colspan - 1,
+    y1: d.row,
+    y2: d.row + d.rowspan - 1
+  };
+}
+
+
+function uncollide(a) {
+  var boxA = box(a);
+  
+  return function(node, x1, y1, x2, y2) {
+    var b = node.point;
+
+    if (b && a !== b && intersection(boxA, box(b))) {
+      b.row = boxA.y2 + 1;
+    }
+
+    return !intersection(boxA, {
+      x1: x1, 
+      y1: y1, 
+      x2: x2,
+      y2: y2
+    });
+  };
+}
+
+
+function intersection(a, b) {
+  return ((a.x1 <= b.x1 && b.x1 <= a.x2) && (a.y1 <= b.y1 && b.y1 <= a.y2))
+      || ((b.x1 <= a.x1 && a.x1 <= b.x2) && (b.y1 <= a.y1 && a.y1 <= b.y2));
+}
+
+
+function access(d, name, defaultval) {
+  if (arguments.length < 3) {
+    defaultval = null;
+  }
+
+  return typeof d == 'object' && name in d
+    ? d[name]
+    : defaultval;
+}
+
+
+function ensure(v, defaultval) {
+  return v === null
+    ? defaultval
+    : v;
+}
+
+},{}],3:[function(_dereq_,module,exports){
 exports.view = _dereq_('./view');
+exports.grid = _dereq_('./grid');
 exports.widgets = _dereq_('./widgets');
 exports.dashboard = _dereq_('./dashboard');
 
-},{"./dashboard":2,"./view":4,"./widgets":5,"d3-grid-layout":1}],4:[function(_dereq_,module,exports){
+},{"./dashboard":1,"./grid":2,"./view":4,"./widgets":5}],4:[function(_dereq_,module,exports){
 module.exports = strain()
   .static('init', function(fn) {
     strain.init.call(this, function(el) {
@@ -339,8 +308,8 @@ module.exports = _dereq_('../view').extend()
   .confprop('format')
   .format(d3.format())
 
-  .confprop('noval')
-  .noval(0)
+  .confprop('none')
+  .none(0)
 
   .draw(function() {
     var self = this;
@@ -358,7 +327,7 @@ module.exports = _dereq_('../view').extend()
           .text(function(d, i) {
             var v = d
               ? self.y().call(this, d, i)
-              : self.noval();
+              : self.none();
 
               return self.format()(v);
           });
