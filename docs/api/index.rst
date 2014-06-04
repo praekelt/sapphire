@@ -6,3 +6,4 @@ api
     dashboard
     widgets/lastvalue
     view
+    grid
