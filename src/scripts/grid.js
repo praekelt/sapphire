@@ -14,6 +14,12 @@ module.exports = strain()
   .prop('numcols')
   .default(8)
 
+  .prop('scale')
+  .default(10)
+
+  .prop('padding')
+  .default(5)
+
   .prop('colspan')
   .set(d3.functor)
   .default(function(d) {
@@ -51,6 +57,10 @@ module.exports = strain()
 
     data.forEach(function(d) {
       root.visit(uncollide(d));
+      d.x = d.col * self.scale();
+      d.y = d.row * self.scale();
+      d.width = (d.colspan * self.scale()) - self.padding();
+      d.height = (d.rowspan * self.scale()) - self.padding();
     });
 
     return data;
