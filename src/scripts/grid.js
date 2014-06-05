@@ -1,14 +1,17 @@
+var utils = require('./utils');
+
+
 module.exports = strain()
   .prop('col')
   .set(d3.functor)
   .default(function(d) {
-    return access(d, 'col');
+    return utils.access(d, 'col');
   })
 
   .prop('row')
   .set(d3.functor)
   .default(function(d) {
-    return access(d, 'row');
+    return utils.access(d, 'row');
   })
 
   .prop('numcols')
@@ -23,13 +26,13 @@ module.exports = strain()
   .prop('colspan')
   .set(d3.functor)
   .default(function(d) {
-    return access(d, 'colspan', 1);
+    return utils.access(d, 'colspan', 1);
   })
 
   .prop('rowspan')
   .set(d3.functor)
   .default(function(d) {
-    return access(d, 'rowspan', 1);
+    return utils.access(d, 'rowspan', 1);
   })
 
   .invoke(function(data) {
@@ -39,8 +42,8 @@ module.exports = strain()
     data = (data || []).map(function(d, i) {
       d = {
         data: d,
-        col: ensure(self.col().call(self, d, i), best.col()), 
-        row: ensure(self.row().call(self, d, i), best.row()),
+        col: utils.ensure(self.col().call(self, d, i), best.col()), 
+        row: utils.ensure(self.row().call(self, d, i), best.row()),
         rowspan: self.rowspan().call(self, d, i),
         colspan: self.colspan().call(self, d, i)
       };
@@ -129,22 +132,4 @@ function uncollide(a) {
 function intersection(a, b) {
   return ((a.x1 <= b.x1 && b.x1 <= a.x2) && (a.y1 <= b.y1 && b.y1 <= a.y2))
       || ((b.x1 <= a.x1 && a.x1 <= b.x2) && (b.y1 <= a.y1 && a.y1 <= b.y2));
-}
-
-
-function access(d, name, defaultval) {
-  if (arguments.length < 3) {
-    defaultval = null;
-  }
-
-  return typeof d == 'object' && name in d
-    ? d[name]
-    : defaultval;
-}
-
-
-function ensure(v, defaultval) {
-  return v === null
-    ? defaultval
-    : v;
 }
