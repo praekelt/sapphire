@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "description": "A js library for drawing dashboards.",
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "install": "./scripts/install.sh",
+    "post-commit": "./scripts/post-commit.sh"
   },
   "repository": {
     "type": "git",
