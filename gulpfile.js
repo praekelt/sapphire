@@ -51,6 +51,7 @@ gulp.task('test', ['scripts:debug', 'styles'], function() {
       './bower_components/strain/strain.js',
       './build/sapphire.css',
       './build/sapphire.debug.js',
+      './test/testutils.js',
       './test/**/*.test.js'
     ])
     .pipe(karma({
