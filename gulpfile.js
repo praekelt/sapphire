@@ -1,3 +1,5 @@
+require('shelljs/global');
+var path = require('path');
 var gulp = require('gulp');
 var wrap = require('gulp-wrap');
 var less = require('gulp-less');
@@ -39,11 +41,6 @@ gulp.task('styles', function () {
 });
 
 
-gulp.task('build', function () {
-  gulp.start('scripts', 'scripts:debug', 'styles');
-});
-
-
 gulp.task('test', ['scripts:debug', 'styles'], function() {
   return gulp
     .src([
@@ -62,6 +59,44 @@ gulp.task('test', ['scripts:debug', 'styles'], function() {
         './build/sapphire.debug.js': ['sourcemap']
       }
     }));
+});
+
+
+gulp.task('build', function () {
+  gulp.start('scripts', 'scripts:debug', 'styles');
+});
+
+
+gulp.task('build:develop', function() {
+  var branch = exec('git symbolic-ref --short HEAD', {silent: true})
+    .output
+    .trim();
+
+  if (branch !== 'develop') { return; }
+
+  gulp.start('build', function() {
+    exec('git update-index --no-assume-unchanged ./build/*');
+    exec('git add ./build');
+    exec('git commit -m "Build"');
+    exec('git update-index --assume-unchanged ./build/*');
+  });
+});
+
+
+gulp.task('install', function() {
+  if (!test('-d', './.git')) { return; }
+  mkdir('-p', './.git/hooks');
+  exec('git update-index --assume-unchanged ./build/*');
+
+  ['post-commit', 'post-merge'].forEach(function(file) {
+    file = path.join('./.git/hooks', file);
+
+    ['#!/bin/sh', 'npm run-script build:develop']
+      .join('\n')
+      .to(file);
+
+    chmod('+x', file);
+  });
 });
 
 
