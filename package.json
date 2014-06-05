@@ -5,7 +5,7 @@
   "scripts": {
     "test": "gulp test",
     "install": "./scripts/install.sh",
-    "post-commit": "./scripts/post-commit.sh"
+    "build": "./scripts/build.sh"
   },
   "repository": {
     "type": "git",
