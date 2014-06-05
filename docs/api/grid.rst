@@ -135,9 +135,10 @@ The layout used by :ref:`sapphire.dashboard` to position widgets.
 
 .. function:: grid.padding([v])
 
-  Property for the padding to use in the layout. The grid dimensions (``width``
-  and ``height``) have their values decremented by this padding value. Defaults
-  to ``5``.
+  Property for the padding to use in the layout. The grid items' dimensions
+  (``width`` and ``height``) will be decreased by double this value, and the
+  items will have their positioning (``x`` and ``y``) offset by this value.
+  Defaults to ``5``.
 
   .. code-block:: javascript
 
