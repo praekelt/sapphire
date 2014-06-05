@@ -1,4 +1,4 @@
-require('shelljs/global');
+var sh = require('shelljs');
 var gulp = require('gulp');
 var wrap = require('gulp-wrap');
 var less = require('gulp-less');
@@ -67,31 +67,31 @@ gulp.task('build', function () {
 
 
 gulp.task('build:develop', function() {
-  var branch = exec('git symbolic-ref --short HEAD', {silent: true})
+  var branch = sh.exec('git symbolic-ref --short HEAD', {silent: true})
     .output
     .trim();
 
   if (branch !== 'develop') { return; }
 
   gulp.start('build', function() {
-    exec('git update-index --no-assume-unchanged ./build/*');
-    exec('git add ./build');
-    exec('git commit -m "Build"');
-    exec('git update-index --assume-unchanged ./build/*');
+    sh.exec('git update-index --no-assume-unchanged ./build/*');
+    sh.exec('git add ./build');
+    sh.exec('git commit -m "Build"');
+    sh.exec('git update-index --assume-unchanged ./build/*');
   });
 });
 
 
 gulp.task('install', function() {
-  if (!test('-d', './.git')) { return; }
-  mkdir('-p', './.git/hooks');
-  exec('git update-index --assume-unchanged ./build/*');
+  if (!sh.test('-d', './.git')) { return; }
+  sh.mkdir('-p', './.git/hooks');
+  sh.exec('git update-index --assume-unchanged ./build/*');
 
   var hookfile = './.git/hooks/post-merge';
   ['#!/bin/sh', 'npm run-script build:develop']
     .join('\n')
     .to(hookfile);
-  chmod('+x', hookfile);
+  sh.chmod('+x', hookfile);
 });
 
 
