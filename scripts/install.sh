@@ -1,3 +1,4 @@
+#!/bin/sh
 hookfile=.git/hooks/post-commit
 
 if [ -d './.git' ]; then

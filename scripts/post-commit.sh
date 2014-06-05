@@ -1,3 +1,4 @@
+#!/bin/sh
 branch=`git symbolic-ref --short HEAD`
 
 if [ $branch == "develop" ]; then
