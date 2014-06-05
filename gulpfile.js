@@ -1,5 +1,4 @@
 require('shelljs/global');
-var path = require('path');
 var gulp = require('gulp');
 var wrap = require('gulp-wrap');
 var less = require('gulp-less');
@@ -88,15 +87,11 @@ gulp.task('install', function() {
   mkdir('-p', './.git/hooks');
   exec('git update-index --assume-unchanged ./build/*');
 
-  ['post-commit', 'post-merge'].forEach(function(file) {
-    file = path.join('./.git/hooks', file);
-
-    ['#!/bin/sh', 'npm run-script build:develop']
-      .join('\n')
-      .to(file);
-
-    chmod('+x', file);
-  });
+  var hookfile = './.git/hooks/post-merge';
+  ['#!/bin/sh', 'npm run-script build:develop']
+    .join('\n')
+    .to(hookfile);
+  chmod('+x', hookfile);
 });
 
 
