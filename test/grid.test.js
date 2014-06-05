@@ -169,26 +169,26 @@ describe("sapphire.grid", function() {
     }]);
 
     expect(sapphire.testutils.pick(result, ['width', 'height'])).to.deep.equal([{
-      width: 90,
-      height: 90
+      width: 80,
+      height: 80
     }, {
-      width: 190,
-      height: 290
+      width: 180,
+      height: 280
     }, {
-      width: 90,
-      height: 90
+      width: 80,
+      height: 80
     }, {
-      width: 290,
-      height: 390
+      width: 280,
+      height: 380
     }, {
-      width: 90,
-      height: 190
+      width: 80,
+      height: 180
     }, {
-      width: 290,
-      height: 290
+      width: 280,
+      height: 280
     }, {
-      width: 90,
-      height: 90
+      width: 80,
+      height: 80
     }]);
   });
 
@@ -215,14 +215,14 @@ describe("sapphire.grid", function() {
     }]);
 
     expect(sapphire.testutils.pick(result, ['x', 'y'])).to.deep.equal([{
-      x: 405,
-      y: 305
+      x: 410,
+      y: 310
     }, {
-      x: 405,
-      y: 805
+      x: 410,
+      y: 810
     }, {
-      x: 305,
-      y: 1205
+      x: 310,
+      y: 1210
     }]);
   });
 

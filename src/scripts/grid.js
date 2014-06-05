@@ -57,14 +57,14 @@ var grid = module.exports = strain()
       .y(function(d) { return d.row; });
 
     var root = quadtree(data);
-    var halfPadding = this.padding() / 2;
+    var dblPadding = this.padding() * 2;
 
     data.forEach(function(d) {
       root.visit(grid.uncollide(d));
-      d.x = (d.col * self.scale()) + halfPadding;
-      d.y = (d.row * self.scale()) + halfPadding;
-      d.width = (d.colspan * self.scale()) - self.padding();
-      d.height = (d.rowspan * self.scale()) - self.padding();
+      d.x = (d.col * self.scale()) + self.padding();
+      d.y = (d.row * self.scale()) + self.padding();
+      d.width = (d.colspan * self.scale()) - dblPadding;
+      d.height = (d.rowspan * self.scale()) - dblPadding;
     });
 
     return data;
