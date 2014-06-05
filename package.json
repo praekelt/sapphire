@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "description": "A js library for drawing dashboards.",
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "install": "gulp install",
+    "build:develop": "gulp build:develop"
   },
   "repository": {
     "type": "git",
@@ -36,6 +38,7 @@
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-sourcemap-loader": "^0.2.0",
     "mocha": "^1.18.2",
+    "shelljs": "^0.3.0",
     "vinyl-source-stream": "^0.1.1"
   }
 }
