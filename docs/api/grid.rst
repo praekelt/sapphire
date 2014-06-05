@@ -12,9 +12,9 @@ The layout used by :ref:`sapphire.dashboard` to position widgets.
 
   Calculates the positioning and dimensions for grid items using ``data``.
 
-  The resulting layout data contain the following properties:
+  The resulting layout contains the following properties:
 
-    - ``data``: A reference to the actual datum associated to this layout datum
+    - ``data``: A reference to the actual datum associated to this layout
     - ``row``: The row index for where the item starts
     - ``col``: The column index for where the item starts
     - ``rowspan``: The number of rows that the item spans
@@ -31,7 +31,7 @@ The layout used by :ref:`sapphire.dashboard` to position widgets.
   If two grid items intersect each other, the layout will move the item
   found later in ``data`` below the item found earlier in ``data``. This will
   have a 'domino' effect, where any new intersections caused by the move will be
-  resolved using the same approach.
+  resolved using the same rule.
 
   .. code-block:: javascript
 
@@ -82,7 +82,7 @@ The layout used by :ref:`sapphire.dashboard` to position widgets.
 
     var grid = sapphire.grid()
       .row(function(d) {
-        return 1[0];
+        return d[1];
       })
 
 
