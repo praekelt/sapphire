@@ -1,7 +1,7 @@
 var utils = require('./utils');
 
 
-module.exports = strain()
+var grid = module.exports = strain()
   .prop('col')
   .set(d3.functor)
   .default(function(d) {
@@ -60,7 +60,7 @@ module.exports = strain()
     var halfPadding = this.padding() / 2;
 
     data.forEach(function(d) {
-      root.visit(uncollide(d));
+      root.visit(grid.uncollide(d));
       d.x = (d.col * self.scale()) + halfPadding;
       d.y = (d.row * self.scale()) + halfPadding;
       d.width = (d.colspan * self.scale()) - self.padding();
@@ -68,6 +68,41 @@ module.exports = strain()
     });
 
     return data;
+  })
+
+  .static(function box(d) {
+    return {
+      x1: d.col,
+      x2: d.col + d.colspan - 1,
+      y1: d.row,
+      y2: d.row + d.rowspan - 1
+    };
+  })
+
+  .static(function uncollide(a) {
+    var boxA = grid.box(a);
+    
+    return function(node, x1, y1, x2, y2) {
+      var b = node.point;
+
+      if (b && a !== b && grid.intersection(boxA, grid.box(b))) {
+        b.row = boxA.y2 + 1;
+      }
+
+      return !grid.intersection(boxA, {
+        x1: x1, 
+        y1: y1, 
+        x2: x2,
+        y2: y2
+      });
+    };
+  })
+
+  .static(function intersection(a, b) {
+    return ((a.x1 <= b.x1 && b.x1 <= a.x2) && (a.y1 <= b.y1 && b.y1 <= a.y2))
+        || ((b.x1 <= a.x1 && a.x1 <= b.x2) && (b.y1 <= a.y1 && a.y1 <= b.y2))
+        || ((a.x1 <= b.x1 && b.x1 <= a.x2) && (a.y1 <= b.y2 && b.y2 <= a.y2))
+        || ((b.x1 <= a.x2 && a.x2 <= b.x2) && (b.y1 <= a.y1 && a.y1 <= b.y2));
   });
 
 
@@ -83,7 +118,7 @@ var counter = strain()
   .prop('row')
   .default(0)
 
-  .meth('inc', function(d) {
+  .meth(function inc(d) {
     var col = d.col + d.colspan;
     var row = this.row();
 
@@ -98,41 +133,3 @@ var counter = strain()
       .row(row)
       .rowspan(Math.max(this.rowspan(), d.rowspan));
   });
-
-
-function box(d) {
-  return {
-    x1: d.col,
-    x2: d.col + d.colspan - 1,
-    y1: d.row,
-    y2: d.row + d.rowspan - 1
-  };
-}
-
-
-function uncollide(a) {
-  var boxA = box(a);
-  
-  return function(node, x1, y1, x2, y2) {
-    var b = node.point;
-
-    if (b && a !== b && intersection(boxA, box(b))) {
-      b.row = boxA.y2 + 1;
-    }
-
-    return !intersection(boxA, {
-      x1: x1, 
-      y1: y1, 
-      x2: x2,
-      y2: y2
-    });
-  };
-}
-
-
-function intersection(a, b) {
-  return ((a.x1 <= b.x1 && b.x1 <= a.x2) && (a.y1 <= b.y1 && b.y1 <= a.y2))
-      || ((b.x1 <= a.x1 && a.x1 <= b.x2) && (b.y1 <= a.y1 && a.y1 <= b.y2))
-      || ((a.x1 <= b.x1 && b.x1 <= a.x2) && (a.y1 <= b.y2 && b.y2 <= a.y2))
-      || ((b.x1 <= a.x2 && a.x2 <= b.x2) && (b.y1 <= a.y1 && a.y1 <= b.y2));
-}
