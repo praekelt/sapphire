@@ -225,4 +225,80 @@ describe("sapphire.grid", function() {
       y: 1205
     }]);
   });
+
+  describe(".intersection", function() {
+    it("should determine whether two boxes intersect", function() {
+      var a, b;
+
+      a = {
+        x1: 1,
+        y1: 0,
+        x2: 3,
+        y2: 2
+      };
+      b = {
+        x1: 10,
+        y1: 20,
+        x2: 30,
+        y2: 40
+      };
+      expect(sapphire.grid.intersection(a, b)).to.be.false;
+
+      a = {
+        x1: 1,
+        y1: 0,
+        x2: 3,
+        y2: 2
+      };
+      b = {
+        x1: 0,
+        y1: 1,
+        x2: 2,
+        y2: 3
+      };
+      expect(sapphire.grid.intersection(a, b)).to.be.true;
+
+      a = {
+        x1: 0,
+        y1: 0,
+        x2: 2,
+        y2: 2
+      };
+      b = {
+        x1: 1,
+        y1: 1,
+        x2: 3,
+        y2: 3
+      };
+      expect(sapphire.grid.intersection(a, b)).to.be.true;
+
+      a = {
+        x1: 0,
+        y1: 1,
+        x2: 2,
+        y2: 3
+      };
+      b = {
+        x1: 1,
+        y1: 0,
+        x2: 3,
+        y2: 2
+      };
+      expect(sapphire.grid.intersection(a, b)).to.be.true;
+
+      a = {
+        x1: 1,
+        y1: 1,
+        x2: 3,
+        y2: 3
+      };
+      b = {
+        x1: 0,
+        y1: 0,
+        x2: 2,
+        y2: 2
+      };
+      expect(sapphire.grid.intersection(a, b)).to.be.true;
+    });
+  });
 });
