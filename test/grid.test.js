@@ -194,7 +194,8 @@ describe("sapphire.grid", function() {
 
   it("should determine the resulting positioning", function() {
     var grid = sapphire.grid()
-      .scale(100);
+      .scale(100)
+      .padding(10);
 
     var result = grid([{
       colspan: 1,
@@ -214,14 +215,14 @@ describe("sapphire.grid", function() {
     }]);
 
     expect(sapphire.testutils.pick(result, ['x', 'y'])).to.deep.equal([{
-      x: 400,
-      y: 300
+      x: 405,
+      y: 305
     }, {
-      x: 400,
-      y: 800
+      x: 405,
+      y: 805
     }, {
-      x: 300,
-      y: 1200
+      x: 305,
+      y: 1205
     }]);
   });
 });
