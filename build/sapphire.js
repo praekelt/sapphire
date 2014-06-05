@@ -78,18 +78,21 @@ module.exports = _dereq_('./view').extend()
     widget.exit().remove();
   });
 
-},{"./view":4,"./widgets":5}],2:[function(_dereq_,module,exports){
+},{"./view":5,"./widgets":6}],2:[function(_dereq_,module,exports){
+var utils = _dereq_('./utils');
+
+
 module.exports = strain()
   .prop('col')
   .set(d3.functor)
   .default(function(d) {
-    return access(d, 'col');
+    return utils.access(d, 'col');
   })
 
   .prop('row')
   .set(d3.functor)
   .default(function(d) {
-    return access(d, 'row');
+    return utils.access(d, 'row');
   })
 
   .prop('numcols')
@@ -104,13 +107,13 @@ module.exports = strain()
   .prop('colspan')
   .set(d3.functor)
   .default(function(d) {
-    return access(d, 'colspan', 1);
+    return utils.access(d, 'colspan', 1);
   })
 
   .prop('rowspan')
   .set(d3.functor)
   .default(function(d) {
-    return access(d, 'rowspan', 1);
+    return utils.access(d, 'rowspan', 1);
   })
 
   .invoke(function(data) {
@@ -120,8 +123,8 @@ module.exports = strain()
     data = (data || []).map(function(d, i) {
       d = {
         data: d,
-        col: ensure(self.col().call(self, d, i), best.col()), 
-        row: ensure(self.row().call(self, d, i), best.row()),
+        col: utils.ensure(self.col().call(self, d, i), best.col()), 
+        row: utils.ensure(self.row().call(self, d, i), best.row()),
         rowspan: self.rowspan().call(self, d, i),
         colspan: self.colspan().call(self, d, i)
       };
@@ -135,11 +138,12 @@ module.exports = strain()
       .y(function(d) { return d.row; });
 
     var root = quadtree(data);
+    var halfPadding = this.padding() / 2;
 
     data.forEach(function(d) {
       root.visit(uncollide(d));
-      d.x = d.col * self.scale();
-      d.y = d.row * self.scale();
+      d.x = (d.col * self.scale()) + halfPadding;
+      d.y = (d.row * self.scale()) + halfPadding;
       d.width = (d.colspan * self.scale()) - self.padding();
       d.height = (d.rowspan * self.scale()) - self.padding();
     });
@@ -212,31 +216,40 @@ function intersection(a, b) {
       || ((b.x1 <= a.x1 && a.x1 <= b.x2) && (b.y1 <= a.y1 && a.y1 <= b.y2));
 }
 
-
-function access(d, name, defaultval) {
-  if (arguments.length < 3) {
-    defaultval = null;
-  }
-
-  return typeof d == 'object' && name in d
-    ? d[name]
-    : defaultval;
-}
-
-
-function ensure(v, defaultval) {
-  return v === null
-    ? defaultval
-    : v;
-}
-
-},{}],3:[function(_dereq_,module,exports){
+},{"./utils":4}],3:[function(_dereq_,module,exports){
+exports.utils = _dereq_('./utils');
 exports.view = _dereq_('./view');
 exports.grid = _dereq_('./grid');
 exports.widgets = _dereq_('./widgets');
 exports.dashboard = _dereq_('./dashboard');
 
-},{"./dashboard":1,"./grid":2,"./view":4,"./widgets":5}],4:[function(_dereq_,module,exports){
+},{"./dashboard":1,"./grid":2,"./utils":4,"./view":5,"./widgets":6}],4:[function(_dereq_,module,exports){
+var utils = exports;
+
+
+utils.access = function(d, name, defaultval) {
+  if (arguments.length < 3) {
+    defaultval = null;
+  }
+
+  if (typeof d != 'object') {
+    return defaultval;
+  }
+
+  var val = d[name];
+  return typeof val == 'undefined'
+    ? defaultval
+    : val;
+};
+
+
+utils.ensure = function(v, defaultval) {
+  return v === null || typeof v == 'undefined'
+    ? defaultval
+    : v;
+};
+
+},{}],5:[function(_dereq_,module,exports){
 module.exports = strain()
   .static('init', function(fn) {
     strain.init.call(this, function(el) {
@@ -284,10 +297,10 @@ module.exports = strain()
     return this.draw(datum);
   });
 
-},{}],5:[function(_dereq_,module,exports){
+},{}],6:[function(_dereq_,module,exports){
 exports.lastvalue = _dereq_('./lastvalue');
 
-},{"./lastvalue":6}],6:[function(_dereq_,module,exports){
+},{"./lastvalue":7}],7:[function(_dereq_,module,exports){
 module.exports = _dereq_('../view').extend()
   .confprop('title')
   .set(d3.functor)
@@ -333,7 +346,7 @@ module.exports = _dereq_('../view').extend()
           });
   });
 
-},{"../view":4}]},{},[3])
+},{"../view":5}]},{},[3])
 (3)
 });
 }));
