@@ -22,3 +22,8 @@ utils.ensure = function(v, defaultval) {
     ? defaultval
     : v;
 };
+
+
+utils.translate = function(x, y) {
+  return 'translate(' + x + ', ' + y + ')';
+};

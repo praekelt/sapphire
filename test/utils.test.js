@@ -33,4 +33,11 @@ describe("sapphire.utils", function() {
       expect(sapphire.utils.ensure(undefined, 3)).to.equal(3);
     });
   });
+
+  describe(".translate", function() {
+    it("should return a translation string", function() {
+      expect(sapphire.utils.translate(3.23, 23.23))
+        .to.equal('translate(3.23, 23.23)');
+    });
+  });
 });
