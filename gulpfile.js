@@ -102,5 +102,6 @@ gulp.task('default', function () {
 
 
 gulp.task('watch', function() {
-  gulp.watch('src/scripts/**/*.js', ['scripts']);
+  gulp.watch('src/scripts/**/*.js', ['scripts', 'scripts:debug']);
+  gulp.watch('src/styles/**/*.less', ['styles']);
 });
