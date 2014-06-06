@@ -22,13 +22,22 @@ module.exports = strain()
   })
 
   .static('draw', function(fn) {
-    this.meth('draw', function(datum) {
-      if (arguments.length) {
-        this.el().datum(datum);
-      }
+    this.meth('_draw_', fn);
+  })
 
-      return fn.call(this);
-    });
+  .meth('_draw_', function() {})
+
+  .meth('draw', function(datum) {
+    if (arguments.length) {
+      this.el().datum(datum);
+    }
+
+    var parent = this._type_._super_.prototype;
+    if ('_draw_' in parent) {
+      parent._draw_.call(this);
+    }
+
+    return this._draw_();
   })
 
   .prop('el')

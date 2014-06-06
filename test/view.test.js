@@ -67,4 +67,30 @@ describe("sapphire.view", function() {
       expect(view.el().node()).to.equal(el.node());
     });
   });
+  
+  describe(".draw", function() {
+    it("should call its parent's draw", function() {
+      var thing = sapphire.view
+        .extend()
+        .draw(function() {
+          this.el()
+            .append('div')
+            .attr('class', 'thing')
+            .text('foo');
+        });
+
+      var subthing = thing.extend()
+        .extend()
+        .draw(function() {
+          this.el()
+            .append('div')
+            .attr('class', 'subthing')
+            .text('bar');
+        });
+
+      subthing(el).draw();
+      expect(el.select('.thing').text()).to.equal('foo');
+      expect(el.select('.subthing').text()).to.equal('bar');
+    });
+  });
 });
