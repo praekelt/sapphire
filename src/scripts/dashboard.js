@@ -59,7 +59,8 @@ module.exports = require('./view').extend()
 
       self.types()
         .get(type)
-        .new(this);
+        .new(this)
+        .draw();
     });
 
     widget.exit().remove();

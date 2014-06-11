@@ -6,10 +6,6 @@ module.exports = strain()
       }
 
       fn.apply(this, arguments);
-
-      if (el && this.el().datum()) {
-        this.draw();
-      }
     });
   })
 
