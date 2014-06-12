@@ -1,3 +1,5 @@
+var utils = require('./utils');
+var layout = require('./grid');
 var widgets = require('./widgets');
 
 
@@ -17,12 +19,55 @@ module.exports = require('./view').extend()
   })
 
   .confprop('type')
-  .set(d3.functor)
+  .set(function(fn) {
+    var self = this;
+    fn = d3.functor(fn);
+
+    return function(d, i) {
+      var name = fn.call(this, d, i);
+
+      if (!self.types().has(name)) {
+        throw new Error("Unrecognised dashboard widget type '" + name + "'");
+      }
+
+      return self.types().get(name);
+    };
+  })
   .type(function(d) { return d.type; })
 
   .confprop('widgets')
   .set(d3.functor)
   .widgets(function(d) { return d.widgets; })
+
+  .prop('col')
+  .set(d3.functor)
+  .default(function(d) {
+    return utils.access(d, 'col');
+  })
+
+  .prop('row')
+  .set(d3.functor)
+  .default(function(d) {
+    return utils.access(d, 'row');
+  })
+
+  .confprop('colspan')
+  .set(d3.functor)
+  .colspan(function(d) {
+    return utils.access(d, 'colspan');
+  })
+
+  .confprop('rowspan')
+  .set(d3.functor)
+  .rowspan(function(d) {
+    return utils.access(d, 'rowspan');
+  })
+
+  .confprop('numcols')
+  .numcols(8)
+
+  .confprop('padding')
+  .padding(5)
 
   .init(function() {
     var types = d3.map();
@@ -37,6 +82,29 @@ module.exports = require('./view').extend()
   .draw(function() {
     var self = this;
 
+    var grid = layout()
+      .scale(100)
+      .numcols(this.numcols())
+      .padding(this.padding())
+      .col(function(d, i) {
+        return self.col().call(self, d, i);
+      })
+      .row(function(d, i) {
+        return self.row().call(self, d, i);
+      })
+      .colspan(function(d, i) {
+        var v = self.colspan().call(self, d, i);
+        var type = self.type().call(this, d, i);
+        return utils.ensure(v, type.colspan);
+      })
+      .rowspan(function(d, i) {
+        var v = self.rowspan().call(self, d, i);
+        var type = self.type().call(this, d, i);
+        return utils.ensure(v, type.rowspan);
+      });
+
+    this.el().attr('class', 'dashboard');
+
     var widgets = this.el().selectAll('.widgets')
       .data(function(d, i) {
         return [self.widgets().call(this, d, i)];
@@ -48,22 +116,26 @@ module.exports = require('./view').extend()
     var widget = widgets.selectAll('.widget')
       .data(function(d) { return d; }, this.key());
 
-    widget.enter().append('div')
+    widget.enter().append('div');
+    var gridEls = grid(widget.data());
+
+    widget
       .attr('class', 'widget')
-      .attr('data-key', this.key());
+      .attr('data-key', this.key())
+      .each(function(d, i) {
+        var gridEl = gridEls[i];
 
-    widget.each(function(d, i) {
-      var type = self.type().call(this, d, i);
+        d3.select(this)
+          .style('left', gridEl.x + 'px')
+          .style('top', gridEl.y + 'px');
 
-      if (!self.types().has(type)) {
-        throw new Error("Unrecognised dashboard widget type '" + type + "'");
-      }
-
-      self.types()
-        .get(type)
-        .new(this)
-        .draw();
-    });
+        self.type()
+          .call(this, d, i)
+          .new(this)
+          .width(gridEl.width)
+          .height(gridEl.height)
+          .draw();
+      });
 
     widget.exit().remove();
   });
