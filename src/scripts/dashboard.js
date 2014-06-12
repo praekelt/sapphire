@@ -37,11 +37,13 @@ module.exports = require('./view').extend()
   .draw(function() {
     var self = this;
 
-    var widgets = this.el()
-      .html(null)
-      .append('div')
-        .datum(this.widgets())
-        .attr('class', 'widgets');
+    var widgets = this.el().selectAll('.widgets')
+      .data(function(d, i) {
+        return [self.widgets().call(this, d, i)];
+      });
+
+    widgets.enter().append('div')
+      .attr('class', 'widgets');
 
     var widget = widgets.selectAll('.widget')
       .data(function(d) { return d; }, this.key());
