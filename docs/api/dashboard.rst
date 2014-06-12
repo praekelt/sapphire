@@ -147,5 +147,97 @@ Component for drawing a dashboard of widgets laid out in a grid.
     dashboard.types().set('dummy', sapphire.view.extend());
 
 
+.. function:: dashboard.col([accessor])
+
+  Property for the :ref:`accessor <accessors>` to use to access the column
+  index for each widget. If the accessor returns ``null`` or ``undefined``, the
+  dashboard rely on its :func:`grid layout <sapphire.grid>` to choose the next column position for the widget.
+
+  The default accessor tries look up the ``col`` property of each datum,
+  returning ``null`` if the property does not exist, is undefined, or if the
+  datum is not an object.
+
+  .. code-block:: javascript
+
+    var dashboard = sapphire.dashboard()
+      .col(function(d) {
+        return d.x;
+      });
+
+
+.. function:: dashboard.row([accessor])
+
+  Property for the :ref:`accessor <accessors>` to use to access the row index
+  for each widget. If the accessor returns ``null`` or ``undefined``, the
+  dashboard rely on its :func:`grid layout <sapphire.grid>` to choose the next
+  row position for the widget.
+
+  The default accessor tries look up the ``row`` property of each datum,
+  returning ``null`` if the property does not exist, is undefined, or if the
+  datum is not an object.
+
+  .. code-block:: javascript
+
+    var dashboard = sapphire.dashboard()
+      .row(function(d) {
+        return d.y;
+      });
+
+
+.. function:: dashboard.colspan([accessor])
+
+  Property for the :ref:`accessor <accessors>` to use to access the number of
+  columns to span for each datum. If the accessor returns ``null`` or
+  ``undefined``, the dashboard will fall back to the relevant widget type's
+  ``colspan`` property.
+
+  The default accessor tries look up the ``colspan`` property of each datum.
+
+  .. code-block:: javascript
+
+    var dashboard = sapphire.dashboard()
+      .colspan(function(d) {
+        return d.width;
+      });
+
+
+.. function:: dashboard.rowspan([accessor])
+
+  Property for the :ref:`accessor <accessors>` to use to access the number of
+  rows to span for each datum. If the accessor returns ``null`` or
+  ``undefined``, the dashboard will fall back to the relevant widget type's
+  ``rowspan`` property.
+
+  The default accessor tries look up the ``rowspan`` property of each datum.
+
+  .. code-block:: javascript
+
+    var dashboard = sapphire.dashboard()
+      .rowspan(function(d) {
+        return d.height;
+      });
+
+
+.. function:: dashboard.padding([v])
+
+  Property for amount of padding for the dashboard's widgets. Defaults to ``10``.
+
+  .. code-block:: javascript
+
+    var dashboard = sapphire.dashboard()
+      .padding(5);
+
+
+.. function:: dashboard.numcols([v])
+
+  Property for the number of columns the dashboard grid's width is divided up
+  into. Defaults to ``8``.
+
+  .. code-block:: javascript
+
+    var dashboard = sapphire.dashboard()
+      .numcols(4)
+
+
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements
 .. _d3.map: https://github.com/mbostock/d3/wiki/Arrays#maps
