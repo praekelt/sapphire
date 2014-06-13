@@ -11,6 +11,8 @@
   }
 }(function(d3, strain) {
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.sapphire=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+var utils = _dereq_('./utils');
+var layout = _dereq_('./grid');
 var widgets = _dereq_('./widgets');
 
 
@@ -30,12 +32,55 @@ module.exports = _dereq_('./view').extend()
   })
 
   .confprop('type')
-  .set(d3.functor)
+  .set(function(fn) {
+    var self = this;
+    fn = d3.functor(fn);
+
+    return function(d, i) {
+      var name = fn.call(this, d, i);
+
+      if (!self.types().has(name)) {
+        throw new Error("Unrecognised dashboard widget type '" + name + "'");
+      }
+
+      return self.types().get(name);
+    };
+  })
   .type(function(d) { return d.type; })
 
   .confprop('widgets')
   .set(d3.functor)
   .widgets(function(d) { return d.widgets; })
+
+  .prop('col')
+  .set(d3.functor)
+  .default(function(d) {
+    return utils.access(d, 'col');
+  })
+
+  .prop('row')
+  .set(d3.functor)
+  .default(function(d) {
+    return utils.access(d, 'row');
+  })
+
+  .confprop('colspan')
+  .set(d3.functor)
+  .colspan(function(d) {
+    return utils.access(d, 'colspan');
+  })
+
+  .confprop('rowspan')
+  .set(d3.functor)
+  .rowspan(function(d) {
+    return utils.access(d, 'rowspan');
+  })
+
+  .confprop('numcols')
+  .numcols(8)
+
+  .confprop('padding')
+  .padding(5)
 
   .init(function() {
     var types = d3.map();
@@ -50,35 +95,65 @@ module.exports = _dereq_('./view').extend()
   .draw(function() {
     var self = this;
 
-    var widgets = this.el()
-      .html(null)
-      .append('div')
-        .datum(this.widgets())
-        .attr('class', 'widgets');
+    var grid = layout()
+      .scale(100)
+      .numcols(this.numcols())
+      .padding(this.padding())
+      .col(function(d, i) {
+        return self.col().call(self, d, i);
+      })
+      .row(function(d, i) {
+        return self.row().call(self, d, i);
+      })
+      .colspan(function(d, i) {
+        var v = self.colspan().call(self, d, i);
+        var type = self.type().call(this, d, i);
+        return utils.ensure(v, type.colspan);
+      })
+      .rowspan(function(d, i) {
+        var v = self.rowspan().call(self, d, i);
+        var type = self.type().call(this, d, i);
+        return utils.ensure(v, type.rowspan);
+      });
+
+    this.el().attr('class', 'dashboard');
+
+    var widgets = this.el().selectAll('.widgets')
+      .data(function(d, i) {
+        return [self.widgets().call(this, d, i)];
+      });
+
+    widgets.enter().append('div')
+      .attr('class', 'widgets');
 
     var widget = widgets.selectAll('.widget')
       .data(function(d) { return d; }, this.key());
 
-    widget.enter().append('div')
+    widget.enter().append('div');
+    var gridEls = grid(widget.data());
+
+    widget
       .attr('class', 'widget')
-      .attr('data-key', this.key());
+      .attr('data-key', this.key())
+      .each(function(d, i) {
+        var gridEl = gridEls[i];
 
-    widget.each(function(d, i) {
-      var type = self.type().call(this, d, i);
+        d3.select(this)
+          .style('left', gridEl.x + 'px')
+          .style('top', gridEl.y + 'px');
 
-      if (!self.types().has(type)) {
-        throw new Error("Unrecognised dashboard widget type '" + type + "'");
-      }
-
-      self.types()
-        .get(type)
-        .new(this);
-    });
+        self.type()
+          .call(this, d, i)
+          .new(this)
+          .width(gridEl.width)
+          .height(gridEl.height)
+          .draw();
+      });
 
     widget.exit().remove();
   });
 
-},{"./view":5,"./widgets":6}],2:[function(_dereq_,module,exports){
+},{"./grid":2,"./utils":4,"./view":5,"./widgets":6}],2:[function(_dereq_,module,exports){
 var utils = _dereq_('./utils');
 
 
@@ -257,10 +332,6 @@ module.exports = strain()
       }
 
       fn.apply(this, arguments);
-
-      if (el && this.el().datum()) {
-        this.draw();
-      }
     });
   })
 
@@ -306,10 +377,11 @@ module.exports = strain()
   });
 
 },{}],6:[function(_dereq_,module,exports){
+exports.widget = _dereq_('./widget');
 exports.lastvalue = _dereq_('./lastvalue');
 
-},{"./lastvalue":7}],7:[function(_dereq_,module,exports){
-module.exports = _dereq_('../view').extend()
+},{"./lastvalue":7,"./widget":8}],7:[function(_dereq_,module,exports){
+module.exports = _dereq_('./widget').extend()
   .confprop('title')
   .set(d3.functor)
   .title(function(d) { return d.title; })
@@ -352,6 +424,31 @@ module.exports = _dereq_('../view').extend()
 
               return self.format()(v);
           });
+  });
+
+},{"./widget":8}],8:[function(_dereq_,module,exports){
+module.exports = _dereq_('../view').extend()
+  .static('colspan', 1)
+  .static('rowspan', 1)
+
+  .confprop('width')
+  .set(d3.functor)
+  .width(200)
+
+  .confprop('height')
+  .set(d3.functor)
+  .height(200)
+
+  .draw(function() {
+    var self = this;
+
+    this.el()
+      .style('width', function(d, i) {
+        return self.width().call(this, d, i) + 'px';
+      })
+      .style('height', function(d, i) {
+        return self.height().call(this, d, i) + 'px';
+      });
   });
 
 },{"../view":5}]},{},[3])

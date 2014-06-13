@@ -1,0 +1,6 @@
+.sapphire .dashboard .widgets {
+  position: relative;
+}
+.sapphire .dashboard .widgets .widget {
+  position: absolute;
+}
