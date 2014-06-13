@@ -1,4 +1,4 @@
-module.exports = require('../view').extend()
+module.exports = require('./widget').extend()
   .confprop('title')
   .set(d3.functor)
   .title(function(d) { return d.title; })
