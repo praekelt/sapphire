@@ -153,9 +153,9 @@ Component for drawing a dashboard of widgets laid out in a grid.
   index for each widget. If the accessor returns ``null`` or ``undefined``, the
   dashboard rely on its :func:`grid layout <sapphire.grid>` to choose the next column position for the widget.
 
-  The default accessor tries look up the ``col`` property of each datum,
-  returning ``null`` if the property does not exist, is undefined, or if the
-  datum is not an object.
+  The default accessor looks up the ``col`` property of each datum, returning
+  ``null`` if the property does not exist, is undefined, or if the datum is not
+  an object.
 
   .. code-block:: javascript
 
@@ -172,9 +172,9 @@ Component for drawing a dashboard of widgets laid out in a grid.
   dashboard rely on its :func:`grid layout <sapphire.grid>` to choose the next
   row position for the widget.
 
-  The default accessor tries look up the ``row`` property of each datum,
-  returning ``null`` if the property does not exist, is undefined, or if the
-  datum is not an object.
+  The default accessor looks up the ``row`` property of each datum, returning
+  ``null`` if the property does not exist, is undefined, or if the datum is not
+  an object.
 
   .. code-block:: javascript
 
@@ -191,7 +191,7 @@ Component for drawing a dashboard of widgets laid out in a grid.
   ``undefined``, the dashboard will fall back to the relevant widget type's
   ``colspan`` property.
 
-  The default accessor tries look up the ``colspan`` property of each datum.
+  The default accessor looks up the ``colspan`` property of each datum.
 
   .. code-block:: javascript
 
@@ -208,7 +208,7 @@ Component for drawing a dashboard of widgets laid out in a grid.
   ``undefined``, the dashboard will fall back to the relevant widget type's
   ``rowspan`` property.
 
-  The default accessor tries look up the ``rowspan`` property of each datum.
+  The default accessor looks up the ``rowspan`` property of each datum.
 
   .. code-block:: javascript
 
