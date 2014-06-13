@@ -21,21 +21,19 @@ module.exports = require('./widget').extend()
   .confprop('none')
   .none(0)
 
+  .enter(function() {
+    this.el().append('span')
+      .attr('class', 'last');
+  })
+
   .draw(function() {
     var self = this;
 
-    var last = this.el().selectAll('.last')
-      .data(function(d, i) {
+    this.el().select('.last')
+      .datum(function(d, i) {
         var values = self.values().call(this, d, i);
-        return [values[values.length - 1]];
-      });
-
-    last
-      .enter()
-      .append('div');
-
-    last
-      .attr('class', 'last')
+        return values[values.length - 1];
+      })
       .text(function(d, i) {
         var v = d
           ? self.y().call(this, d, i)
