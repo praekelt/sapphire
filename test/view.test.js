@@ -78,4 +78,64 @@ describe("sapphire.view", function() {
       expect(el.select('.subthing').text()).to.equal('bar');
     });
   });
+
+  describe(".enter", function() {
+    it("should only get called on the first draw", function() {
+      var enters = 0;
+
+      var thing = sapphire.view.extend()
+        .enter(function() {
+          enters++;
+        });
+
+      var t = thing(el);
+      t.draw();
+      expect(enters).to.equal(1);
+
+      t.draw();
+      expect(enters).to.equal(1);
+
+      t.draw();
+      expect(enters).to.equal(1);
+    });
+
+    it("should call its parent's enter", function() {
+      var thing = sapphire.view
+        .extend()
+        .enter(function() {
+          this.el()
+            .append('div')
+            .attr('class', 'thing')
+            .text('foo');
+        });
+
+      var subthing = thing.extend()
+        .extend()
+        .enter(function() {
+          this.el()
+            .append('div')
+            .attr('class', 'subthing')
+            .text('bar');
+        });
+
+      subthing(el).draw();
+      expect(el.select('.thing').text()).to.equal('foo');
+      expect(el.select('.subthing').text()).to.equal('bar');
+    });
+
+    it("should get called as the first step when drawing", function(done) {
+      var entered = false;
+
+      var thing = sapphire.view.extend()
+        .enter(function() {
+          entered = true;
+        })
+        .draw(function() {
+          expect(entered).to.be.true;
+          done();
+        });
+
+      thing(el).draw();
+    });
+  });
 });

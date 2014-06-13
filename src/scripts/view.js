@@ -21,11 +21,20 @@ module.exports = strain()
     this.meth('_draw_', fn);
   })
 
+  .static('enter', function(fn) {
+    this.meth('_enter_', fn);
+  })
+
   .meth('_draw_', function() {})
+  .meth('_enter_', function() {})
 
   .meth('draw', function(datum) {
     if (arguments.length) {
       this.el().datum(datum);
+    }
+
+    if (!this.entered()) {
+      this.enter();
     }
 
     var parent = this._type_._super_.prototype;
@@ -36,6 +45,20 @@ module.exports = strain()
     return this._draw_();
   })
 
+  .meth('enter', function() {
+    var parent = this._type_._super_.prototype;
+
+    if ('_enter_' in parent) {
+      parent._enter_.call(this);
+    }
+
+    this._enter_();
+    this.entered(true);
+  })
+
+  .prop('entered')
+  .default(false)
+
   .prop('el')
   .set(function(v) {
     return !(v instanceof d3.selection)
@@ -44,7 +67,6 @@ module.exports = strain()
   })
 
   .init(function() {})
-  .draw(function() {})
 
   .invoke(function(datum) {
     return this.draw(datum);
