@@ -52,9 +52,9 @@ The layout used by :ref:`sapphire.dashboard` to position widgets.
 .. function:: grid.col([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the column
-  index to use for each datum. If the accessor returns `null`, the grid layout
-  will choose the next column position for the item, progressing in a
-  left-to-right fashion.
+  index to use for each datum. If the accessor returns ``null`` or
+  ``undefined``, the grid layout will choose the next column position for the
+  item, progressing in a left-to-right fashion.
 
   The default accessor tries look up the ``col`` property of each datum,
   returning ``null`` if the property does not exist, is undefined, or if the
@@ -70,9 +70,9 @@ The layout used by :ref:`sapphire.dashboard` to position widgets.
 
 .. function:: grid.row([accessor])
 
-  Property for the :ref:`accessor <accessors>` to use to access the row
-  index to use for each datum. If the accessor returns `null`, the grid layout
-  will choose the next fitting position row for the item.
+  Property for the :ref:`accessor <accessors>` to use to access the row index
+  to use for each datum. If the accessor returns ``null`` or ``undefined``, the
+  grid layout will choose the next fitting position row for the item.
 
   The default accessor tries look up the ``row`` property of each datum,
   returning ``null`` if the property does not exist, is undefined, or if the
