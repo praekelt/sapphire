@@ -16,14 +16,16 @@ module.exports = require('./widget').extend()
   .y(function(d) { return d.y; })
 
   .confprop('format')
-  .format(d3.format())
+  .format(d3.format(',2s'))
 
   .confprop('none')
   .none(0)
 
   .enter(function() {
-    this.el().append('span')
-      .attr('class', 'last');
+    this.el()
+      .attr('class', 'lastvalue')
+        .append('span')
+        .attr('class', 'last');
   })
 
   .draw(function() {
