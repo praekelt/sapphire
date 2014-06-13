@@ -40,7 +40,27 @@ and ``.prop()`` are also available on view components.
     var viewtype = sapphire.view.extend()
       .draw(function() {
         this.el().text(function(d) { return d.text; });
-      }));
+      });
+
+
+.. function:: sapphire.view.enter(fn)
+
+  Defines a new enter method for the view type using the given function that
+  will be called on the first :func:`draw`. The default enter function is a
+  no-op, this can be overriden with the drawing instructions specific to a
+  component, if necessary.
+
+  .. code-block:: javascript
+
+    var viewtype = sapphire.view.extend()
+      .enter(function() {
+        this.el().append('div')
+          .attr('class', 'foo');
+      })
+      .draw(function() {
+        this.el().select('.foo')
+          .text('bar');
+      });
 
 
 .. function:: view([datum])
