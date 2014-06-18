@@ -33,7 +33,7 @@ module.exports = strain()
       this.el().datum(datum);
     }
 
-    if (!this.entered()) {
+    if (this.el().node() && !this.el().node().hasChildNodes()) {
       this.enter();
     }
 
@@ -53,11 +53,7 @@ module.exports = strain()
     }
 
     this._enter_();
-    this.entered(true);
   })
-
-  .prop('entered')
-  .default(false)
 
   .prop('el')
   .set(function(v) {

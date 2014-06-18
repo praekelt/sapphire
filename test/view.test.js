@@ -80,12 +80,37 @@ describe("sapphire.view", function() {
   });
 
   describe(".enter", function() {
-    it("should only get called on the first draw", function() {
+    it("should not get called when the selection is empty", function() {
       var enters = 0;
 
       var thing = sapphire.view.extend()
         .enter(function() {
           enters++;
+        });
+
+      var t = thing(el.select('.foo'));
+      t.draw();
+      expect(enters).to.equal(0);
+
+      t.draw();
+      expect(enters).to.equal(0);
+
+      t.draw();
+      expect(enters).to.equal(0);
+    });
+
+    it("should get called when the selection has no child nodes", function() {
+      var enters = 0;
+
+      var thing = sapphire.view.extend()
+        .enter(function() {
+          enters++;
+        })
+        .draw(function() {
+          this.el()
+            .append('div')
+            .attr('class', 'thing')
+            .text('foo');
         });
 
       var t = thing(el);
