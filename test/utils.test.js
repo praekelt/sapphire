@@ -33,4 +33,16 @@ describe("sapphire.utils", function() {
       expect(sapphire.utils.ensure(undefined, 3)).to.equal(3);
     });
   });
+
+  describe(".ensureEl", function() {
+    it("should wrap the element in a d3 selection if it isn't already", function() {
+      var el = sapphire.utils.ensureEl('body');
+      expect(el.node()).to.equal(d3.select('body').node());
+    });
+
+    it("should return the selection if a selection was given", function() {
+      var el = d3.select('body');
+      expect(sapphire.utils.ensureEl(el)).to.equal(el);
+    });
+  });
 });

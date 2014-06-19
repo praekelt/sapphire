@@ -22,3 +22,10 @@ utils.ensure = function(v, defaultval) {
     ? defaultval
     : v;
 };
+
+
+utils.ensureEl = function(el) {
+  return !(el instanceof d3.selection)
+    ? d3.select(el)
+    : el;
+};
