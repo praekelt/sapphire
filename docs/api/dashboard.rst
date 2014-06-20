@@ -5,36 +5,34 @@
 
 Component for drawing a dashboard of widgets laid out in a grid.
 
-.. function:: sapphire.dashboard([el])
+.. function:: sapphire.dashboard()
 
-  Creates a new dashboard. ``el`` can be any argument accepted by d3.select_.
-  If ``el`` is not given, it needs to be set using :func:`view.el` before the
-  dashboard can be drawn. If ``el`` has a datum bound to it, the dashboard will
-  be drawn upon creation.
+  Creates a new dashboard.
 
 
-.. function:: dashboard([datum])
-
-  Draws the dashboard. If ``datum`` is given, it will be bound to the dashboard's
-  current element before drawing the dashboard.
+.. function:: dashboard(el)
+  Draws the dashboard by applying it to the given selection. ``el`` can be a
+  d3 selection, or any argument accepted by d3.select_.
 
   .. code-block:: javascript
 
-    var dashboard = sapphire.dashboard('#lastvalue');
+    var dashboard = sapphire.dashboard();
 
-    dashboard({
-      widgets: [{
-        title: 'A lastvalue widget',
-        type: 'lastvalue',
-        values [{
-          x: 123,
-          y: 345
-        }, {
-          x: 567,
-          y: 789
+    d3.select('#dashboard')
+      .datum({
+        widgets: [{
+          title: 'A lastvalue widget',
+          type: 'lastvalue',
+          values [{
+            x: 123,
+            y: 345
+          }, {
+            x: 567,
+            y: 789
+          }]
         }]
-      }]
-    });
+      })
+      .call(dashboard);
 
 
 .. function:: dashboard.title([accessor])
@@ -44,16 +42,18 @@ Component for drawing a dashboard of widgets laid out in a grid.
 
   .. code-block:: javascript
 
-    var dashboard = sapphire.dashboard('#dashboard')
+    var dashboard = sapphire.dashboard()
       .title(function(d, i) {
         return d.heading;
       });
 
-    dashboard({
-      ...
-      heading 'A Small Dashboard',
-      ...
-    });
+    d3.select('#dashboard')
+      .datum({
+        ...
+        heading 'A Small Dashboard',
+        ...
+      })
+      .call(dashboard);
 
 
 .. function:: dashboard.widgets([accessor])
@@ -63,26 +63,28 @@ Component for drawing a dashboard of widgets laid out in a grid.
 
   .. code-block:: javascript
 
-    var dashboard = sapphire.dashboard('#dashboard')
+    var dashboard = sapphire.dashboard()
       .widgets(function(d, i) {
         return d.things;
       });
 
-    dashboard({
-      ...
-      things: [{
-        type: 'lastvalue',
-        title: 'Default lastvalue',
-        values: [{
-          x: 123,
-          y: 345
-        }, {
-          x: 567,
-          y: 789
+    d3.select('#dashboard')
+      .datum({
+        ...
+        things: [{
+          type: 'lastvalue',
+          title: 'Default lastvalue',
+          values: [{
+            x: 123,
+            y: 345
+          }, {
+            x: 567,
+            y: 789
+          }]
         }]
-      }]
-      ...
-    });
+        ...
+      })
+      .call(dashboard);
 
 
 .. function:: dashboard.type([accessor])
@@ -93,7 +95,7 @@ Component for drawing a dashboard of widgets laid out in a grid.
 
   .. code-block:: javascript
 
-    var dashboard = sapphire.dashboard('#dashboard')
+    var dashboard = sapphire.dashboard()
       .type(function(d) {
         return d.typename;
       });
@@ -103,13 +105,15 @@ Component for drawing a dashboard of widgets laid out in a grid.
         this.el().text(function(d) { return d.text; });
       }));
 
-    dashboard({
-      ...
-      widgets: [{
-        typename: 'dummy',
-        text: 'foo'
-      }]
-    });
+    d3.select('#dashboard')
+      .datum({
+        ...
+        widgets: [{
+          typename: 'dummy',
+          text: 'foo'
+        }]
+      })
+      .call(dashboard);
 
 
 .. function:: dashboard.key([accessor])
@@ -119,17 +123,20 @@ Component for drawing a dashboard of widgets laid out in a grid.
   
   .. code-block:: javascript
 
-    var dashboard = sapphire.dashboard(el);
+    var dashboard = sapphire.dashboard()
+      .key(function(d) { return d.name; });
 
-    dashboard({
-      widgets: [{
-        key: 'a',
-        ...
-      }, {
-        key: 'b',
-        ...
-      }]
-    });
+    d3.select('#dashboard')
+      .datum({
+        widgets: [{
+          key: 'a',
+          ...
+        }, {
+          key: 'b',
+          ...
+        }]
+      })
+      .call(dashboard);
 
   The default accessor will use each widget datum's ``key`` property if it
   exists, falling back to the widget datum's index in the array of widget data
@@ -142,9 +149,9 @@ Component for drawing a dashboard of widgets laid out in a grid.
 
   .. code-block:: javascript
 
-    var dashboard = sapphire.dashboard('#dashboard');
+    var dashboard = sapphire.dashboard();
     dashboard.types().get('lastvalue');
-    dashboard.types().set('dummy', sapphire.view.extend());
+    dashboard.types().set('dummy', sapphire.view.extend().new());
 
 
 .. function:: dashboard.col([accessor])
@@ -163,6 +170,18 @@ Component for drawing a dashboard of widgets laid out in a grid.
       .col(function(d) {
         return d.x;
       });
+
+    d3.select('#dashboard')
+      .datum({
+        widgets: [{
+          x: 2,
+          ...
+        }, {
+          x: 3,
+          ...
+        }]
+      })
+      .call(dashboard);
 
 
 .. function:: dashboard.row([accessor])
@@ -183,6 +202,18 @@ Component for drawing a dashboard of widgets laid out in a grid.
         return d.y;
       });
 
+    d3.select('#dashboard')
+      .datum({
+        widgets: [{
+          y: 2,
+          ...
+        }, {
+          y: 3,
+          ...
+        }]
+      })
+      .call(dashboard);
+
 
 .. function:: dashboard.colspan([accessor])
 
@@ -200,6 +231,18 @@ Component for drawing a dashboard of widgets laid out in a grid.
         return d.width;
       });
 
+    d3.select('#dashboard')
+      .datum({
+        widgets: [{
+          width: 2,
+          ...
+        }, {
+          width: 3,
+          ...
+        }]
+      })
+      .call(dashboard);
+
 
 .. function:: dashboard.rowspan([accessor])
 
@@ -216,6 +259,18 @@ Component for drawing a dashboard of widgets laid out in a grid.
       .rowspan(function(d) {
         return d.height;
       });
+
+    d3.select('#dashboard')
+      .datum({
+        widgets: [{
+          height: 2,
+          ...
+        }, {
+          height: 3,
+          ...
+        }]
+      })
+      .call(dashboard);
 
 
 .. function:: dashboard.padding([v])
