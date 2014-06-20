@@ -92,6 +92,12 @@ module.exports = _dereq_('./view').extend()
     this.types(types);
   })
 
+  .enter(function(el) {
+    el.attr('class', 'dashboard')
+      .append('div')
+        .attr('class', 'widgets');
+  })
+
   .draw(function(el) {
     var self = this;
 
@@ -116,25 +122,17 @@ module.exports = _dereq_('./view').extend()
         return utils.ensure(v, type.rowspan());
       });
 
-    el.attr('class', 'dashboard');
-
-    var widgets = el.selectAll('.widgets')
+    var widget = el.select('.widgets').selectAll('.widget')
       .data(function(d, i) {
-        return [self.widgets().call(this, d, i)];
+        return self.widgets().call(this, d, i);
       });
 
-    widgets.enter().append('div')
-      .attr('class', 'widgets');
-
-    var widget = widgets.selectAll('.widget')
-      .data(function(d) { return d; }, this.key());
-
-    widget.enter().append('div');
+    widget.enter().append('div')
+      .attr('class', 'widget');
 
     var gridEls = grid(widget.data());
 
     widget
-      .attr('class', 'widget')
       .attr('data-key', this.key())
       .each(function(d, i) {
         var type = self.type().call(this, d, i);
@@ -399,25 +397,27 @@ module.exports = _dereq_('./widget').extend()
   .prop('none')
   .default(0)
 
+  .enter(function(el) {
+    el.append('class', 'lastvalue')
+      .append('div')
+        .attr('class', 'last');
+  })
+
   .draw(function(el) {
     var self = this;
 
-    el.html(null)
-      .append('div')
-        .datum(this.values())
-        .attr('class', 'values')
-        .append('text')
-          .datum(function(d, i) {
-            return d[d.length - 1];
-          })
-          .attr('class', 'last')
-          .text(function(d, i) {
-            var v = d
-              ? self.y().call(this, d, i)
-              : self.none();
+    el.select('.last')
+      .datum(function(d, i) {
+        var values = self.values().call(this, d, i);
+        return values[values.length - 1];
+      })
+      .text(function(d, i) {
+        var v = d
+          ? self.y().call(this, d, i)
+          : self.none();
 
-              return self.format()(v);
-          });
+          return self.format()(v);
+      });
   });
 
 },{"./widget":8}],8:[function(_dereq_,module,exports){
