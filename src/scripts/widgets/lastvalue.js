@@ -22,8 +22,9 @@ module.exports = require('./widget').extend()
   .default(0)
 
   .enter(function(el) {
-    el.append('div')
-      .attr('class', 'last');
+    el.append('class', 'lastvalue')
+      .append('div')
+        .attr('class', 'last');
   })
 
   .draw(function(el) {
