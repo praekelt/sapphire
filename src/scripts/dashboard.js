@@ -79,6 +79,12 @@ module.exports = require('./view').extend()
     this.types(types);
   })
 
+  .enter(function(el) {
+    el.attr('class', 'dashboard')
+      .append('div')
+        .attr('class', 'widgets');
+  })
+
   .draw(function(el) {
     var self = this;
 
@@ -103,25 +109,17 @@ module.exports = require('./view').extend()
         return utils.ensure(v, type.rowspan());
       });
 
-    el.attr('class', 'dashboard');
-
-    var widgets = el.selectAll('.widgets')
+    var widget = el.select('.widgets').selectAll('.widget')
       .data(function(d, i) {
-        return [self.widgets().call(this, d, i)];
+        return self.widgets().call(this, d, i);
       });
 
-    widgets.enter().append('div')
-      .attr('class', 'widgets');
-
-    var widget = widgets.selectAll('.widget')
-      .data(function(d) { return d; }, this.key());
-
-    widget.enter().append('div');
+    widget.enter().append('div')
+      .attr('class', 'widget');
 
     var gridEls = grid(widget.data());
 
     widget
-      .attr('class', 'widget')
       .attr('data-key', this.key())
       .each(function(d, i) {
         var type = self.type().call(this, d, i);

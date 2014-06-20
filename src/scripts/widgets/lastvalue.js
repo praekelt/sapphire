@@ -21,23 +21,25 @@ module.exports = require('./widget').extend()
   .prop('none')
   .default(0)
 
+  .enter(function(el) {
+    el.append('class', 'lastvalue')
+      .append('div')
+        .attr('class', 'last');
+  })
+
   .draw(function(el) {
     var self = this;
 
-    el.html(null)
-      .append('div')
-        .datum(this.values())
-        .attr('class', 'values')
-        .append('text')
-          .datum(function(d, i) {
-            return d[d.length - 1];
-          })
-          .attr('class', 'last')
-          .text(function(d, i) {
-            var v = d
-              ? self.y().call(this, d, i)
-              : self.none();
+    el.select('.last')
+      .datum(function(d, i) {
+        var values = self.values().call(this, d, i);
+        return values[values.length - 1];
+      })
+      .text(function(d, i) {
+        var v = d
+          ? self.y().call(this, d, i)
+          : self.none();
 
-              return self.format()(v);
-          });
+          return self.format()(v);
+      });
   });

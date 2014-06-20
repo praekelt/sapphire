@@ -44,21 +44,12 @@ describe("sapphire.widgets.lastvalue", function() {
     expect(el.select('.last').text()).to.equal('1910');
   });
 
-  it("should show the 'none' value if values are available", function() {
+  it("should show the 'none' value if values are not available", function() {
     var lastvalue = sapphire.widgets.lastvalue()
       .none(23);
 
-    el.datum({
-      values: [{
-        x: 123,
-        y: 345
-      }, {
-        x: 678,
-        y: 910
-      }]
-    });
-
+    el.datum({values: []});
     lastvalue(el);
-    expect(el.select('.last').text()).to.equal('910');
+    expect(el.select('.last').text()).to.equal('23');
   });
 });
