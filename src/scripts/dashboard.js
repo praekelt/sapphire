@@ -73,7 +73,7 @@ module.exports = require('./view').extend()
     var types = d3.map();
 
     d3.keys(widgets).forEach(function(k) {
-      types.set(k, widgets[k].extend());
+      types.set(k, widgets[k].new());
     });
 
     this.types(types);
@@ -95,12 +95,12 @@ module.exports = require('./view').extend()
       .colspan(function(d, i) {
         var v = self.colspan().call(self, d, i);
         var type = self.type().call(this, d, i);
-        return utils.ensure(v, type.colspan);
+        return utils.ensure(v, type.colspan());
       })
       .rowspan(function(d, i) {
         var v = self.rowspan().call(self, d, i);
         var type = self.type().call(this, d, i);
-        return utils.ensure(v, type.rowspan);
+        return utils.ensure(v, type.rowspan());
       });
 
     el.attr('class', 'dashboard');
@@ -117,25 +117,24 @@ module.exports = require('./view').extend()
       .data(function(d) { return d; }, this.key());
 
     widget.enter().append('div');
+
     var gridEls = grid(widget.data());
 
     widget
       .attr('class', 'widget')
       .attr('data-key', this.key())
       .each(function(d, i) {
+        var type = self.type().call(this, d, i);
         var gridEl = gridEls[i];
 
         d3.select(this)
+          .call(type)
           .style('left', gridEl.x + 'px')
-          .style('top', gridEl.y + 'px');
-
-        self.type()
-          .call(this, d, i)
-          .new()
-          .width(gridEl.width)
-          .height(gridEl.height)
-          .draw(this);
+          .style('top', gridEl.y + 'px')
+          .style('width', gridEl.width + 'px')
+          .style('height', gridEl.height + 'px');
       });
 
     widget.exit().remove();
+
   });

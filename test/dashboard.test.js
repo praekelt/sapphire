@@ -24,7 +24,7 @@ describe("sapphire.dashboard", function() {
 
   it("should draw its widgets", function() {
     var dashboard = sapphire.dashboard();
-    dashboard.types().set('dummy', dummy);
+    dashboard.types().set('dummy', dummy());
 
     el.datum({
       widgets: [{
@@ -68,13 +68,14 @@ describe("sapphire.dashboard", function() {
 
   it("should use each widget type's rowspan as a fallback rowspan", function() {
     var dummy = sapphire.widgets.widget.extend()
-      .static('rowspan', 4);
+      .prop('rowspan')
+      .default(4);
 
     var dashboard = sapphire.dashboard()
       .numcols(4)
       .padding(10);
 
-    dashboard.types().set('dummy', dummy);
+    dashboard.types().set('dummy', dummy());
 
     el.datum({
       widgets: [{
@@ -93,13 +94,14 @@ describe("sapphire.dashboard", function() {
 
   it("should use each widget type's colspan as a fallback colspan", function() {
     var dummy = sapphire.widgets.widget.extend()
-      .static('colspan', 4);
+      .prop('colspan')
+      .default(4);
 
     var dashboard = sapphire.dashboard()
       .numcols(4)
       .padding(10);
 
-    dashboard.types().set('dummy', dummy);
+    dashboard.types().set('dummy', dummy());
 
     el.datum({
       widgets: [{
@@ -121,7 +123,7 @@ describe("sapphire.dashboard", function() {
       .numcols(4)
       .padding(10);
 
-    dashboard.types().set('dummy', dummy);
+    dashboard.types().set('dummy', dummy());
 
     el.datum({
       widgets: [{
@@ -201,7 +203,7 @@ describe("sapphire.dashboard", function() {
 
   it("should throw an error for unrecognised widget types", function() {
     var dashboard = sapphire.dashboard();
-    dashboard.types().set('dummy', dummy);
+    dashboard.types().set('dummy', dummy());
     el.datum({widgets: [{type: 'unrecognised'}]});
 
     function draw() { dashboard(el); }

@@ -1,6 +1,8 @@
 module.exports = require('../view').extend()
-  .static('colspan', 1)
-  .static('rowspan', 1)
+  .prop('colspan')
+  .default(1)
+  .prop('rowspan')
+  .default(1)
 
   .confprop('width')
   .set(d3.functor)
