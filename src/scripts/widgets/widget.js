@@ -1,16 +1,17 @@
 module.exports = require('../view').extend()
   .prop('colspan')
   .default(1)
+
   .prop('rowspan')
   .default(1)
 
-  .confprop('width')
+  .prop('width')
   .set(d3.functor)
-  .width(200)
+  .default(200)
 
-  .confprop('height')
+  .prop('height')
   .set(d3.functor)
-  .height(200)
+  .default(200)
 
   .draw(function(el) {
     var self = this;

@@ -1,12 +1,4 @@
 module.exports = strain()
-  .static('confprop', function(name) {
-    this.prop(name);
-
-    this.static(name, function(v) {
-      this.prop(name).default(v);
-    });
-  })
-
   .static(function draw(fn) {
     this.meth('_draw_', fn);
   })

@@ -24,18 +24,6 @@ describe("sapphire.view", function() {
     });
   });
 
-  describe(".confprop", function() {
-    it("should define a static method for setting the default", function() {
-      var view = sapphire.view
-        .extend()
-        .confprop('foo')
-        .foo(3)
-        .new();
-
-      expect(view.foo()).to.equal(3);
-    });
-  });
-  
   describe(".draw", function() {
     it("should call its parent's draw", function() {
       var thing = sapphire.view

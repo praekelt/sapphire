@@ -6,19 +6,19 @@ var widgets = require('./widgets');
 module.exports = require('./view').extend()
   .prop('types')
 
-  .confprop('title')
+  .prop('title')
   .set(d3.functor)
-  .title(function(d) { return d.title; })
+  .default(function(d) { return d.title; })
 
-  .confprop('key')
+  .prop('key')
   .set(d3.functor)
-  .key(function(d, i) {
+  .default(function(d, i) {
     return 'key' in d
       ? d.key
       : i;
   })
 
-  .confprop('type')
+  .prop('type')
   .set(function(fn) {
     var self = this;
     fn = d3.functor(fn);
@@ -33,11 +33,11 @@ module.exports = require('./view').extend()
       return self.types().get(name);
     };
   })
-  .type(function(d) { return d.type; })
+  .default(function(d) { return d.type; })
 
-  .confprop('widgets')
+  .prop('widgets')
   .set(d3.functor)
-  .widgets(function(d) { return d.widgets; })
+  .default(function(d) { return d.widgets; })
 
   .prop('col')
   .set(d3.functor)
@@ -51,23 +51,23 @@ module.exports = require('./view').extend()
     return utils.access(d, 'row');
   })
 
-  .confprop('colspan')
+  .prop('colspan')
   .set(d3.functor)
-  .colspan(function(d) {
+  .default(function(d) {
     return utils.access(d, 'colspan');
   })
 
-  .confprop('rowspan')
+  .prop('rowspan')
   .set(d3.functor)
-  .rowspan(function(d) {
+  .default(function(d) {
     return utils.access(d, 'rowspan');
   })
 
-  .confprop('numcols')
-  .numcols(8)
+  .prop('numcols')
+  .default(8)
 
-  .confprop('padding')
-  .padding(5)
+  .prop('padding')
+  .default(5)
 
   .init(function() {
     var types = d3.map();

@@ -2,9 +2,9 @@ describe("sapphire.dashboard", function() {
   var el;
 
   var dummy = sapphire.widgets.widget.extend()
-    .confprop('text')
+    .prop('text')
     .set(d3.functor)
-    .text(function(d) { return d.text; })
+    .default(function(d) { return d.text; })
 
     .draw(function(el) {
       el.text(this.text());

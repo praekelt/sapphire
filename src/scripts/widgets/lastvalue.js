@@ -1,25 +1,25 @@
 module.exports = require('./widget').extend()
-  .confprop('title')
+  .prop('title')
   .set(d3.functor)
-  .title(function(d) { return d.title; })
+  .default(function(d) { return d.title; })
 
-  .confprop('values')
+  .prop('values')
   .set(d3.functor)
-  .values(function(d) { return d.values; })
+  .default(function(d) { return d.values; })
 
-  .confprop('x')
+  .prop('x')
   .set(d3.functor)
-  .x(function(d) { return d.x; })
+  .default(function(d) { return d.x; })
 
-  .confprop('y')
+  .prop('y')
   .set(d3.functor)
-  .y(function(d) { return d.y; })
+  .default(function(d) { return d.y; })
 
-  .confprop('format')
-  .format(d3.format())
+  .prop('format')
+  .default(d3.format())
 
-  .confprop('none')
-  .none(0)
+  .prop('none')
+  .default(0)
 
   .draw(function(el) {
     var self = this;
