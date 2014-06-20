@@ -19,19 +19,19 @@ var widgets = _dereq_('./widgets');
 module.exports = _dereq_('./view').extend()
   .prop('types')
 
-  .confprop('title')
+  .prop('title')
   .set(d3.functor)
-  .title(function(d) { return d.title; })
+  .default(function(d) { return d.title; })
 
-  .confprop('key')
+  .prop('key')
   .set(d3.functor)
-  .key(function(d, i) {
+  .default(function(d, i) {
     return 'key' in d
       ? d.key
       : i;
   })
 
-  .confprop('type')
+  .prop('type')
   .set(function(fn) {
     var self = this;
     fn = d3.functor(fn);
@@ -46,11 +46,11 @@ module.exports = _dereq_('./view').extend()
       return self.types().get(name);
     };
   })
-  .type(function(d) { return d.type; })
+  .default(function(d) { return d.type; })
 
-  .confprop('widgets')
+  .prop('widgets')
   .set(d3.functor)
-  .widgets(function(d) { return d.widgets; })
+  .default(function(d) { return d.widgets; })
 
   .prop('col')
   .set(d3.functor)
@@ -64,35 +64,35 @@ module.exports = _dereq_('./view').extend()
     return utils.access(d, 'row');
   })
 
-  .confprop('colspan')
+  .prop('colspan')
   .set(d3.functor)
-  .colspan(function(d) {
+  .default(function(d) {
     return utils.access(d, 'colspan');
   })
 
-  .confprop('rowspan')
+  .prop('rowspan')
   .set(d3.functor)
-  .rowspan(function(d) {
+  .default(function(d) {
     return utils.access(d, 'rowspan');
   })
 
-  .confprop('numcols')
-  .numcols(8)
+  .prop('numcols')
+  .default(8)
 
-  .confprop('padding')
-  .padding(5)
+  .prop('padding')
+  .default(5)
 
   .init(function() {
     var types = d3.map();
 
     d3.keys(widgets).forEach(function(k) {
-      types.set(k, widgets[k].extend());
+      types.set(k, widgets[k].new());
     });
 
     this.types(types);
   })
 
-  .draw(function() {
+  .draw(function(el) {
     var self = this;
 
     var grid = layout()
@@ -108,17 +108,17 @@ module.exports = _dereq_('./view').extend()
       .colspan(function(d, i) {
         var v = self.colspan().call(self, d, i);
         var type = self.type().call(this, d, i);
-        return utils.ensure(v, type.colspan);
+        return utils.ensure(v, type.colspan());
       })
       .rowspan(function(d, i) {
         var v = self.rowspan().call(self, d, i);
         var type = self.type().call(this, d, i);
-        return utils.ensure(v, type.rowspan);
+        return utils.ensure(v, type.rowspan());
       });
 
-    this.el().attr('class', 'dashboard');
+    el.attr('class', 'dashboard');
 
-    var widgets = this.el().selectAll('.widgets')
+    var widgets = el.selectAll('.widgets')
       .data(function(d, i) {
         return [self.widgets().call(this, d, i)];
       });
@@ -130,27 +130,26 @@ module.exports = _dereq_('./view').extend()
       .data(function(d) { return d; }, this.key());
 
     widget.enter().append('div');
+
     var gridEls = grid(widget.data());
 
     widget
       .attr('class', 'widget')
       .attr('data-key', this.key())
       .each(function(d, i) {
+        var type = self.type().call(this, d, i);
         var gridEl = gridEls[i];
 
         d3.select(this)
+          .call(type)
           .style('left', gridEl.x + 'px')
-          .style('top', gridEl.y + 'px');
-
-        self.type()
-          .call(this, d, i)
-          .new(this)
-          .width(gridEl.width)
-          .height(gridEl.height)
-          .draw();
+          .style('top', gridEl.y + 'px')
+          .style('width', gridEl.width + 'px')
+          .style('height', gridEl.height + 'px');
       });
 
     widget.exit().remove();
+
   });
 
 },{"./grid":2,"./utils":4,"./view":5,"./widgets":6}],2:[function(_dereq_,module,exports){
@@ -323,75 +322,53 @@ utils.ensure = function(v, defaultval) {
     : v;
 };
 
+
+utils.ensureEl = function(el) {
+  return !(el instanceof d3.selection)
+    ? d3.select(el)
+    : el;
+};
+
 },{}],5:[function(_dereq_,module,exports){
 module.exports = strain()
-  .static('init', function(fn) {
-    strain.init.call(this, function(el) {
-      if (el) {
-        this.el(el);
-      }
-
-      fn.apply(this, arguments);
-    });
-  })
-
-  .static('confprop', function(name) {
-    this.prop(name);
-
-    this.static(name, function(v) {
-      this.prop(name).default(v);
-    });
-  })
-
-  .static('draw', function(fn) {
+  .static(function draw(fn) {
     this.meth('_draw_', fn);
   })
+  .draw(function() {})
 
-  .static('enter', function(fn) {
+  .static(function enter(fn) {
     this.meth('_enter_', fn);
   })
+  .enter(function() {})
 
-  .meth('_draw_', function() {})
-  .meth('_enter_', function() {})
+  .meth(function draw(el) {
+    el = sapphire.utils.ensureEl(el);
 
-  .meth('draw', function(datum) {
-    if (arguments.length) {
-      this.el().datum(datum);
-    }
-
-    if (this.el().node() && !this.el().node().hasChildNodes()) {
-      this.enter();
+    if (el.node() && !el.node().hasChildNodes()) {
+      this.enter(el);
     }
 
     var parent = this._type_._super_.prototype;
     if ('_draw_' in parent) {
-      parent._draw_.call(this);
+      parent._draw_.call(this, el);
     }
 
-    return this._draw_();
+    return this._draw_(el);
   })
 
-  .meth('enter', function() {
+  .meth(function enter(el) {
+    el = sapphire.utils.ensureEl(el);
+
     var parent = this._type_._super_.prototype;
-
     if ('_enter_' in parent) {
-      parent._enter_.call(this);
+      parent._enter_.call(this, el);
     }
 
-    this._enter_();
+    this._enter_(el);
   })
 
-  .prop('el')
-  .set(function(v) {
-    return !(v instanceof d3.selection)
-      ? d3.select(v)
-      : v;
-  })
-
-  .init(function() {})
-
-  .invoke(function(datum) {
-    return this.draw(datum);
+  .invoke(function(el) {
+    return this.draw(el);
   });
 
 },{}],6:[function(_dereq_,module,exports){
@@ -400,33 +377,32 @@ exports.lastvalue = _dereq_('./lastvalue');
 
 },{"./lastvalue":7,"./widget":8}],7:[function(_dereq_,module,exports){
 module.exports = _dereq_('./widget').extend()
-  .confprop('title')
+  .prop('title')
   .set(d3.functor)
-  .title(function(d) { return d.title; })
+  .default(function(d) { return d.title; })
 
-  .confprop('values')
+  .prop('values')
   .set(d3.functor)
-  .values(function(d) { return d.values; })
+  .default(function(d) { return d.values; })
 
-  .confprop('x')
+  .prop('x')
   .set(d3.functor)
-  .x(function(d) { return d.x; })
+  .default(function(d) { return d.x; })
 
-  .confprop('y')
+  .prop('y')
   .set(d3.functor)
-  .y(function(d) { return d.y; })
+  .default(function(d) { return d.y; })
 
-  .confprop('format')
-  .format(d3.format())
+  .prop('format')
+  .default(d3.format())
 
-  .confprop('none')
-  .none(0)
+  .prop('none')
+  .default(0)
 
-  .draw(function() {
+  .draw(function(el) {
     var self = this;
 
-    this.el()
-      .html(null)
+    el.html(null)
       .append('div')
         .datum(this.values())
         .attr('class', 'values')
@@ -446,22 +422,24 @@ module.exports = _dereq_('./widget').extend()
 
 },{"./widget":8}],8:[function(_dereq_,module,exports){
 module.exports = _dereq_('../view').extend()
-  .static('colspan', 1)
-  .static('rowspan', 1)
+  .prop('colspan')
+  .default(1)
 
-  .confprop('width')
+  .prop('rowspan')
+  .default(1)
+
+  .prop('width')
   .set(d3.functor)
-  .width(200)
+  .default(200)
 
-  .confprop('height')
+  .prop('height')
   .set(d3.functor)
-  .height(200)
+  .default(200)
 
-  .draw(function() {
+  .draw(function(el) {
     var self = this;
 
-    this.el()
-      .style('width', function(d, i) {
+    el.style('width', function(d, i) {
         return self.width().call(this, d, i) + 'px';
       })
       .style('height', function(d, i) {
