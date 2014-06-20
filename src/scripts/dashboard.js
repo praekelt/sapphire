@@ -79,7 +79,7 @@ module.exports = require('./view').extend()
     this.types(types);
   })
 
-  .draw(function() {
+  .draw(function(el) {
     var self = this;
 
     var grid = layout()
@@ -103,9 +103,9 @@ module.exports = require('./view').extend()
         return utils.ensure(v, type.rowspan);
       });
 
-    this.el().attr('class', 'dashboard');
+    el.attr('class', 'dashboard');
 
-    var widgets = this.el().selectAll('.widgets')
+    var widgets = el.selectAll('.widgets')
       .data(function(d, i) {
         return [self.widgets().call(this, d, i)];
       });
@@ -131,10 +131,10 @@ module.exports = require('./view').extend()
 
         self.type()
           .call(this, d, i)
-          .new(this)
+          .new()
           .width(gridEl.width)
           .height(gridEl.height)
-          .draw();
+          .draw(this);
       });
 
     widget.exit().remove();

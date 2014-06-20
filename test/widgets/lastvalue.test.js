@@ -12,10 +12,10 @@ describe("sapphire.widgets.lastvalue", function() {
   });
 
   it("should show the last value", function() {
-    var lastvalue = sapphire.widgets.lastvalue(el);
+    var lastvalue = sapphire.widgets.lastvalue();
     expect(el.html()).to.be.empty;
 
-    lastvalue({
+    el.datum({
       values: [{
         x: 123,
         y: 345
@@ -25,10 +25,11 @@ describe("sapphire.widgets.lastvalue", function() {
       }]
     });
 
+    lastvalue(el);
     expect(el.selectAll('.last').size()).to.equal(1);
     expect(el.select('.last').text()).to.equal('910');
 
-    lastvalue({
+    el.datum({
       values: [{
         x: 1123,
         y: 1345
@@ -38,14 +39,16 @@ describe("sapphire.widgets.lastvalue", function() {
       }]
     });
 
+    lastvalue(el);
     expect(el.selectAll('.last').size()).to.equal(1);
     expect(el.select('.last').text()).to.equal('1910');
   });
 
   it("should show the 'none' value if values are available", function() {
-    var lastvalue = sapphire.widgets.lastvalue(el).none(23);
+    var lastvalue = sapphire.widgets.lastvalue()
+      .none(23);
 
-    lastvalue({
+    el.datum({
       values: [{
         x: 123,
         y: 345
@@ -55,6 +58,7 @@ describe("sapphire.widgets.lastvalue", function() {
       }]
     });
 
+    lastvalue(el);
     expect(el.select('.last').text()).to.equal('910');
   });
 });

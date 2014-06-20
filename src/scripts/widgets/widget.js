@@ -10,11 +10,10 @@ module.exports = require('../view').extend()
   .set(d3.functor)
   .height(200)
 
-  .draw(function() {
+  .draw(function(el) {
     var self = this;
 
-    this.el()
-      .style('width', function(d, i) {
+    el.style('width', function(d, i) {
         return self.width().call(this, d, i) + 'px';
       })
       .style('height', function(d, i) {

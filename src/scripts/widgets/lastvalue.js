@@ -21,11 +21,10 @@ module.exports = require('./widget').extend()
   .confprop('none')
   .none(0)
 
-  .draw(function() {
+  .draw(function(el) {
     var self = this;
 
-    this.el()
-      .html(null)
+    el.html(null)
       .append('div')
         .datum(this.values())
         .attr('class', 'values')
