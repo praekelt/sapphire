@@ -3,33 +3,32 @@
 
 A widget displaying the last ``y`` value in a series of datapoints.
 
-.. function:: sapphire.widgets.lastvalue([el])
+.. function:: sapphire.widgets.lastvalue()
 
-  Creates a new lastvalue widget. ``el`` can be any argument accepted by
-  d3.select_.  If ``el`` is not given, it needs to be set using :func:`view.el`
-  before the widget can be drawn. If ``el`` has a datum bound to it, the widget
-  will be drawn upon creation.
+  Creates a new lastvalue widget.
 
 
-.. function:: lastvalue([datum])
+.. function:: lastvalue(el)
 
-  Draws the widget. If ``datum`` is given, it will be bound to the
-  widget's current element before drawing the widget.
+  Draws the widget by applying it to the given selection. ``el`` can be a
+  d3 selection, or any argument accepted by d3.select_.
 
   .. code-block:: javascript
 
-    var lastvalue = sapphire.lastvalue('#lastvalue');
+    var lastvalue = sapphire.lastvalue();
 
-    lastvalue({
-      title: 'A lastvalue widget',
-      values [{
-        x: 123,
-        y: 345
-      }, {
-        x: 567,
-        y: 789
-      }]
-    });
+    d3.select('#lastvalue')
+      .datum({
+        title: 'A lastvalue widget',
+        values [{
+          x: 123,
+          y: 345
+        }, {
+          x: 567,
+          y: 789
+        }]
+      })
+      .call(lastvalue);
 
 
 .. function:: lastvalue.title([accessor])
@@ -39,16 +38,18 @@ A widget displaying the last ``y`` value in a series of datapoints.
 
   .. code-block:: javascript
 
-    var lastvalue = sapphire.lastvalue('#lastvalue')
+    var lastvalue = sapphire.lastvalue()
       .title(function(d, i) {
         return d.heading;
       });
 
-    lastvalue({
-      ...
-      heading: 'A lastvalue widget',
-      ...
-    });
+    d3.select('#lastvalue')
+      .datum({
+        ...
+        heading: 'A lastvalue widget',
+        ...
+      })
+      .call(lastvalue);
 
 
 .. function:: lastvalue.values([accessor])
@@ -58,22 +59,24 @@ A widget displaying the last ``y`` value in a series of datapoints.
 
   .. code-block:: javascript
 
-    var lastvalue = sapphire.lastvalue('#lastvalue')
+    var lastvalue = sapphire.lastvalue()
       .values(function(d, i) {
         return d.datapoints;
       });
 
-    lastvalue({
-      ...
-      datapoints: [{
-        x: 123,
-        y: 345
-      }, {
-        x: 567,
-        y: 789
-      }]
-      ...
-    });
+    d3.select('#lastvalue')
+      .datum({
+        ...
+        datapoints: [{
+          x: 123,
+          y: 345
+        }, {
+          x: 567,
+          y: 789
+        }]
+        ...
+      })
+      .call(lastvalue);
 
 
 .. function:: lastvalue.x([accessor])
@@ -83,22 +86,24 @@ A widget displaying the last ``y`` value in a series of datapoints.
 
   .. code-block:: javascript
 
-    var lastvalue = sapphire.lastvalue('#lastvalue')
+    var lastvalue = sapphire.lastvalue()
       .x(function(d, i) {
         return d.time;
       });
 
-    lastvalue({
-      ...
-      values: [{
-        time: 123,
-        y: 345
-      }, {
-        time: 567,
-        y: 789
-      }]
-      ...
-    });
+    d3.select('#lastvalue')
+      .datum({
+        ...
+        values: [{
+          time: 123,
+          y: 345
+        }, {
+          time: 567,
+          y: 789
+        }]
+        ...
+      })
+      .call(lastvalue);
 
 
 .. function:: lastvalue.y([accessor])
@@ -108,22 +113,24 @@ A widget displaying the last ``y`` value in a series of datapoints.
 
   .. code-block:: javascript
 
-    var lastvalue = sapphire.lastvalue('#lastvalue')
+    var lastvalue = sapphire.lastvalue()
       .y(function(d, i) {
         return d.value;
       });
 
-    lastvalue({
-      ...
-      values: [{
-        x: 123,
-        value: 345
-      }, {
-        x: 567,
-        value: 789
-      }]
-      ...
-    });
+    d3.select('#lastvalue')
+      .datum({
+        ...
+        values: [{
+          x: 123,
+          value: 345
+        }, {
+          x: 567,
+          value: 789
+        }]
+        ...
+      })
+      .call(lastvalue);
 
 
 .. function:: lastvalue.format([fn])
@@ -132,7 +139,8 @@ A widget displaying the last ``y`` value in a series of datapoints.
 
   .. code-block:: javascript
 
-    var lastvalue = sapphire.lastvalue('#lastvalue').format(d3.format('.2s'));
+    var lastvalue = sapphire.lastvalue()
+      .format(d3.format('.2s'));
 
 
 .. function:: lastvalue.none([v])
@@ -142,7 +150,8 @@ A widget displaying the last ``y`` value in a series of datapoints.
 
   .. code-block:: javascript
 
-    var lastvalue = sapphire.lastvalue('#lastvalue').none(0);
+    var lastvalue = sapphire.lastvalue()
+      .none(0);
 
 
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements

@@ -6,19 +6,19 @@ var widgets = require('./widgets');
 module.exports = require('./view').extend()
   .prop('types')
 
-  .confprop('title')
+  .prop('title')
   .set(d3.functor)
-  .title(function(d) { return d.title; })
+  .default(function(d) { return d.title; })
 
-  .confprop('key')
+  .prop('key')
   .set(d3.functor)
-  .key(function(d, i) {
+  .default(function(d, i) {
     return 'key' in d
       ? d.key
       : i;
   })
 
-  .confprop('type')
+  .prop('type')
   .set(function(fn) {
     var self = this;
     fn = d3.functor(fn);
@@ -33,11 +33,11 @@ module.exports = require('./view').extend()
       return self.types().get(name);
     };
   })
-  .type(function(d) { return d.type; })
+  .default(function(d) { return d.type; })
 
-  .confprop('widgets')
+  .prop('widgets')
   .set(d3.functor)
-  .widgets(function(d) { return d.widgets; })
+  .default(function(d) { return d.widgets; })
 
   .prop('col')
   .set(d3.functor)
@@ -51,35 +51,35 @@ module.exports = require('./view').extend()
     return utils.access(d, 'row');
   })
 
-  .confprop('colspan')
+  .prop('colspan')
   .set(d3.functor)
-  .colspan(function(d) {
+  .default(function(d) {
     return utils.access(d, 'colspan');
   })
 
-  .confprop('rowspan')
+  .prop('rowspan')
   .set(d3.functor)
-  .rowspan(function(d) {
+  .default(function(d) {
     return utils.access(d, 'rowspan');
   })
 
-  .confprop('numcols')
-  .numcols(8)
+  .prop('numcols')
+  .default(8)
 
-  .confprop('padding')
-  .padding(5)
+  .prop('padding')
+  .default(5)
 
   .init(function() {
     var types = d3.map();
 
     d3.keys(widgets).forEach(function(k) {
-      types.set(k, widgets[k].extend());
+      types.set(k, widgets[k].new());
     });
 
     this.types(types);
   })
 
-  .draw(function() {
+  .draw(function(el) {
     var self = this;
 
     var grid = layout()
@@ -95,17 +95,17 @@ module.exports = require('./view').extend()
       .colspan(function(d, i) {
         var v = self.colspan().call(self, d, i);
         var type = self.type().call(this, d, i);
-        return utils.ensure(v, type.colspan);
+        return utils.ensure(v, type.colspan());
       })
       .rowspan(function(d, i) {
         var v = self.rowspan().call(self, d, i);
         var type = self.type().call(this, d, i);
-        return utils.ensure(v, type.rowspan);
+        return utils.ensure(v, type.rowspan());
       });
 
-    this.el().attr('class', 'dashboard');
+    el.attr('class', 'dashboard');
 
-    var widgets = this.el().selectAll('.widgets')
+    var widgets = el.selectAll('.widgets')
       .data(function(d, i) {
         return [self.widgets().call(this, d, i)];
       });
@@ -117,25 +117,24 @@ module.exports = require('./view').extend()
       .data(function(d) { return d; }, this.key());
 
     widget.enter().append('div');
+
     var gridEls = grid(widget.data());
 
     widget
       .attr('class', 'widget')
       .attr('data-key', this.key())
       .each(function(d, i) {
+        var type = self.type().call(this, d, i);
         var gridEl = gridEls[i];
 
         d3.select(this)
+          .call(type)
           .style('left', gridEl.x + 'px')
-          .style('top', gridEl.y + 'px');
-
-        self.type()
-          .call(this, d, i)
-          .new(this)
-          .width(gridEl.width)
-          .height(gridEl.height)
-          .draw();
+          .style('top', gridEl.y + 'px')
+          .style('width', gridEl.width + 'px')
+          .style('height', gridEl.height + 'px');
       });
 
     widget.exit().remove();
+
   });

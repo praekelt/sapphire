@@ -12,10 +12,10 @@ describe("sapphire.widgets.widget", function() {
   });
 
   it("should set the element's dimensions", function() {
-    sapphire.widgets.widget(el)
+    sapphire.widgets.widget()
       .width(800)
       .height(900)
-      .draw();
+      .draw(el);
 
     expect(el.style('width')).to.equal('800px');
     expect(el.style('height')).to.equal('900px');
