@@ -5,28 +5,9 @@ A lightweight view component used as a base for sapphire's other components.
 The component is defined using strain_, so strain methods such as ``.extend()``
 and ``.prop()`` are also available on view components.
 
-.. function:: sapphire.view([el])
+.. function:: sapphire.view()
 
-  Creates a new view. ``el`` can be any argument accepted by d3.select_.
-  If ``el`` is not given, it needs to be set using :func:`view.el` before the
-  view can be drawn. If ``el`` has a datum bound to it, the view will be
-  drawn upon creation.
-
-
-.. function:: sapphire.view.confprop(name)
-
-  Defines a configurable property on the view type. The property's default can
-  then be configured using ``name`` as a method on the type, and the property
-  can be get or set on newly created views.
-
-  .. code-block:: javascript
-
-    var viewtype = sapphire.view.extend()
-      .confprop('foo')
-      .foo(23);
-
-    var view = viewtype(); console.log(view.foo());  // 23
-    console.log(view.foo(42).foo());  // 42
+  Creates a new view.
 
 
 .. function:: sapphire.view.draw(fn)
@@ -38,8 +19,8 @@ and ``.prop()`` are also available on view components.
   .. code-block:: javascript
 
     var viewtype = sapphire.view.extend()
-      .draw(function() {
-        this.el().text(function(d) { return d.text; });
+      .draw(function(el) {
+        el.text(function(d) { return d.text; });
       });
 
 
@@ -53,48 +34,36 @@ and ``.prop()`` are also available on view components.
   .. code-block:: javascript
 
     var viewtype = sapphire.view.extend()
-      .enter(function() {
-        this.el().append('div')
+      .enter(function(el) {
+        el.append('div')
           .attr('class', 'foo');
       })
-      .draw(function() {
-        this.el().select('.foo')
+      .draw(function(el) {
+        el.select('.foo')
           .text('bar');
       });
 
 
-.. function:: view([datum])
-
-  Draws the view. If ``datum`` is given, it will be bound to the view's current
-  element before drawing the view.
+.. function:: view(el)
+  Draws the view by applying it to the given selection. ``el`` can be a
+  d3 selection, or any argument accepted by d3.select_.
 
   .. code-block:: javascript
 
     var view = sapphire.view.extend()
-      .draw(function() {
-        this.el().text(function(d) { return d.text; });
+      .draw(function(el) {
+        el.text(function(d) { return d.text; });
       }));
       .new();
 
-    view({text: 'foo'});
+    d3.select('body')
+      .datum({text: 'foo'})
+      .call(view);
 
 
-.. function:: view.draw([datum])
+.. function:: view.draw(el)
 
   Identical to :func:`view`.
-
-
-.. function:: view.el([el])
-
-  Property for the view's current element the view's current element. ``el``
-  can be any argument accepted by d3.select_.
-
-  .. code-block:: javascript
-
-    var view = sapphire.view()
-      .el('body');
-
-    console.log(d3.select('body').node() === view.el().node());  // true
 
 
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements

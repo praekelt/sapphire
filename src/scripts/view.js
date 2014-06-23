@@ -1,73 +1,40 @@
 module.exports = strain()
-  .static('init', function(fn) {
-    strain.init.call(this, function(el) {
-      if (el) {
-        this.el(el);
-      }
-
-      fn.apply(this, arguments);
-    });
-  })
-
-  .static('confprop', function(name) {
-    this.prop(name);
-
-    this.static(name, function(v) {
-      this.prop(name).default(v);
-    });
-  })
-
-  .static('draw', function(fn) {
+  .static(function draw(fn) {
     this.meth('_draw_', fn);
   })
+  .draw(function() {})
 
-  .static('enter', function(fn) {
+  .static(function enter(fn) {
     this.meth('_enter_', fn);
   })
+  .enter(function() {})
 
-  .meth('_draw_', function() {})
-  .meth('_enter_', function() {})
+  .meth(function draw(el) {
+    el = sapphire.utils.ensureEl(el);
 
-  .meth('draw', function(datum) {
-    if (arguments.length) {
-      this.el().datum(datum);
-    }
-
-    if (!this.entered()) {
-      this.enter();
+    if (el.node() && !el.node().hasChildNodes()) {
+      this.enter(el);
     }
 
     var parent = this._type_._super_.prototype;
     if ('_draw_' in parent) {
-      parent._draw_.call(this);
+      parent._draw_.call(this, el);
     }
 
-    return this._draw_();
+    return this._draw_(el);
   })
 
-  .meth('enter', function() {
+  .meth(function enter(el) {
+    el = sapphire.utils.ensureEl(el);
+
     var parent = this._type_._super_.prototype;
-
     if ('_enter_' in parent) {
-      parent._enter_.call(this);
+      parent._enter_.call(this, el);
     }
 
-    this._enter_();
-    this.entered(true);
+    this._enter_(el);
   })
 
-  .prop('entered')
-  .default(false)
-
-  .prop('el')
-  .set(function(v) {
-    return !(v instanceof d3.selection)
-      ? d3.select(v)
-      : v;
-  })
-
-  .init(function() {})
-
-  .invoke(function(datum) {
-    return this.draw(datum);
+  .invoke(function(el) {
+    return this.draw(el);
   });

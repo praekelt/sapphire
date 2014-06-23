@@ -1,37 +1,36 @@
 module.exports = require('./widget').extend()
-  .confprop('title')
+  .prop('title')
   .set(d3.functor)
-  .title(function(d) { return d.title; })
+  .default(function(d) { return d.title; })
 
-  .confprop('values')
+  .prop('values')
   .set(d3.functor)
-  .values(function(d) { return d.values; })
+  .default(function(d) { return d.values; })
 
-  .confprop('x')
+  .prop('x')
   .set(d3.functor)
-  .x(function(d) { return d.x; })
+  .default(function(d) { return d.x; })
 
-  .confprop('y')
+  .prop('y')
   .set(d3.functor)
-  .y(function(d) { return d.y; })
+  .default(function(d) { return d.y; })
 
-  .confprop('format')
-  .format(d3.format(',2s'))
+  .prop('format')
+  .default(d3.format(',2s'))
 
-  .confprop('none')
-  .none(0)
+  .prop('none')
+  .default(0)
 
-  .enter(function() {
-    this.el()
-      .attr('class', 'lastvalue')
-        .append('span')
+  .enter(function(el) {
+    el.attr('class', 'lastvalue')
+      .append('span')
         .attr('class', 'last');
   })
 
-  .draw(function() {
+  .draw(function(el) {
     var self = this;
 
-    this.el().select('.last')
+    el.select('.last')
       .datum(function(d, i) {
         var values = self.values().call(this, d, i);
         return values[values.length - 1];
