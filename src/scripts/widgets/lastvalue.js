@@ -3,7 +3,7 @@ var utils = require('../utils');
 
 module.exports = require('./widget').extend()
   .prop('width')
-  .default(350)
+  .default(320)
 
   .prop('colspan')
   .default(2)
@@ -82,9 +82,9 @@ var sparkline = require('../view').extend()
 
   .prop('margin').default({
     top: 6,
-    left: 40,
+    left: 30,
     bottom: 6,
-    right: 40 
+    right: 30 
   })
 
   .enter(function(el) {
@@ -97,20 +97,12 @@ var sparkline = require('../view').extend()
     var self = this;
     var margin = this.margin();
 
-    var path = el.select('svg')
-      .attr('width', this.width())
-      .attr('height', this.height())
-      .select('g')
-        .attr('transform', utils.translate(margin.left, margin.top))
-        .select('path')
-          .datum(function(d) { return d; });
-
     var fx = d3.scale.linear()
-      .domain(d3.extent(path.datum(), this.x()))
+      .domain(d3.extent(el.datum(), this.x()))
       .range([0, this.width() - (margin.left + margin.right)]);
 
     var fy = d3.scale.linear()
-      .domain(d3.extent(path.datum(), this.y()))
+      .domain(d3.extent(el.datum(), this.y()))
       .range([this.height() - (margin.top + margin.bottom), 0]);
 
     var line = d3.svg.line()
@@ -121,5 +113,11 @@ var sparkline = require('../view').extend()
         return fy(self.y().call(this, d, i));
       });
 
-    path.attr('d', line);
+    el.select('svg')
+      .attr('width', this.width())
+      .attr('height', this.height())
+      .select('g')
+        .attr('transform', utils.translate(margin.left, margin.top))
+        .select('path')
+          .attr('d', line);
   });
