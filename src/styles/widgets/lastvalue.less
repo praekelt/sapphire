@@ -2,6 +2,9 @@
 
 
 .lastvalue {
+  @good-color: #188f23;
+  @bad-color: #c41933;
+
   font-family: @title-font;
 
   .title {
@@ -14,11 +17,9 @@
   }
 
   .body {
-    padding: 2px 20px;
+    padding: 2px 30px;
 
     .last {
-      margin-bottom: 6px;
-
       text-align: right;
       font-size: 3.75em;
     }
@@ -28,6 +29,26 @@
         fill: none;
         stroke: @fg-color;
         stroke-width: 4px;
+      }
+    }
+
+    .summary {
+      padding: 0;
+      padding-bottom: 10px;
+      text-align: right;
+
+      .diff {
+        &.neutral {
+          color: @fg-color;
+        }
+
+        &.good {
+          color: @good-color;
+        }
+
+        &.bad {
+          color: @bad-color;
+        }
       }
     }
   }

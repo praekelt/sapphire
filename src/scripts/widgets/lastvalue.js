@@ -24,16 +24,24 @@ module.exports = require('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.y; })
 
-  .prop('format')
+  .prop('fvalue')
+  .default(d3.format(',2s'))
+
+  .prop('fdiff')
+  .default(d3.format('+,2s'))
+
+  .prop('ftime')
   .default(d3.format(',2s'))
 
   .prop('none')
   .default(0)
 
   .prop('sparkline')
+  .prop('summary')
 
   .init(function() {
-    this.sparkline(sparkline());
+    this.sparkline(sparkline(this));
+    this.summary(summary(this));
   })
 
   .enter(function(el) {
@@ -50,6 +58,9 @@ module.exports = require('./widget').extend()
 
     body.append('div')
       .attr('class', 'sparkline');
+
+    body.append('div')
+      .attr('class', 'summary');
   })
 
   .draw(function(el) {
@@ -61,39 +72,74 @@ module.exports = require('./widget').extend()
     el.select('.last')
       .datum(function(d, i) {
         var values = self.values().call(this, d, i);
-        return values[values.length - 1];
-      })
-      .text(function(d, i) {
-        var v = d
+        d = values[values.length - 1];
+
+        return d
           ? self.y().call(this, d, i)
           : self.none();
-
-          return self.format()(v);
-      });
-
-    var spark = this.sparkline()
-      .width(parseInt(el.select('.body').style('width')))
-      .x(this.x())
-      .y(this.y());
+      })
+      .text(this.fvalue());
 
     el.select('.sparkline')
       .datum(this.values())
-      .call(spark);
+      .call(this.sparkline());
+
+    el.select('.summary')
+      .datum(this.values())
+      .call(this.summary());
+  });
+
+
+var summary = require('../view').extend()
+  .prop('lastvalue')
+
+  .init(function(lastvalue) {
+    this.lastvalue(lastvalue);
+  })
+
+  .enter(function(el) {
+    el.append('span')
+      .attr('class', 'neutral diff');
+
+    el.append('span')
+      .attr('class', 'time');
+  })
+
+  .draw(function(el) {
+    var lastvalue = this.lastvalue();
+    if (el.datum().length < 1) { return; }
+
+    el.select('.diff')
+      .datum(function(d, i) {
+        var last = lastvalue.y().call(this, d[d.length - 1], i);
+        var prev = lastvalue.y().call(this, d[d.length - 2], i);
+        return last - prev;
+      })
+      .attr('class', function(d) {
+        if (d === 0) { return 'neutral diff'; }
+
+        return d > 0
+          ? 'good diff'
+          : 'bad diff';
+      })
+      .text(lastvalue.fdiff());
   });
 
 
 var sparkline = require('../view').extend()
-  .prop('x')
-  .prop('y')
+  .prop('lastvalue')
 
-  .prop('height').default(30)
-  .prop('width').default(200)
+  .prop('height').default(25)
 
   .prop('margin').default({
-    top: 6,
-    left: 30,
-    bottom: 6,
-    right: 30 
+    top: 2,
+    left: 2,
+    bottom: 2,
+    right: 2 
+  })
+
+  .init(function(lastvalue) {
+    this.lastvalue(lastvalue);
   })
 
   .enter(function(el) {
@@ -103,27 +149,28 @@ var sparkline = require('../view').extend()
   })
 
   .draw(function(el) {
-    var self = this;
     var margin = this.margin();
+    var lastvalue = this.lastvalue();
+    var width = parseInt(el.style('width'));
 
     var fx = d3.scale.linear()
-      .domain(d3.extent(el.datum(), this.x()))
-      .range([0, this.width() - (margin.left + margin.right)]);
+      .domain(d3.extent(el.datum(), lastvalue.x()))
+      .range([0, width - (margin.left + margin.right)]);
 
     var fy = d3.scale.linear()
-      .domain(d3.extent(el.datum(), this.y()))
+      .domain(d3.extent(el.datum(), lastvalue.y()))
       .range([this.height() - (margin.top + margin.bottom), 0]);
 
     var line = d3.svg.line()
       .x(function(d, i) {
-        return fx(self.x().call(this, d, i));
+        return fx(lastvalue.x().call(this, d, i));
       })
       .y(function(d, i) {
-        return fy(self.y().call(this, d, i));
+        return fy(lastvalue.y().call(this, d, i));
       });
 
     el.select('svg')
-      .attr('width', this.width())
+      .attr('width', width)
       .attr('height', this.height())
       .select('g')
         .attr('transform', utils.translate(margin.left, margin.top))

@@ -78,6 +78,60 @@ describe("sapphire.widgets.lastvalue", function() {
     expect(el.select('.last').text()).to.equal('1,910');
   });
 
+  it("should show a diff value if there are two or more values", function() {
+    var lastvalue = sapphire.widgets.lastvalue();
+    expect(el.html()).to.be.empty;
+
+    datum.values = [{
+      x: 123,
+      y: 345
+    }, {
+      x: 678,
+      y: 910
+    }];
+
+    el.datum(datum)
+      .call(lastvalue);
+
+    expect(el.selectAll('.diff').size()).to.equal(1);
+    expect(el.select('.diff').text()).to.equal('+565');
+
+    datum.values = [{
+      x: 1123,
+      y: 3345
+    }, {
+      x: 1678,
+      y: 1310
+    }];
+
+    el.datum(datum)
+      .call(lastvalue);
+
+    expect(el.selectAll('.last').size()).to.equal(1);
+    expect(el.select('.diff').text()).to.equal('-2,035');
+  });
+
+  it("should not show a diff value if there are less than two values", function() {
+    var lastvalue = sapphire.widgets.lastvalue();
+    expect(el.html()).to.be.empty;
+
+    datum.values = [];
+
+    el.datum(datum)
+      .call(lastvalue);
+
+    expect(el.selectAll('.diff').size()).to.equal(1);
+    expect(el.select('.diff').text()).to.equal('');
+
+    datum.values = [];
+
+    el.datum(datum)
+      .call(lastvalue);
+
+    expect(el.selectAll('.diff').size()).to.equal(1);
+    expect(el.select('.diff').text()).to.equal('');
+  });
+
   it("should show its title", function() {
     var lastvalue = sapphire.widgets.lastvalue();
     expect(el.html()).to.be.empty;
