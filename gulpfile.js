@@ -12,6 +12,7 @@ var version = require('./bower').version;
 gulp.task('scripts', function () {
   return browserify('./src/scripts/index.js')
     .bundle({standalone: 'sapphire'})
+    .on('error', err)
     .pipe(source('sapphire.js'))
     .pipe(streamify(wrap({src: './gulp/wrapper.jst'}, {
       version: version,
@@ -27,6 +28,7 @@ gulp.task('scripts:debug', function () {
       standalone: 'sapphire',
       debug: true
     })
+    .on('error', err)
     .pipe(source('sapphire.debug.js'))
     .pipe(gulp.dest("./build"));
 });
@@ -36,6 +38,7 @@ gulp.task('styles', function () {
   return gulp
     .src('./src/styles/sapphire.less')
     .pipe(less())
+    .on('error', err)
     .pipe(gulp.dest('./build'));
 });
 
@@ -105,3 +108,9 @@ gulp.task('watch', function() {
   gulp.watch('src/scripts/**/*.js', ['scripts', 'scripts:debug']);
   gulp.watch('src/styles/**/*.less', ['styles']);
 });
+
+
+function err(e) {
+  console.error(e.toString());
+  this.emit('end');
+}
