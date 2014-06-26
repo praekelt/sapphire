@@ -1,4 +1,13 @@
+var utils = require('../utils');
+
+
 module.exports = require('./widget').extend()
+  .prop('width')
+  .default(350)
+
+  .prop('colspan')
+  .default(2)
+
   .prop('title')
   .set(d3.functor)
   .default(function(d) { return d.title; })
@@ -21,10 +30,20 @@ module.exports = require('./widget').extend()
   .prop('none')
   .default(0)
 
+  .prop('sparkline')
+
+  .init(function() {
+    this.sparkline(sparkline());
+  })
+
   .enter(function(el) {
-    el.attr('class', 'lastvalue')
-      .append('span')
-        .attr('class', 'last');
+    el.attr('class', 'lastvalue');
+
+    el.append('div')
+      .attr('class', 'last');
+
+    el.append('div')
+      .attr('class', 'sparkline');
   })
 
   .draw(function(el) {
@@ -42,4 +61,65 @@ module.exports = require('./widget').extend()
 
           return self.format()(v);
       });
+
+    var spark = this.sparkline()
+      .width(this.width().call(el.node(), el.datum(), 0))
+      .x(this.x())
+      .y(this.y());
+
+    el.select('.sparkline')
+      .datum(this.values())
+      .call(spark);
+  });
+
+
+var sparkline = require('../view').extend()
+  .prop('x')
+  .prop('y')
+
+  .prop('height').default(30)
+  .prop('width').default(200)
+
+  .prop('margin').default({
+    top: 6,
+    left: 40,
+    bottom: 6,
+    right: 40 
+  })
+
+  .enter(function(el) {
+    el.append('svg')
+      .append('g')
+      .append('path');
+  })
+
+  .draw(function(el) {
+    var self = this;
+    var margin = this.margin();
+
+    var path = el.select('svg')
+      .attr('width', this.width())
+      .attr('height', this.height())
+      .select('g')
+        .attr('transform', utils.translate(margin.left, margin.top))
+        .select('path')
+          .datum(function(d) { return d; });
+
+    var fx = d3.scale.linear()
+      .domain(d3.extent(path.datum(), this.x()))
+      .range([0, this.width() - (margin.left + margin.right)]);
+
+    var fy = d3.scale.linear()
+      .domain(d3.extent(path.datum(), this.y()))
+      .range([this.height() - (margin.top + margin.bottom), 0]);
+
+    var line = d3.svg.line()
+      .x(function(d, i) {
+        return fx(self.x().call(this, d, i));
+      })
+      .y(function(d, i) {
+        return fy(self.y().call(this, d, i));
+      });
+
+    path.attr('d', line);
   });

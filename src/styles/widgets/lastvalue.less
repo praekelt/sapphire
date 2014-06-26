@@ -2,8 +2,20 @@
 
 
 .lastvalue {
+  padding: 10px 20px;
+
   .last {
-    font-size: 4em;
+    text-align: right;
+    font-size: 3.75em;
     font-family: @title-font;
+    margin: 0 6px;
+  }
+
+  .sparkline {
+    path {
+      fill: none;
+      stroke: @fg-color;
+      stroke-width: 4px;
+    }
   }
 }
