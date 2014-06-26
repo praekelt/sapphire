@@ -3,7 +3,7 @@ var utils = require('../utils');
 
 module.exports = require('./widget').extend()
   .prop('width')
-  .default(320)
+  .default(400)
 
   .prop('colspan')
   .default(2)
@@ -39,10 +39,13 @@ module.exports = require('./widget').extend()
   .enter(function(el) {
     el.attr('class', 'lastvalue');
 
-    el.append('div')
+    var body = el.append('div')
+      .attr('class', 'body');
+
+    body.append('div')
       .attr('class', 'last');
 
-    el.append('div')
+    body.append('div')
       .attr('class', 'sparkline');
   })
 
@@ -63,7 +66,7 @@ module.exports = require('./widget').extend()
       });
 
     var spark = this.sparkline()
-      .width(this.width().call(el.node(), el.datum(), 0))
+      .width(parseInt(el.select('.body').style('width')))
       .x(this.x())
       .y(this.y());
 
