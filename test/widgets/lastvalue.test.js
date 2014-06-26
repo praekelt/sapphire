@@ -1,10 +1,24 @@
 describe("sapphire.widgets.lastvalue", function() {
   var el;
+  var datum;
 
   beforeEach(function() {
     el = d3.select('body')
       .append('div')
       .attr('class', 'tmp');
+
+    datum = {
+      values: [{
+        x: 123,
+        y: 234
+      }, {
+        x: 345,
+        y: 456
+      }, {
+        x: 567,
+        y: 789
+      }]
+    };
   });
 
   afterEach(function() {
@@ -34,31 +48,31 @@ describe("sapphire.widgets.lastvalue", function() {
     var lastvalue = sapphire.widgets.lastvalue();
     expect(el.html()).to.be.empty;
 
-    el.datum({
-      values: [{
-        x: 123,
-        y: 345
-      }, {
-        x: 678,
-        y: 910
-      }]
-    });
+    datum.values = [{
+      x: 123,
+      y: 345
+    }, {
+      x: 678,
+      y: 910
+    }];
 
-    lastvalue(el);
+    el.datum(datum)
+      .call(lastvalue);
+
     expect(el.selectAll('.last').size()).to.equal(1);
     expect(el.select('.last').text()).to.equal('910');
 
-    el.datum({
-      values: [{
-        x: 1123,
-        y: 1345
-      }, {
-        x: 1678,
-        y: 1910
-      }]
-    });
+    datum.values = [{
+      x: 1123,
+      y: 1345
+    }, {
+      x: 1678,
+      y: 1910
+    }];
 
-    lastvalue(el);
+    el.datum(datum)
+      .call(lastvalue);
+
     expect(el.selectAll('.last').size()).to.equal(1);
     expect(el.select('.last').text()).to.equal('1,910');
   });
@@ -67,7 +81,11 @@ describe("sapphire.widgets.lastvalue", function() {
     var lastvalue = sapphire.widgets.lastvalue()
       .none(23);
 
-    el.datum({values: []});
+    datum.values = [];
+
+    el.datum(datum)
+      .call(lastvalue);
+
     lastvalue(el);
     expect(el.select('.last').text()).to.equal('23');
   });
@@ -92,22 +110,7 @@ describe("sapphire.widgets.lastvalue", function() {
 
     expect(el.html()).to.be.empty;
 
-    el.datum({
-      values: [{
-        x: 123,
-        y: 234
-      }, {
-        x: 345,
-        y: 456
-      }, {
-        x: 567,
-        y: 789
-      }]
-    });
-
-    lastvalue(el);
-    expect(el.selectAll('.sparkline path').size()).to.equal(1);
-    expect(el.select('.sparkline path').attr('d')).to.equal(p([{
+    datum.values = [{
       x: 123,
       y: 234
     }, {
@@ -116,22 +119,15 @@ describe("sapphire.widgets.lastvalue", function() {
     }, {
       x: 567,
       y: 789
-    }]));
+    }];
 
-    el.datum({
-      values: [{
-        x: 1123,
-        y: 1234
-      }, {
-        x: 1345,
-        y: 1456
-      }, {
-        x: 1567,
-        y: 1789
-      }]
-    });
+    el.datum(datum)
+      .call(lastvalue);
+
     expect(el.selectAll('.sparkline path').size()).to.equal(1);
-    expect(el.select('.sparkline path').attr('d')).to.equal(p([{
+    expect(el.select('.sparkline path').attr('d')).to.equal(p(datum.values));
+
+    datum.values = [{
       x: 1123,
       y: 1234
     }, {
@@ -140,8 +136,12 @@ describe("sapphire.widgets.lastvalue", function() {
     }, {
       x: 1567,
       y: 1789
-    }]));
+    }];
 
-    lastvalue(el);
+    el.datum(datum)
+      .call(lastvalue);
+
+    expect(el.selectAll('.sparkline path').size()).to.equal(1);
+    expect(el.select('.sparkline path').attr('d')).to.equal(p(datum.values));
   });
 });
