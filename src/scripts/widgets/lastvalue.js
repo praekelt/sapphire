@@ -39,6 +39,9 @@ module.exports = require('./widget').extend()
   .enter(function(el) {
     el.attr('class', 'lastvalue');
 
+    el.append('div')
+      .attr('class', 'title');
+
     var body = el.append('div')
       .attr('class', 'body');
 
@@ -51,6 +54,9 @@ module.exports = require('./widget').extend()
 
   .draw(function(el) {
     var self = this;
+
+    el.select('.title')
+      .text(this.title());
 
     el.select('.last')
       .datum(function(d, i) {

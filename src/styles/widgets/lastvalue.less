@@ -2,14 +2,25 @@
 
 
 .lastvalue {
+  font-family: @title-font;
+
+  .title {
+    padding: 8px 5px;
+
+    background: @fg-color;
+    color: @bg-color;
+
+    text-align: center;
+  }
+
   .body {
-    padding: 10px 20px;
+    padding: 2px 20px;
 
     .last {
+      margin-bottom: 6px;
+
       text-align: right;
       font-size: 3.75em;
-      font-family: @title-font;
-      margin: 0 6px;
     }
 
     .sparkline {

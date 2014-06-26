@@ -8,6 +8,7 @@ describe("sapphire.widgets.lastvalue", function() {
       .attr('class', 'tmp');
 
     datum = {
+      title: 'Total Bar and Baz',
       values: [{
         x: 123,
         y: 234
@@ -75,6 +76,27 @@ describe("sapphire.widgets.lastvalue", function() {
 
     expect(el.selectAll('.last').size()).to.equal(1);
     expect(el.select('.last').text()).to.equal('1,910');
+  });
+
+  it("should show its title", function() {
+    var lastvalue = sapphire.widgets.lastvalue();
+    expect(el.html()).to.be.empty;
+
+    datum.title = 'Total Bar and Baz';
+
+    el.datum(datum)
+      .call(lastvalue);
+
+    expect(el.selectAll('.title').size()).to.equal(1);
+    expect(el.select('.title').text()).to.equal(datum.title);
+
+    datum.title = 'Total Qux and Corge';
+
+    el.datum(datum)
+      .call(lastvalue);
+
+    expect(el.selectAll('.title').size()).to.equal(1);
+    expect(el.select('.title').text()).to.equal(datum.title);
   });
 
   it("should show the 'none' value if values are not available", function() {
