@@ -31,7 +31,7 @@ module.exports = require('./widget').extend()
   .default(d3.format('+,2s'))
 
   .prop('ftime')
-  .default(d3.format(',2s'))
+  .default(d3.time.format('%-d %b %-H:%M'))
 
   .prop('none')
   .default(0)
@@ -111,9 +111,11 @@ var summary = require('../view').extend()
 
     el.select('.diff')
       .datum(function(d, i) {
-        var last = lastvalue.y().call(this, d[d.length - 1], i);
-        var prev = lastvalue.y().call(this, d[d.length - 2], i);
-        return last - prev;
+        d = d
+          .slice(-2)
+          .map(lastvalue.y());
+
+        return d[1] - d[0];
       })
       .attr('class', function(d) {
         if (d === 0) { return 'neutral diff'; }
@@ -123,6 +125,22 @@ var summary = require('../view').extend()
           : 'bad diff';
       })
       .text(lastvalue.fdiff());
+
+    el.select('.time')
+      .datum(function(d, i) {
+        return [xAt.call(this, d, -2), xAt.call(this, d, -1)]
+          .map(utils.date)
+          .map(lastvalue.ftime());
+
+      })
+      .text(function(d) {
+        return [' from', d[0], 'to', d[1]].join(' ');
+      });
+
+    function xAt(data, i) {
+      if (i < 0) { i = data.length + i; }
+      return lastvalue.x().call(this, data[i], i);
+    }
   });
 
 

@@ -78,7 +78,7 @@ describe("sapphire.widgets.lastvalue", function() {
     expect(el.select('.last').text()).to.equal('1,910');
   });
 
-  it("should show a diff value if there are two or more values", function() {
+  it("should use the appropriate diff class for the diff summary", function() {
     var lastvalue = sapphire.widgets.lastvalue();
     expect(el.html()).to.be.empty;
 
@@ -93,12 +93,12 @@ describe("sapphire.widgets.lastvalue", function() {
     el.datum(datum)
       .call(lastvalue);
 
-    expect(el.selectAll('.diff').size()).to.equal(1);
-    expect(el.select('.diff').text()).to.equal('+565');
+    expect(el.select('.summary .diff').attr('class'))
+        .to.equal('good diff');
 
     datum.values = [{
       x: 1123,
-      y: 3345
+      y: 1945
     }, {
       x: 1678,
       y: 1310
@@ -107,11 +107,64 @@ describe("sapphire.widgets.lastvalue", function() {
     el.datum(datum)
       .call(lastvalue);
 
-    expect(el.selectAll('.last').size()).to.equal(1);
-    expect(el.select('.diff').text()).to.equal('-2,035');
+    expect(el.select('.summary .diff').attr('class'))
+        .to.equal('bad diff');
+
+    datum.values = [{
+      x: 1123,
+      y: 1310
+    }, {
+      x: 1678,
+      y: 1310
+    }];
+
+    el.datum(datum)
+      .call(lastvalue);
+
+    expect(el.select('.summary .diff').attr('class'))
+        .to.equal('neutral diff');
   });
 
-  it("should not show a diff value if there are less than two values", function() {
+  it("should show a diff summary if there are two or more values", function() {
+    var lastvalue = sapphire.widgets.lastvalue();
+    expect(el.html()).to.be.empty;
+
+    datum.values = [{
+      x: +(new Date(2014, 2, 2, 8, 30)),
+      y: 345
+    }, {
+      x: +(new Date(2014, 2, 3, 6, 30)),
+      y: 910
+    }];
+
+    el.datum(datum)
+      .call(lastvalue);
+
+    expect(el.selectAll('.summary').size())
+        .to.equal(1);
+
+    expect(el.select('.summary').text())
+        .to.equal('+565 from 2 Mar 8:30 to 3 Mar 6:30');
+
+    datum.values = [{
+      x: +(new Date(2014, 2, 4, 2, 30)),
+      y: 3345
+    }, {
+      x: +(new Date(2014, 2, 5, 12, 30)),
+      y: 1310
+    }];
+
+    el.datum(datum)
+      .call(lastvalue);
+
+    expect(el.selectAll('.summary').size())
+        .to.equal(1);
+
+    expect(el.select('.summary').text())
+        .to.equal('-2,035 from 4 Mar 2:30 to 5 Mar 12:30');
+  });
+
+  it("should not show a diff summary if there are less than two values", function() {
     var lastvalue = sapphire.widgets.lastvalue();
     expect(el.html()).to.be.empty;
 
@@ -120,16 +173,16 @@ describe("sapphire.widgets.lastvalue", function() {
     el.datum(datum)
       .call(lastvalue);
 
-    expect(el.selectAll('.diff').size()).to.equal(1);
-    expect(el.select('.diff').text()).to.equal('');
+    expect(el.selectAll('.summary').size()).to.equal(1);
+    expect(el.select('.summary').text()).to.equal('');
 
     datum.values = [];
 
     el.datum(datum)
       .call(lastvalue);
 
-    expect(el.selectAll('.diff').size()).to.equal(1);
-    expect(el.select('.diff').text()).to.equal('');
+    expect(el.selectAll('.summary').size()).to.equal(1);
+    expect(el.select('.summary').text()).to.equal('');
   });
 
   it("should show its title", function() {

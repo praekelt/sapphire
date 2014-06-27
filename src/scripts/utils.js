@@ -34,3 +34,8 @@ utils.ensureEl = function(el) {
     ? d3.select(el)
     : el;
 };
+
+
+utils.date = function(t) {
+  return new Date(t);
+};
