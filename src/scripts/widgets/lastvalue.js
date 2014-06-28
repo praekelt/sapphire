@@ -65,27 +65,39 @@ module.exports = require('./widget').extend()
 
   .draw(function(el) {
     var self = this;
+    var node = el.node();
 
     el.select('.title')
-      .text(this.title());
+      .text(function(d, i) {
+        return self.title().call(node, d, i);
+      });
 
-    el.select('.last')
+    var body = el.select('.body')
       .datum(function(d, i) {
-        var values = self.values().call(this, d, i);
-        d = values[values.length - 1];
+        return self.values()
+          .call(node, d, i)
+          .map(function(d, i) {
+            return {
+              x: self.x().call(node, d, i),
+              y: self.y().call(node, d, i)
+            };
+          });
+      });
 
-        return d
-          ? self.y().call(this, d, i)
-          : self.none();
+    body.select('.last')
+      .datum(function(d, i) {
+        d = d[d.length - 1];
+
+        return !d
+          ? self.none()
+          : d.y;
       })
       .text(this.fvalue());
 
-    el.select('.sparkline')
-      .datum(this.values())
+    body.select('.sparkline')
       .call(this.sparkline());
 
-    el.select('.summary')
-      .datum(this.values())
+    body.select('.summary')
       .call(this.summary());
   });
 
@@ -110,12 +122,9 @@ var summary = require('../view').extend()
     if (el.datum().length < 1) { return; }
 
     el.select('.diff')
-      .datum(function(d, i) {
-        d = d
-          .slice(-2)
-          .map(lastvalue.y());
-
-        return d[1] - d[0];
+      .datum(function(d) {
+        d = d.slice(-2);
+        return d[1].y - d[0].y;
       })
       .attr('class', function(d) {
         if (d === 0) { return 'neutral diff'; }
@@ -127,20 +136,16 @@ var summary = require('../view').extend()
       .text(lastvalue.fdiff());
 
     el.select('.time')
-      .datum(function(d, i) {
-        return [xAt.call(this, d, -2), xAt.call(this, d, -1)]
+      .datum(function(d) {
+        d = d.slice(-2);
+
+        return [d[0].x, d[1].x]
           .map(utils.date)
           .map(lastvalue.ftime());
-
       })
       .text(function(d) {
         return [' from', d[0], 'to', d[1]].join(' ');
       });
-
-    function xAt(data, i) {
-      if (i < 0) { i = data.length + i; }
-      return lastvalue.x().call(this, data[i], i);
-    }
   });
 
 
@@ -168,24 +173,19 @@ var sparkline = require('../view').extend()
 
   .draw(function(el) {
     var margin = this.margin();
-    var lastvalue = this.lastvalue();
     var width = parseInt(el.style('width'));
 
     var fx = d3.scale.linear()
-      .domain(d3.extent(el.datum(), lastvalue.x()))
+      .domain(d3.extent(el.datum(), function(d) { return d.x; }))
       .range([0, width - (margin.left + margin.right)]);
 
     var fy = d3.scale.linear()
-      .domain(d3.extent(el.datum(), lastvalue.y()))
+      .domain(d3.extent(el.datum(), function(d) { return d.y; }))
       .range([this.height() - (margin.top + margin.bottom), 0]);
 
     var line = d3.svg.line()
-      .x(function(d, i) {
-        return fx(lastvalue.x().call(this, d, i));
-      })
-      .y(function(d, i) {
-        return fy(lastvalue.y().call(this, d, i));
-      });
+      .x(function(d) { return fx(d.x); })
+      .y(function(d) { return fy(d.y); });
 
     el.select('svg')
       .attr('width', width)
