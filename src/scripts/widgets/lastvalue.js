@@ -50,16 +50,16 @@ module.exports = require('./widget').extend()
     el.append('div')
       .attr('class', 'title');
 
-    var body = el.append('div')
-      .attr('class', 'body');
+    var values = el.append('div')
+      .attr('class', 'values');
 
-    body.append('div')
-      .attr('class', 'last');
+    values.append('div')
+      .attr('class', 'last value');
 
-    body.append('div')
+    values.append('div')
       .attr('class', 'sparkline');
 
-    body.append('div')
+    values.append('div')
       .attr('class', 'summary');
   })
 
@@ -72,7 +72,7 @@ module.exports = require('./widget').extend()
         return self.title().call(node, d, i);
       });
 
-    var body = el.select('.body')
+    var values = el.select('.values')
       .datum(function(d, i) {
         return self.values()
           .call(node, d, i)
@@ -82,9 +82,20 @@ module.exports = require('./widget').extend()
               y: self.y().call(node, d, i)
             };
           });
+      })
+      .attr('class', function(d) {
+        d = d.slice(-2);
+
+        d = d.length
+          ? d[1].y - d[0].y
+          : 0;
+
+        if (d > 0) { return 'good values'; }
+        if (d < 0) { return 'bad values'; }
+        return 'neutral values';
       });
 
-    body.select('.last')
+    values.select('.last.value')
       .datum(function(d, i) {
         d = d[d.length - 1];
 
@@ -94,10 +105,10 @@ module.exports = require('./widget').extend()
       })
       .text(this.fvalue());
 
-    body.select('.sparkline')
+    values.select('.sparkline')
       .call(this.sparkline());
 
-    body.select('.summary')
+    values.select('.summary')
       .call(this.summary());
   });
 
@@ -111,7 +122,7 @@ var summary = require('../view').extend()
 
   .enter(function(el) {
     el.append('span')
-      .attr('class', 'neutral diff');
+      .attr('class', 'diff');
 
     el.append('span')
       .attr('class', 'time');
@@ -125,13 +136,6 @@ var summary = require('../view').extend()
       .datum(function(d) {
         d = d.slice(-2);
         return d[1].y - d[0].y;
-      })
-      .attr('class', function(d) {
-        if (d === 0) { return 'neutral diff'; }
-
-        return d > 0
-          ? 'good diff'
-          : 'bad diff';
       })
       .text(lastvalue.fdiff());
 
@@ -155,10 +159,10 @@ var sparkline = require('../view').extend()
   .prop('height').default(25)
 
   .prop('margin').default({
-    top: 2,
-    left: 2,
-    bottom: 2,
-    right: 2 
+    top: 4,
+    left: 4,
+    bottom: 4,
+    right: 4 
   })
 
   .init(function(lastvalue) {
@@ -166,9 +170,14 @@ var sparkline = require('../view').extend()
   })
 
   .enter(function(el) {
-    el.append('svg')
-      .append('g')
-      .append('path');
+    var svg = el.append('svg')
+      .append('g');
+
+    svg.append('path')
+      .attr('class', 'rest path');
+
+    svg.append('path')
+      .attr('class', 'diff path');
   })
 
   .draw(function(el) {
@@ -187,11 +196,29 @@ var sparkline = require('../view').extend()
       .x(function(d) { return fx(d.x); })
       .y(function(d) { return fy(d.y); });
 
-    el.select('svg')
+    var svg = el.select('svg')
       .attr('width', width)
       .attr('height', this.height())
       .select('g')
-        .attr('transform', utils.translate(margin.left, margin.top))
-        .select('path')
-          .attr('d', line);
+        .attr('transform', utils.translate(margin.left, margin.top));
+
+    svg.select('.rest.path')
+      .attr('d', line);
+
+    svg.select('.diff.path')
+      .datum(function(d) { return d.slice(-2); })
+      .attr('d', line);
+
+    var dot = svg.selectAll('.dot')
+      .data(function(d) { return d.slice(-1); });
+
+    dot.enter().append('circle')
+      .attr('class', 'dot')
+      .attr('r', 4);
+
+    dot
+      .attr('cx', function(d) { return fx(d.x); })
+      .attr('cy', function(d) { return fy(d.y); });
+
+    dot.exit().remove();
   });

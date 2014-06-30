@@ -26,17 +26,43 @@ describe("sapphire.widgets.lastvalue", function() {
     el.remove();
   });
 
-  var path = strain()
+  var helpers = {};
+
+  helpers.fx = strain()
+    .prop('values')
+
     .prop('width')
-    .prop('height')
-    .invoke(function(data) {
-      var fx = d3.scale.linear()
-        .domain(d3.extent(data, function(d) { return d.x; }))
+    .default(200 - (4 + 4))
+
+    .invoke(function(input) {
+      var scale = d3.scale.linear()
+        .domain(d3.extent(this.values(), function(d) { return d.x; }))
         .range([0, this.width()]);
 
-      var fy = d3.scale.linear()
-        .domain(d3.extent(data, function(d) { return d.y; }))
+      return scale(input);
+    });
+
+  helpers.fy = strain()
+    .prop('values')
+
+    .prop('height')
+    .default(25 - (4 + 4))
+
+    .invoke(function(input) {
+      var scale = d3.scale.linear()
+        .domain(d3.extent(this.values(), function(d) { return d.y; }))
         .range([this.height(), 0]);
+
+      return scale(input);
+    });
+
+  helpers.path = strain()
+    .prop('fx')
+    .prop('fy')
+
+    .invoke(function(data) {
+      var fx = this.fx();
+      var fy = this.fy();
 
       var line = d3.svg.line()
         .x(function(d, i) { return fx(d.x); })
@@ -60,8 +86,8 @@ describe("sapphire.widgets.lastvalue", function() {
     el.datum(datum)
       .call(lastvalue);
 
-    expect(el.selectAll('.last').size()).to.equal(1);
-    expect(el.select('.last').text()).to.equal('910');
+    expect(el.selectAll('.last.value').size()).to.equal(1);
+    expect(el.select('.last.value').text()).to.equal('910');
 
     datum.values = [{
       x: 1123,
@@ -74,11 +100,11 @@ describe("sapphire.widgets.lastvalue", function() {
     el.datum(datum)
       .call(lastvalue);
 
-    expect(el.selectAll('.last').size()).to.equal(1);
-    expect(el.select('.last').text()).to.equal('1,910');
+    expect(el.selectAll('.last.value').size()).to.equal(1);
+    expect(el.select('.last.value').text()).to.equal('1,910');
   });
 
-  it("should use the appropriate diff class for the diff summary", function() {
+  it("should use the appropriate diff class", function() {
     var lastvalue = sapphire.widgets.lastvalue();
     expect(el.html()).to.be.empty;
 
@@ -93,8 +119,8 @@ describe("sapphire.widgets.lastvalue", function() {
     el.datum(datum)
       .call(lastvalue);
 
-    expect(el.select('.summary .diff').attr('class'))
-        .to.equal('good diff');
+    expect(el.select('.values').attr('class'))
+        .to.equal('good values');
 
     datum.values = [{
       x: 1123,
@@ -107,8 +133,8 @@ describe("sapphire.widgets.lastvalue", function() {
     el.datum(datum)
       .call(lastvalue);
 
-    expect(el.select('.summary .diff').attr('class'))
-        .to.equal('bad diff');
+    expect(el.select('.values').attr('class'))
+        .to.equal('bad values');
 
     datum.values = [{
       x: 1123,
@@ -121,8 +147,8 @@ describe("sapphire.widgets.lastvalue", function() {
     el.datum(datum)
       .call(lastvalue);
 
-    expect(el.select('.summary .diff').attr('class'))
-        .to.equal('neutral diff');
+    expect(el.select('.values').attr('class'))
+        .to.equal('neutral values');
   });
 
   it("should show a diff summary if there are two or more values", function() {
@@ -220,22 +246,25 @@ describe("sapphire.widgets.lastvalue", function() {
   });
 
   it("should display a sparkline", function() {
+    var fx = helpers.fx();
+    var fy = helpers.fy();
+
+    var path = helpers.path()
+      .fx(fx)
+      .fy(fy);
+
     var lastvalue = sapphire.widgets.lastvalue();
 
     lastvalue
       .width(200)
       .sparkline()
-        .height(30)
+        .height(25)
         .margin({
-          top: 2,
-          left: 2,
-          bottom: 2,
-          right: 2 
+          top: 4,
+          left: 4,
+          bottom: 4,
+          right: 4 
         });
-
-    var p = path()
-      .width(200 - (2 + 2))
-      .height(30 - (2 + 2));
 
     expect(el.html()).to.be.empty;
 
@@ -253,8 +282,14 @@ describe("sapphire.widgets.lastvalue", function() {
     el.datum(datum)
       .call(lastvalue);
 
-    expect(el.selectAll('.sparkline path').size()).to.equal(1);
-    expect(el.select('.sparkline path').attr('d')).to.equal(p(datum.values));
+    fx.values(datum.values);
+    fy.values(datum.values);
+
+    expect(el.selectAll('.sparkline .rest.path').size())
+      .to.equal(1);
+
+    expect(el.select('.sparkline .rest.path').attr('d'))
+      .to.equal(path(datum.values));
 
     datum.values = [{
       x: 1123,
@@ -270,7 +305,148 @@ describe("sapphire.widgets.lastvalue", function() {
     el.datum(datum)
       .call(lastvalue);
 
-    expect(el.selectAll('.sparkline path').size()).to.equal(1);
-    expect(el.select('.sparkline path').attr('d')).to.equal(p(datum.values));
+    fx.values(datum.values);
+    fy.values(datum.values);
+
+    expect(el.selectAll('.sparkline .rest.path').size())
+      .to.equal(1);
+
+    expect(el.select('.sparkline .rest.path').attr('d'))
+      .to.equal(path(datum.values));
+  });
+
+  it("should display a diff line", function() {
+    var fx = helpers.fx();
+    var fy = helpers.fy();
+
+    var path = helpers.path()
+      .fx(fx)
+      .fy(fy);
+
+    var lastvalue = sapphire.widgets.lastvalue();
+
+    lastvalue
+      .width(200)
+      .sparkline()
+        .height(25)
+        .margin({
+          top: 4,
+          left: 4,
+          bottom: 4,
+          right: 4 
+        });
+
+    expect(el.html()).to.be.empty;
+
+    datum.values = [{
+      x: 123,
+      y: 234
+    }, {
+      x: 345,
+      y: 456
+    }, {
+      x: 567,
+      y: 789
+    }];
+
+    el.datum(datum)
+      .call(lastvalue);
+
+    fx.values(datum.values);
+    fy.values(datum.values);
+
+    expect(el.selectAll('.sparkline .diff.path').size())
+      .to.equal(1);
+
+    expect(el.select('.sparkline .diff.path').attr('d'))
+      .to.equal(path(datum.values.slice(-2)));
+
+    datum.values = [{
+      x: 1123,
+      y: 1234
+    }, {
+      x: 1345,
+      y: 1456
+    }, {
+      x: 1567,
+      y: 1789
+    }];
+
+    el.datum(datum)
+      .call(lastvalue);
+
+    fx.values(datum.values);
+    fy.values(datum.values);
+
+    expect(el.selectAll('.sparkline .diff.path').size())
+      .to.equal(1);
+
+    expect(el.select('.sparkline .diff.path').attr('d'))
+      .to.equal(path(datum.values.slice(-2)));
+  });
+
+  it("should display a dot for the last value", function() {
+    var fx = helpers.fx();
+    var fy = helpers.fy();
+    var lastvalue = sapphire.widgets.lastvalue();
+
+    lastvalue
+      .width(200)
+      .sparkline()
+        .height(25)
+        .margin({
+          top: 4,
+          left: 4,
+          bottom: 4,
+          right: 4 
+        });
+
+    expect(el.html()).to.be.empty;
+
+    datum.values = [{
+      x: 123,
+      y: 234
+    }, {
+      x: 345,
+      y: 456
+    }, {
+      x: 567,
+      y: 789
+    }];
+
+    fx.values(datum.values);
+    fy.values(datum.values);
+
+    el.datum(datum)
+      .call(lastvalue);
+
+    expect(el.selectAll('.sparkline .dot').size())
+      .to.equal(1);
+
+    expect(+el.select('.sparkline .dot').attr('cx')).to.equal(fx(567));
+    expect(+el.select('.sparkline .dot').attr('cy')).to.equal(fy(789));
+
+    datum.values = [{
+      x: 1123,
+      y: 1234
+    }, {
+      x: 1345,
+      y: 1456
+    }, {
+      x: 1567,
+      y: 1789
+    }];
+
+    fx.values(datum.values);
+    fy.values(datum.values);
+
+    el.datum(datum)
+      .call(lastvalue);
+
+    expect(el.selectAll('.sparkline .dot').size())
+      .to.equal(1);
+
+    expect(+el.select('.sparkline .dot').attr('cx')).to.equal(fx(1567));
+    expect(+el.select('.sparkline .dot').attr('cy')).to.equal(fy(1789));
   });
 });

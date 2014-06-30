@@ -16,38 +16,58 @@
     text-align: center;
   }
 
-  .body {
+  .values {
     padding: 2px 30px;
+
+    &.neutral {
+      .status(@fg-color); 
+    }
+
+    &.good {
+      .status(@good-color);
+    }
+
+    &.bad {
+      .status(@bad-color);
+    }
 
     .last {
       text-align: right;
       font-size: 3.75em;
     }
 
-    .sparkline {
-      path {
-        fill: none;
-        stroke: @fg-color;
-        stroke-width: 4px;
-      }
-    }
-
     .summary {
       padding: 0;
       padding-bottom: 10px;
       text-align: right;
+    }
 
-      .diff {
-        &.neutral {
-          color: @fg-color;
+    .sparkline {
+      .path {
+        fill: none;
+        stroke: @fg-color;
+        stroke-width: 4px;
+      }
+
+      .diff.path {
+        stroke-width: 4.5px;
+      }
+    }
+
+    .status(@color) {
+      .sparkline {
+        .diff.path {
+          stroke: @color;
         }
 
-        &.good {
-          color: @good-color;
+        .dot {
+          fill: @color;
         }
+      }
 
-        &.bad {
-          color: @bad-color;
+      .summary {
+        .diff {
+          color: @color;
         }
       }
     }
