@@ -52,4 +52,12 @@ describe("sapphire.utils", function() {
       expect(sapphire.utils.ensureEl(el)).to.equal(el);
     });
   });
+
+  describe(".date", function() {
+    it("should return a new date", function() {
+      var d = new Date(2014, 2, 2);
+      expect(+sapphire.utils.date(+d)).to.equal(+d);
+      expect(sapphire.utils.date(+d)).to.be.an.instanceof(Date);
+    });
+  });
 });
