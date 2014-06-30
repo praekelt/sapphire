@@ -86,7 +86,7 @@ module.exports = require('./widget').extend()
       .attr('class', function(d) {
         d = d.slice(-2);
 
-        d = d.length
+        d = d.length > 1
           ? d[1].y - d[0].y
           : 0;
 
@@ -130,7 +130,7 @@ var summary = require('../view').extend()
 
   .draw(function(el) {
     var lastvalue = this.lastvalue();
-    if (el.datum().length < 1) { return; }
+    if (el.datum().length < 2) { return; }
 
     el.select('.diff')
       .datum(function(d) {

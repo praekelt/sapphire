@@ -151,6 +151,30 @@ describe("sapphire.widgets.lastvalue", function() {
         .to.equal('neutral values');
   });
 
+  it("should use a neutral diff class for less than two values", function() {
+    var lastvalue = sapphire.widgets.lastvalue();
+    expect(el.html()).to.be.empty;
+
+    datum.values = [{
+      x: 123,
+      y: 345
+    }];
+
+    el.datum(datum)
+      .call(lastvalue);
+
+    expect(el.select('.values').attr('class'))
+        .to.equal('neutral values');
+
+    datum.values = [];
+
+    el.datum(datum)
+      .call(lastvalue);
+
+    expect(el.select('.values').attr('class'))
+        .to.equal('neutral values');
+  });
+
   it("should show a diff summary if there are two or more values", function() {
     var lastvalue = sapphire.widgets.lastvalue();
     expect(el.html()).to.be.empty;
@@ -194,7 +218,10 @@ describe("sapphire.widgets.lastvalue", function() {
     var lastvalue = sapphire.widgets.lastvalue();
     expect(el.html()).to.be.empty;
 
-    datum.values = [];
+    datum.values = [{
+      x: 123,
+      y: 345
+    }];
 
     el.datum(datum)
       .call(lastvalue);
