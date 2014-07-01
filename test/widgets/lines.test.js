@@ -115,16 +115,18 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    expect(el.selectAll('.title').size()).to.equal(1);
-    expect(el.select('.title').text()).to.equal(datum.title);
+    var title = el.selectAll('.title');
+    expect(title.size()).to.equal(1);
+    expect(title.text()).to.equal(datum.title);
 
     datum.title = 'Total Qux and Corge';
 
     el.datum(datum)
       .call(lines);
 
-    expect(el.selectAll('.title').size()).to.equal(1);
-    expect(el.select('.title').text()).to.equal(datum.title);
+    title = el.selectAll('.title');
+    expect(title.size()).to.equal(1);
+    expect(title.text()).to.equal(datum.title);
   });
 
   it("should draw lines for its value sets", function() {
@@ -150,7 +152,7 @@ describe("sapphire.widgets.lines", function() {
 
     expect(el.html()).to.be.empty;
 
-    datum.values = [{
+    datum.sets[0].values = [{
       x: 123,
       y: 234
     }, {
@@ -159,6 +161,17 @@ describe("sapphire.widgets.lines", function() {
     }, {
       x: 567,
       y: 789
+    }];
+
+    datum.sets[1].values = [{
+      x: 123,
+      y: 834
+    }, {
+      x: 345,
+      y: 856
+    }, {
+      x: 567,
+      y: 889
     }];
 
     el.datum(datum)
@@ -175,7 +188,7 @@ describe("sapphire.widgets.lines", function() {
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.sets[1].values));
 
-    datum.values = [{
+    datum.sets[0].values = [{
       x: 1123,
       y: 1234
     }, {
@@ -184,6 +197,17 @@ describe("sapphire.widgets.lines", function() {
     }, {
       x: 1567,
       y: 1789
+    }];
+
+    datum.sets[1].values = [{
+      x: 1123,
+      y: 3234
+    }, {
+      x: 1345,
+      y: 3456
+    }, {
+      x: 1567,
+      y: 3789
     }];
 
     el.datum(datum)
