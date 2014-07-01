@@ -34,6 +34,13 @@ describe("sapphire.utils", function() {
     });
   });
 
+  describe(".translate", function() {
+    it("should return a translation string", function() {
+      expect(sapphire.utils.translate(3.23, 23.23))
+        .to.equal('translate(3.23, 23.23)');
+    });
+  });
+
   describe(".ensureEl", function() {
     it("should wrap the element in a d3 selection if it isn't already", function() {
       var el = sapphire.utils.ensureEl('body');
@@ -43,6 +50,14 @@ describe("sapphire.utils", function() {
     it("should return the selection if a selection was given", function() {
       var el = d3.select('body');
       expect(sapphire.utils.ensureEl(el)).to.equal(el);
+    });
+  });
+
+  describe(".date", function() {
+    it("should return a new date", function() {
+      var d = new Date(2014, 2, 2);
+      expect(+sapphire.utils.date(+d)).to.equal(+d);
+      expect(sapphire.utils.date(+d)).to.be.an.instanceof(Date);
     });
   });
 });

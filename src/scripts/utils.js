@@ -24,8 +24,18 @@ utils.ensure = function(v, defaultval) {
 };
 
 
+utils.translate = function(x, y) {
+  return 'translate(' + x + ', ' + y + ')';
+};
+
+
 utils.ensureEl = function(el) {
   return !(el instanceof d3.selection)
     ? d3.select(el)
     : el;
+};
+
+
+utils.date = function(t) {
+  return new Date(t);
 };

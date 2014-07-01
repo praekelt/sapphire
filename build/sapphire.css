@@ -1,6 +1,11 @@
+@import url(http://fonts.googleapis.com/css?family=Ubuntu);
 .sapphire .dashboard .widgets {
   position: relative;
 }
 .sapphire .dashboard .widgets .widget {
   position: absolute;
+}
+.sapphire .lastvalue .last {
+  font-size: 4em;
+  font-family: 'Ubuntu', sans-serif;
 }
