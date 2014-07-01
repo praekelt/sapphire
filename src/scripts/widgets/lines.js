@@ -39,8 +39,11 @@ module.exports = require('./widget').extend()
   .prop('fvalue')
   .default(d3.format(',2s'))
 
-  .prop('ftime')
-  .default(d3.time.format('%-d %b %-H:%M'))
+  .prop('ftick')
+  .default(null)
+
+  .prop('ticks')
+  .default(7)
 
   .prop('colors')
   .default(d3.scale.category20())
@@ -51,7 +54,7 @@ module.exports = require('./widget').extend()
   .prop('chart')
 
   .init(function() {
-    this.chart(chart());
+    this.chart(chart(this));
   })
 
   .enter(function(el) {
@@ -114,24 +117,37 @@ module.exports = require('./widget').extend()
 
 var chart = require('../view').extend()
   .prop('height')
-  .default(120)
+  .default(150)
 
   .prop('margin')
   .default({
     top: 4,
-    left: 4,
-    right: 4,
-    bottom: 4
+    left: 25,
+    right: 25,
+    bottom: 25
+  })
+
+  .prop('widget')
+
+  .init(function(widget) {
+    this.widget(widget);
   })
 
   .enter(function(el) {
-    el.append('svg')
+    var svg = el.append('svg')
       .append('g');
+
+    svg.append('g')
+      .attr('class', 'lines');
+
+    svg.append('g')
+      .attr('class', 'axis');
   })
 
   .draw(function(el) {
     var margin = this.margin();
     var width = parseInt(el.style('width'));
+    var innerHeight = this.height() - (margin.top + margin.bottom);
 
     var allValues = el
       .datum()
@@ -140,13 +156,18 @@ var chart = require('../view').extend()
         return results;
       }, []);
 
-    var fx = d3.scale.linear()
+    var fx = d3.time.scale()
       .domain(d3.extent(allValues, function(d) { return d.x; }))
       .range([0, width - (margin.left + margin.right)]);
 
     var fy = d3.scale.linear()
       .domain(d3.extent(allValues, function(d) { return d.y; }))
-      .range([this.height() - (margin.top + margin.bottom), 0]);
+      .range([innerHeight, 0]);
+
+    var axis = d3.svg.axis()
+      .scale(fx)
+      .ticks(this.widget().ticks())
+      .tickFormat(this.widget().ftick());
 
     var line = d3.svg.line()
       .x(function(d) { return fx(d.x); })
@@ -158,7 +179,7 @@ var chart = require('../view').extend()
       .select('g')
         .attr('transform', utils.translate(margin.left, margin.top));
 
-    var set = svg.selectAll('.set')
+    var set = svg.select('.lines').selectAll('.set')
       .data(function(d) { return d; },
             function(d) { return d.key; });
 
@@ -178,4 +199,9 @@ var chart = require('../view').extend()
 
     set.exit()
       .remove();
+
+    svg
+      .select('.axis')
+      .attr('transform', utils.translate(0, innerHeight))
+      .call(axis);
   });

@@ -9,10 +9,30 @@
   .chart {
     padding: 8px;
 
-    .set {
-      .line {
+    .lines {
+      .set {
+        .line {
+          fill: none;
+          stroke-width: 2px;
+        }
+      }
+    }
+
+    .axis {
+      line, path {
         fill: none;
-        stroke-width: 2px;
+        shape-rendering: crispEdges;
+        stroke: @fg-color;
+        stroke-width: 1px;
+      }
+
+      .tick {
+        text {
+          fill: @fg-color;
+          stroke: none;
+          font-size: 11px;
+          font-family: sans-serif;
+        }
       }
     }
   }

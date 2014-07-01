@@ -75,7 +75,7 @@ describe("sapphire.widgets.lines", function() {
     .prop('sets')
 
     .prop('height')
-    .default(120 - (4 + 4))
+    .default(150 - (4 + 4))
 
     .invoke(function(input) {
       var values = this.sets()
@@ -142,7 +142,7 @@ describe("sapphire.widgets.lines", function() {
     lines
       .width(600)
       .chart()
-        .height(120)
+        .height(150)
         .margin({
           top: 4,
           left: 4,
@@ -223,5 +223,71 @@ describe("sapphire.widgets.lines", function() {
     line = el.selectAll('.chart .set[data-id=bar] .line');
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.sets[1].values));
+  });
+
+  it("should draw a chart time axis", function() {
+    var lines = sapphire.widgets.lines()
+      .ticks(3)
+      .ftick(d3.time.format('%b'));
+
+    expect(el.html()).to.be.empty;
+
+    datum.sets[0].values = [{
+      x: +(new Date(2014, 2)),
+      y: 234
+    }, {
+      x: +(new Date(2014, 3)),
+      y: 456
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 789,
+    }];
+
+    datum.sets[1].values = [{
+      x: +(new Date(2014, 2)),
+      y: 1234
+    }, {
+      x: +(new Date(2014, 3)),
+      y: 1456
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 1789
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    var axis = el.selectAll('.chart .axis');
+    expect(axis.size()).to.equal(1);
+    expect(axis.text()).to.equal(['Mar', 'Apr', 'May'].join(''));
+
+    datum.sets[0].values = [{
+      x: +(new Date(2014, 5)),
+      y: 234
+    }, {
+      x: +(new Date(2014, 6)),
+      y: 456
+    }, {
+      x: +(new Date(2014, 7)),
+      y: 789
+    }];
+
+    datum.sets[1].values = [{
+      x: +(new Date(2014, 5)),
+      y: 1234
+    }, {
+      x: +(new Date(2014, 6)),
+      y: 1456
+    }, {
+      x: +(new Date(2014, 7)),
+      y: 1789
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    axis = el.selectAll('.chart .axis');
+    expect(axis.size()).to.equal(1);
+    expect(axis.text()).to.equal(['Jun', 'Jul', 'Aug'].join(''));
   });
 });
