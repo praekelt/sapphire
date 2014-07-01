@@ -201,6 +201,30 @@ var chart = require('../view').extend()
       .attr('stroke', function(d) { return d.color; })
       .attr('d', function(d) { return line(d.values); });
 
+    var dot = set.selectAll('.dot')
+      .data(function(d) {
+        if (!d.values.length) { return []; }
+        var last = d.values[d.values.length - 1];
+
+        return [{
+          x: last.x,
+          y: last.y,
+          color: d.color
+        }];
+      });
+
+    dot.enter().append('circle')
+      .attr('class', 'dot')
+      .attr('r', 4);
+
+    dot
+      .attr('fill', function(d) { return d.color; })
+      .attr('cx', function(d) { return fx(d.x); })
+      .attr('cy', function(d) { return fy(d.y); });
+
+    dot.exit()
+      .remove();
+
     set.exit()
       .remove();
 

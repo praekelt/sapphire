@@ -138,7 +138,7 @@ describe("sapphire.widgets.lines", function() {
     expect(title.text()).to.equal(datum.title);
   });
 
-  it("should draw lines for its value sets", function() {
+  it("should draw lines for its sets", function() {
     var colors = helpers.colors();
 
     var fx = helpers.fx();
@@ -241,6 +241,172 @@ describe("sapphire.widgets.lines", function() {
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.sets[1].values));
     expect(line.style('stroke')).to.equal(colors('baz', 2));
+  });
+
+  it("should draw dots for its sets' last values", function() {
+    var colors = helpers.colors();
+    var fx = helpers.fx();
+    var fy = helpers.fy();
+
+    var lines = sapphire.widgets.lines();
+
+    lines
+      .width(600)
+      .chart()
+        .height(150)
+        .margin({
+          top: 4,
+          left: 4,
+          bottom: 4,
+          right: 4 
+        });
+
+    expect(el.html()).to.be.empty;
+
+    datum.sets[0].values = [{
+      x: 123,
+      y: 234
+    }, {
+      x: 345,
+      y: 456
+    }, {
+      x: 567,
+      y: 789
+    }];
+
+    datum.sets[1].values = [{
+      x: 123,
+      y: 834
+    }, {
+      x: 345,
+      y: 856
+    }, {
+      x: 567,
+      y: 889
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    fx.sets(datum.sets);
+    fy.sets(datum.sets);
+
+    expect(el.selectAll('.chart .set .dot').size()).to.equal(2);
+    var dot = el.selectAll('.chart .set[data-id=foo] .dot');
+    expect(dot.size()).to.equal(1);
+    expect(dot.style('fill')).to.equal(colors('foo', 2));
+
+    dot = el.selectAll('.chart .set[data-id=bar] .dot');
+    expect(dot.size()).to.equal(1);
+    expect(dot.style('fill')).to.equal(colors('bar', 2));
+
+    datum.sets[0].values = [{
+      x: 1123,
+      y: 1234
+    }, {
+      x: 1345,
+      y: 1456
+    }, {
+      x: 1567,
+      y: 1789
+    }];
+
+    datum.sets[1].key = 'baz';
+    datum.sets[1].values = [{
+      x: 1123,
+      y: 3234
+    }, {
+      x: 1345,
+      y: 3456
+    }, {
+      x: 1567,
+      y: 3789
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    fx.sets(datum.sets);
+    fy.sets(datum.sets);
+
+    expect(el.selectAll('.chart .set .dot').size()).to.equal(2);
+    dot = el.selectAll('.chart .set[data-id=foo] .dot');
+    expect(dot.size()).to.equal(1);
+    expect(dot.style('fill')).to.equal(colors('foo', 2));
+
+    dot = el.selectAll('.chart .set[data-id=baz] .dot');
+    expect(dot.size()).to.equal(1);
+    expect(dot.style('fill')).to.equal(colors('baz', 2));
+  });
+
+  it("should not draw dots for empty sets", function() {
+    var colors = helpers.colors();
+    var fx = helpers.fx();
+    var fy = helpers.fy();
+
+    var lines = sapphire.widgets.lines();
+
+    lines
+      .width(600)
+      .chart()
+        .height(150)
+        .margin({
+          top: 4,
+          left: 4,
+          bottom: 4,
+          right: 4 
+        });
+
+    expect(el.html()).to.be.empty;
+
+    datum.sets[0].values = [{
+      x: 123,
+      y: 234
+    }, {
+      x: 345,
+      y: 456
+    }, {
+      x: 567,
+      y: 789
+    }];
+
+    datum.sets[1].values = [];
+
+    el.datum(datum)
+      .call(lines);
+
+    fx.sets(datum.sets);
+    fy.sets(datum.sets);
+
+    expect(el.selectAll('.chart .set .dot').size()).to.equal(1);
+    var dot = el.selectAll('.chart .set[data-id=foo] .dot');
+    expect(dot.size()).to.equal(1);
+    expect(dot.style('fill')).to.equal(colors('foo', 2));
+
+    datum.sets[0].values = [];
+
+    datum.sets[1].key = 'baz';
+    datum.sets[1].values = [{
+      x: 1123,
+      y: 3234
+    }, {
+      x: 1345,
+      y: 3456
+    }, {
+      x: 1567,
+      y: 3789
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    fx.sets(datum.sets);
+    fy.sets(datum.sets);
+
+    expect(el.selectAll('.chart .set .dot').size()).to.equal(1);
+    dot = el.selectAll('.chart .set[data-id=baz] .dot');
+    expect(dot.size()).to.equal(1);
+    expect(dot.style('fill')).to.equal(colors('baz', 2));
   });
 
   it("should draw a chart time axis", function() {
