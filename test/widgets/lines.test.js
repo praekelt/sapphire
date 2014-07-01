@@ -106,6 +106,15 @@ describe("sapphire.widgets.lines", function() {
       return line(data);
     });
 
+  helpers.color = strain()
+    .prop('color')
+    .default(d3.scale.category10())
+
+    .invoke(function(key, len) {
+      var color = this.color();
+      return color(sapphire.utils.hash(key) % len);
+    });
+
   it("should show its title", function() {
     var lines = sapphire.widgets.lines();
     expect(el.html()).to.be.empty;
@@ -115,7 +124,7 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    var title = el.selectAll('.title');
+    var title = el.selectAll('.widget.title');
     expect(title.size()).to.equal(1);
     expect(title.text()).to.equal(datum.title);
 
@@ -124,12 +133,14 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    title = el.selectAll('.title');
+    title = el.selectAll('.widget.title');
     expect(title.size()).to.equal(1);
     expect(title.text()).to.equal(datum.title);
   });
 
   it("should draw lines for its value sets", function() {
+    var color = helpers.color();
+
     var fx = helpers.fx();
     var fy = helpers.fy();
 
@@ -180,13 +191,16 @@ describe("sapphire.widgets.lines", function() {
     fx.sets(datum.sets);
     fy.sets(datum.sets);
 
+    expect(el.selectAll('.chart .set .line').size()).to.equal(2);
     var line = el.selectAll('.chart .set[data-id=foo] .line');
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.sets[0].values));
+    expect(line.style('stroke')).to.equal(color('foo', 2));
 
     line = el.selectAll('.chart .set[data-id=bar] .line');
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.sets[1].values));
+    expect(line.style('stroke')).to.equal(color('bar', 2));
 
     datum.sets[0].values = [{
       x: 1123,
@@ -199,6 +213,7 @@ describe("sapphire.widgets.lines", function() {
       y: 1789
     }];
 
+    datum.sets[1].key = 'baz';
     datum.sets[1].values = [{
       x: 1123,
       y: 3234
@@ -216,13 +231,16 @@ describe("sapphire.widgets.lines", function() {
     fx.sets(datum.sets);
     fy.sets(datum.sets);
 
+    expect(el.selectAll('.chart .set .line').size()).to.equal(2);
     line = el.selectAll('.chart .set[data-id=foo] .line');
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.sets[0].values));
+    expect(line.style('stroke')).to.equal(color('foo', 2));
 
-    line = el.selectAll('.chart .set[data-id=bar] .line');
+    line = el.selectAll('.chart .set[data-id=baz] .line');
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.sets[1].values));
+    expect(line.style('stroke')).to.equal(color('baz', 2));
   });
 
   it("should draw a chart time axis", function() {
