@@ -46,28 +46,33 @@ module.exports = require('./widget').extend()
   .default(7)
 
   .prop('colors')
-  .default(d3.scale.category20())
+  .default(d3.scale.category10())
 
   .prop('none')
   .default(0)
 
   .prop('chart')
+  .prop('legend')
 
   .init(function() {
     this.chart(chart(this));
+    this.legend(legend(this));
   })
 
   .enter(function(el) {
     el.attr('class', 'lines widget');
 
     el.append('div')
-      .attr('class', 'title');
+      .attr('class', 'widget title');
 
     var values = el.append('div')
       .attr('class', 'values');
 
     values.append('div')
       .attr('class', 'chart');
+
+    values.append('div')
+      .attr('class', 'legend');
   })
 
   .draw(function(el) {
@@ -75,7 +80,7 @@ module.exports = require('./widget').extend()
     var node = el.node();
     var colors = this.colors();
 
-    el.select('.title')
+    el.select('.widget.title')
       .text(function(d, i) {
         return self.title().call(node, d, i);
       });
@@ -90,6 +95,9 @@ module.exports = require('./widget').extend()
 
     values.select('.chart')
       .call(this.chart());
+
+    values.select('.legend')
+      .call(this.legend());
 
     function set(d, i) {
       var key = self.key()
@@ -190,12 +198,8 @@ var chart = require('../view').extend()
         .attr('class', 'line');
 
     set.select('.line')
-      .attr('d', function(d) {
-        return line(d.values);
-      })
-      .attr('stroke', function(d) {
-        return d.color;
-      });
+      .attr('stroke', function(d) { return d.color; })
+      .attr('d', function(d) { return line(d.values); });
 
     set.exit()
       .remove();
@@ -204,4 +208,57 @@ var chart = require('../view').extend()
       .select('.axis')
       .attr('transform', utils.translate(0, innerHeight))
       .call(axis);
+  });
+
+
+var legend = require('../view').extend()
+  .prop('widget')
+
+  .init(function(widget) {
+    this.widget(widget);
+  })
+
+  .enter(function(el) {
+    el.append('table')
+      .attr('class', 'table');
+  })
+
+  .draw(function(el) {
+    var none = this.widget().none();
+    var fvalue = this.widget().fvalue();
+
+    var set = el.select('.table').selectAll('.set')
+      .data(function(d) { return d; },
+            function(d) { return d.key; });
+
+    var enterSet = set.enter().append('tr')
+      .attr('data-id', function(d) { return d.key; })
+      .attr('class', 'set');
+
+    enterSet.append('td')
+      .attr('class', 'swatch');
+
+    enterSet.append('td')
+      .attr('class', 'title');
+
+    enterSet.append('td')
+      .attr('class', 'value');
+
+    set.select('.swatch')
+      .style('background', function(d) { return d.color; });
+
+    set.select('.title')
+      .text(function(d) { return d.title; });
+
+    set.select('.value')
+      .text(function(d) {
+        d = d.values[d.values.length - 1];
+
+        return d
+          ? fvalue(d.y)
+          : fvalue(none);
+      });
+
+    set.exit()
+      .remove();
   });

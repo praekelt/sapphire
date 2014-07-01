@@ -106,13 +106,13 @@ describe("sapphire.widgets.lines", function() {
       return line(data);
     });
 
-  helpers.color = strain()
-    .prop('color')
+  helpers.colors = strain()
+    .prop('colors')
     .default(d3.scale.category10())
 
     .invoke(function(key, len) {
-      var color = this.color();
-      return color(sapphire.utils.hash(key) % len);
+      var colors = this.colors();
+      return colors(sapphire.utils.hash(key) % len);
     });
 
   it("should show its title", function() {
@@ -139,7 +139,7 @@ describe("sapphire.widgets.lines", function() {
   });
 
   it("should draw lines for its value sets", function() {
-    var color = helpers.color();
+    var colors = helpers.colors();
 
     var fx = helpers.fx();
     var fy = helpers.fy();
@@ -195,12 +195,12 @@ describe("sapphire.widgets.lines", function() {
     var line = el.selectAll('.chart .set[data-id=foo] .line');
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.sets[0].values));
-    expect(line.style('stroke')).to.equal(color('foo', 2));
+    expect(line.style('stroke')).to.equal(colors('foo', 2));
 
     line = el.selectAll('.chart .set[data-id=bar] .line');
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.sets[1].values));
-    expect(line.style('stroke')).to.equal(color('bar', 2));
+    expect(line.style('stroke')).to.equal(colors('bar', 2));
 
     datum.sets[0].values = [{
       x: 1123,
@@ -235,12 +235,12 @@ describe("sapphire.widgets.lines", function() {
     line = el.selectAll('.chart .set[data-id=foo] .line');
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.sets[0].values));
-    expect(line.style('stroke')).to.equal(color('foo', 2));
+    expect(line.style('stroke')).to.equal(colors('foo', 2));
 
     line = el.selectAll('.chart .set[data-id=baz] .line');
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.sets[1].values));
-    expect(line.style('stroke')).to.equal(color('baz', 2));
+    expect(line.style('stroke')).to.equal(colors('baz', 2));
   });
 
   it("should draw a chart time axis", function() {
@@ -307,5 +307,335 @@ describe("sapphire.widgets.lines", function() {
     axis = el.selectAll('.chart .axis');
     expect(axis.size()).to.equal(1);
     expect(axis.text()).to.equal(['Jun', 'Jul', 'Aug'].join(''));
+  });
+
+  it("should draw its legend", function() {
+    var lines = sapphire.widgets.lines();
+    expect(el.html()).to.be.empty;
+
+    datum.sets[0].values = [{
+      x: 0,
+      y: 0
+    }, {
+      x: 1,
+      y: 3000000
+    }, {
+      x: 2,
+      y: 2000000
+    }, {
+      x: 3,
+      y: 4000000
+    }];
+
+    datum.sets[1].values = [{
+      x: 0,
+      y: 0
+    }, {
+      x: 1,
+      y: 8000000
+    }, {
+      x: 2,
+      y: 3000000
+    }, {
+      x: 3,
+      y: 5000000
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    var legend = el.selectAll('.legend');
+    expect(legend.size()).to.equal(1);
+    expect(legend.selectAll('.set').size()).to.equal(2);
+
+    datum.sets[0].values = [{
+      x: 4,
+      y: 600000 
+    }, {
+      x: 5,
+      y: 3000000
+    }, {
+      x: 6,
+      y: 8000000
+    }, {
+      x: 7,
+      y: 9000000
+    }];
+
+    datum.sets[1].key = 'baz';
+    datum.sets[1].values = [{
+      x: 4,
+      y: 300000 
+    }, {
+      x: 5,
+      y: 8000000
+    }, {
+      x: 6,
+      y: 3000000
+    }, {
+      x: 7,
+      y: 4000000
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    legend = el.selectAll('.legend');
+    expect(legend.size()).to.equal(1);
+    expect(legend.selectAll('.set').size()).to.equal(2);
+  });
+
+  it("should draw its legend's set swatches", function() {
+    var colors = helpers.colors();
+    var lines = sapphire.widgets.lines();
+    expect(el.html()).to.be.empty;
+
+    datum.sets[0].values = [{
+      x: 0,
+      y: 0
+    }, {
+      x: 1,
+      y: 3000000
+    }, {
+      x: 2,
+      y: 2000000
+    }, {
+      x: 3,
+      y: 4000000
+    }];
+
+    datum.sets[1].values = [{
+      x: 0,
+      y: 0
+    }, {
+      x: 1,
+      y: 8000000
+    }, {
+      x: 2,
+      y: 3000000
+    }, {
+      x: 3,
+      y: 5000000
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    var swatch = el
+      .select('.legend .set[data-id=foo] .swatch')
+      .style('background-color');
+
+    expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('foo', 2)));
+
+    swatch = el
+      .select('.legend .set[data-id=bar] .swatch')
+      .style('background-color');
+
+    expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('bar', 2)));
+
+    datum.sets[0].values = [{
+      x: 4,
+      y: 600000 
+    }, {
+      x: 5,
+      y: 3000000
+    }, {
+      x: 6,
+      y: 8000000
+    }, {
+      x: 7,
+      y: 9000000
+    }];
+
+    datum.sets[1].key = 'baz';
+    datum.sets[1].values = [{
+      x: 4,
+      y: 300000 
+    }, {
+      x: 5,
+      y: 8000000
+    }, {
+      x: 6,
+      y: 3000000
+    }, {
+      x: 7,
+      y: 4000000
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    swatch = el
+      .select('.legend .set[data-id=foo] .swatch')
+      .style('background-color');
+
+    expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('foo', 2)));
+
+    swatch = el
+      .select('.legend .set[data-id=baz] .swatch')
+      .style('background-color');
+
+    expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('baz', 2)));
+  });
+
+  it("should draw its legend's set titles", function() {
+    var lines = sapphire.widgets.lines();
+    expect(el.html()).to.be.empty;
+
+    datum.sets[0].values = [{
+      x: 0,
+      y: 0
+    }, {
+      x: 1,
+      y: 3000000
+    }, {
+      x: 2,
+      y: 2000000
+    }, {
+      x: 3,
+      y: 4000000
+    }];
+
+    datum.sets[1].values = [{
+      x: 0,
+      y: 0
+    }, {
+      x: 1,
+      y: 8000000
+    }, {
+      x: 2,
+      y: 3000000
+    }, {
+      x: 3,
+      y: 5000000
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    var title = el.select('.legend .set[data-id=foo] .title');
+    expect(title.text()).to.equal('Total Foo');
+
+    title = el.select('.legend .set[data-id=bar] .title');
+    expect(title.text()).to.equal('Total Bar');
+
+    datum.sets[0].values = [{
+      x: 4,
+      y: 600000 
+    }, {
+      x: 5,
+      y: 3000000
+    }, {
+      x: 6,
+      y: 8000000
+    }, {
+      x: 7,
+      y: 9000000
+    }];
+
+    datum.sets[1].key = 'baz';
+    datum.sets[1].title = 'Total Baz';
+    datum.sets[1].values = [{
+      x: 4,
+      y: 300000 
+    }, {
+      x: 5,
+      y: 8000000
+    }, {
+      x: 6,
+      y: 3000000
+    }, {
+      x: 7,
+      y: 4000000
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    title = el.select('.legend .set[data-id=foo] .title');
+    expect(title.text()).to.equal('Total Foo');
+
+    title = el.select('.legend .set[data-id=baz] .title');
+    expect(title.text()).to.equal('Total Baz');
+  });
+
+  it("should draw its legend's sets' last values", function() {
+    var lines = sapphire.widgets.lines();
+    expect(el.html()).to.be.empty;
+
+    datum.sets[0].values = [{
+      x: 0,
+      y: 0
+    }, {
+      x: 1,
+      y: 3000000
+    }, {
+      x: 2,
+      y: 2000000
+    }, {
+      x: 3,
+      y: 4000000
+    }];
+
+    datum.sets[1].values = [{
+      x: 0,
+      y: 0
+    }, {
+      x: 1,
+      y: 8000000
+    }, {
+      x: 2,
+      y: 3000000
+    }, {
+      x: 3,
+      y: 5000000
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    var value = el.select('.legend .set[data-id=foo] .value');
+    expect(value.text()).to.equal('4,000,000');
+
+    value = el.select('.legend .set[data-id=bar] .value');
+    expect(value.text()).to.equal('5,000,000');
+
+    datum.sets[0].values = [{
+      x: 4,
+      y: 600000 
+    }, {
+      x: 5,
+      y: 3000000
+    }, {
+      x: 6,
+      y: 8000000
+    }, {
+      x: 7,
+      y: 9000000
+    }];
+
+    datum.sets[1].key = 'baz';
+    datum.sets[1].values = [{
+      x: 4,
+      y: 300000 
+    }, {
+      x: 5,
+      y: 8000000
+    }, {
+      x: 6,
+      y: 3000000
+    }, {
+      x: 7,
+      y: 4000000
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    value = el.select('.legend .set[data-id=foo] .value');
+    expect(value.text()).to.equal('9,000,000');
+
+    value = el.select('.legend .set[data-id=baz] .value');
+    expect(value.text()).to.equal('4,000,000');
   });
 });

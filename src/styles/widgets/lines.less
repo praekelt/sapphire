@@ -2,7 +2,7 @@
 
 
 .lines.widget {
-  .title {
+  > .title {
     .widget .title();
   }
 
@@ -32,6 +32,46 @@
           stroke: none;
           font-size: 11px;
           font-family: sans-serif;
+        }
+      }
+    }
+  }
+
+  .legend {
+    font-size: 15px;
+    padding: 2px 34px;
+    
+    .table {
+      border-collapse: collapse;
+      width: 100%;
+
+      .set {
+        background: darken(@bg-color, 6%);
+
+        &:nth-child(2n) {
+          background: darken(@bg-color, 2.5%);
+
+          .value {
+            background: darken(@bg-color, 6%);
+          }
+        }
+
+        td {
+          padding: 4px 12px;
+        }
+
+        .swatch {
+          padding: 0;
+          width: 12px;
+        }
+
+        .title {
+          width: 70%;
+        }
+
+        .value {
+          text-align: right;
+          background: darken(@bg-color, 2.5%);
         }
       }
     }
