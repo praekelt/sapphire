@@ -1,11 +1,66 @@
 @import url(http://fonts.googleapis.com/css?family=Ubuntu);
+.sapphire {
+  color: #222222;
+}
 .sapphire .dashboard .widgets {
   position: relative;
 }
 .sapphire .dashboard .widgets .widget {
   position: absolute;
 }
-.sapphire .lastvalue .last {
-  font-size: 4em;
+.sapphire .lastvalue {
   font-family: 'Ubuntu', sans-serif;
+}
+.sapphire .lastvalue .title {
+  padding: 8px 5px;
+  background: #222222;
+  color: #eeeeee;
+  text-align: center;
+}
+.sapphire .lastvalue .values {
+  padding: 2px 30px;
+}
+.sapphire .lastvalue .values.neutral .sparkline .diff.path {
+  stroke: #222222;
+}
+.sapphire .lastvalue .values.neutral .sparkline .dot {
+  fill: #222222;
+}
+.sapphire .lastvalue .values.neutral .summary .diff {
+  color: #222222;
+}
+.sapphire .lastvalue .values.good .sparkline .diff.path {
+  stroke: #188f23;
+}
+.sapphire .lastvalue .values.good .sparkline .dot {
+  fill: #188f23;
+}
+.sapphire .lastvalue .values.good .summary .diff {
+  color: #188f23;
+}
+.sapphire .lastvalue .values.bad .sparkline .diff.path {
+  stroke: #c41933;
+}
+.sapphire .lastvalue .values.bad .sparkline .dot {
+  fill: #c41933;
+}
+.sapphire .lastvalue .values.bad .summary .diff {
+  color: #c41933;
+}
+.sapphire .lastvalue .values .last {
+  text-align: right;
+  font-size: 3.75em;
+}
+.sapphire .lastvalue .values .summary {
+  padding: 0;
+  padding-bottom: 10px;
+  text-align: right;
+}
+.sapphire .lastvalue .values .sparkline .path {
+  fill: none;
+  stroke: #222222;
+  stroke-width: 4px;
+}
+.sapphire .lastvalue .values .sparkline .diff.path {
+  stroke-width: 4.5px;
 }
