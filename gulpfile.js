@@ -5,6 +5,7 @@ var less = require('gulp-less');
 var karma = require('gulp-karma');
 var streamify = require('gulp-streamify');
 var browserify = require('browserify');
+var jshint = require('gulp-jshint');
 var source = require('vinyl-source-stream');
 var version = require('./bower').version;
 
@@ -65,6 +66,19 @@ gulp.task('test', ['scripts:debug', 'styles'], function() {
 });
 
 
+gulp.task('lint', function() {
+  return gulp
+    .src([
+      './gulpfile.js',
+      './src/scripts/**/*.js',
+      './test/**/*.js'
+    ])
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'))
+    .pipe(jshint.reporter('fail'));
+});
+
+
 gulp.task('build', function () {
   gulp.start('scripts', 'scripts:debug', 'styles');
 });
@@ -96,6 +110,11 @@ gulp.task('install', function() {
     .join('\n')
     .to(hookfile);
   sh.chmod('+x', hookfile);
+});
+
+
+gulp.task('ci', ['lint'], function () {
+  gulp.start('test');
 });
 
 
