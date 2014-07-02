@@ -19,20 +19,7 @@ module.exports = require('./view').extend()
   })
 
   .prop('type')
-  .set(function(fn) {
-    var self = this;
-    fn = d3.functor(fn);
-
-    return function(d, i) {
-      var name = fn.call(this, d, i);
-
-      if (!self.types().has(name)) {
-        throw new Error("Unrecognised dashboard widget type '" + name + "'");
-      }
-
-      return self.types().get(name);
-    };
-  })
+  .set(d3.functor)
   .default(function(d) { return d.type; })
 
   .prop('widgets')
@@ -92,26 +79,16 @@ module.exports = require('./view').extend()
       .scale(100)
       .numcols(this.numcols())
       .padding(this.padding())
-      .col(function(d, i) {
-        return self.col().call(self, d, i);
-      })
-      .row(function(d, i) {
-        return self.row().call(self, d, i);
-      })
-      .colspan(function(d, i) {
-        var v = self.colspan().call(self, d, i);
-        var type = self.type().call(this, d, i);
-        return utils.ensure(v, type.colspan());
-      })
-      .rowspan(function(d, i) {
-        var v = self.rowspan().call(self, d, i);
-        var type = self.type().call(this, d, i);
-        return utils.ensure(v, type.rowspan());
-      });
+      .col(function(d) { return d.col; })
+      .row(function(d) { return d.row; })
+      .colspan(function(d) { return d.colspan; })
+      .rowspan(function(d) { return d.rowspan; });
 
     var widget = el.select('.widgets').selectAll('.widget')
       .data(function(d, i) {
-        return self.widgets().call(this, d, i);
+        return self.widgets()
+          .call(el, d, i)
+          .map(awidget);
       });
 
     widget.enter().append('div')
@@ -120,13 +97,13 @@ module.exports = require('./view').extend()
     var gridEls = grid(widget.data());
 
     widget
-      .attr('data-key', this.key())
+      .attr('data-key', function(d) { return d.key; })
       .each(function(d, i) {
-        var type = self.type().call(this, d, i);
         var gridEl = gridEls[i];
 
         d3.select(this)
-          .call(type)
+          .datum(d.data)
+          .call(d.type)
           .style('left', gridEl.x + 'px')
           .style('top', gridEl.y + 'px')
           .style('width', gridEl.width + 'px')
@@ -135,4 +112,24 @@ module.exports = require('./view').extend()
 
     widget.exit().remove();
 
+    function awidget(d, i) {
+      var typename = self.type().call(el, d, i);
+      var type = self.types().get(typename);
+
+      if (!type) {
+        throw new Error("Unrecognised dashboard widget type '" + typename + "'");
+      }
+
+      var result = {};
+      result.data = d;
+      result.type = type;
+      result.key = self.key().call(el, d, i);
+      result.col = self.col().call(el, d, i);
+      result.row = self.row().call(el, d, i);
+      result.colspan = self.colspan().call(el, d, i);
+      result.colspan = utils.ensure(result.colspan, type.colspan());
+      result.rowspan = self.rowspan().call(el, d, i);
+      result.rowspan = utils.ensure(result.rowspan, type.rowspan());
+      return result;
+    }
   });
