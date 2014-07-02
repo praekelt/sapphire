@@ -1,19 +1,12 @@
-@import "../vars";
+@import "./widget";
 
 
-.lastvalue {
+.lastvalue.widget {
   @good-color: #188f23;
   @bad-color: #c41933;
 
-  font-family: @title-font;
-
   .title {
-    padding: 8px 5px;
-
-    background: @fg-color;
-    color: @bg-color;
-
-    text-align: center;
+    .widget .title();
   }
 
   .values {

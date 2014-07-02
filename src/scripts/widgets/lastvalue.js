@@ -45,7 +45,7 @@ module.exports = require('./widget').extend()
   })
 
   .enter(function(el) {
-    el.attr('class', 'lastvalue');
+    el.attr('class', 'lastvalue widget');
 
     el.append('div')
       .attr('class', 'title');
