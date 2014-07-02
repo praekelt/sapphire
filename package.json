@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "A js library for drawing dashboards.",
   "scripts": {
+    "ci": "gulp ci",
     "test": "gulp test",
     "install": "gulp install",
     "build:develop": "gulp build:develop"

@@ -113,6 +113,11 @@ gulp.task('install', function() {
 });
 
 
+gulp.task('ci', ['lint'], function () {
+  gulp.start('test');
+});
+
+
 gulp.task('default', function () {
   gulp.start('build');
 });
