@@ -74,6 +74,7 @@ module.exports = require('./view').extend()
 
   .draw(function(el) {
     var self = this;
+    var node = el.node();
 
     var grid = layout()
       .scale(100)
@@ -87,7 +88,7 @@ module.exports = require('./view').extend()
     var widget = el.select('.widgets').selectAll('.widget')
       .data(function(d, i) {
         return self.widgets()
-          .call(el, d, i)
+          .call(node, d, i)
           .map(awidget);
       });
 
@@ -113,7 +114,7 @@ module.exports = require('./view').extend()
     widget.exit().remove();
 
     function awidget(d, i) {
-      var typename = self.type().call(el, d, i);
+      var typename = self.type().call(node, d, i);
       var type = self.types().get(typename);
 
       if (!type) {
@@ -123,12 +124,12 @@ module.exports = require('./view').extend()
       var result = {};
       result.data = d;
       result.type = type;
-      result.key = self.key().call(el, d, i);
-      result.col = self.col().call(el, d, i);
-      result.row = self.row().call(el, d, i);
-      result.colspan = self.colspan().call(el, d, i);
+      result.key = self.key().call(node, d, i);
+      result.col = self.col().call(node, d, i);
+      result.row = self.row().call(node, d, i);
+      result.colspan = self.colspan().call(node, d, i);
       result.colspan = utils.ensure(result.colspan, type.colspan());
-      result.rowspan = self.rowspan().call(el, d, i);
+      result.rowspan = self.rowspan().call(node, d, i);
       result.rowspan = utils.ensure(result.rowspan, type.rowspan());
       return result;
     }
