@@ -89,7 +89,7 @@ module.exports = require('./view').extend()
       .data(function(d, i) {
         return self.widgets()
           .call(node, d, i)
-          .map(awidget);
+          .map(widgetData);
       });
 
     widget.enter().append('div')
@@ -113,7 +113,7 @@ module.exports = require('./view').extend()
 
     widget.exit().remove();
 
-    function awidget(d, i) {
+    function widgetData(d, i) {
       var typename = self.type().call(node, d, i);
       var type = self.types().get(typename);
 
