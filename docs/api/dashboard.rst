@@ -21,8 +21,8 @@ Component for drawing a dashboard of widgets laid out in a grid.
     d3.select('#dashboard')
       .datum({
         widgets: [{
-          title: 'A lastvalue widget',
-          type: 'lastvalue',
+          title: 'A last widget',
+          type: 'last',
           values [{
             x: 123,
             y: 345
@@ -72,8 +72,8 @@ Component for drawing a dashboard of widgets laid out in a grid.
       .datum({
         ...
         things: [{
-          type: 'lastvalue',
-          title: 'Default lastvalue',
+          type: 'last',
+          title: 'Default last',
           values: [{
             x: 123,
             y: 345
@@ -150,7 +150,7 @@ Component for drawing a dashboard of widgets laid out in a grid.
   .. code-block:: javascript
 
     var dashboard = sapphire.dashboard();
-    dashboard.types().get('lastvalue');
+    dashboard.types().get('last');
     dashboard.types().set('dummy', sapphire.view.extend().new());
 
 

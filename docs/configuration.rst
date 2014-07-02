@@ -40,7 +40,7 @@ using :func:`dashboard.types`.
 
   var dashboard = sapphire.dashboard();
 
-  dashboard.types().get('lastvalue')
+  dashboard.types().get('last')
     .values(function(d) {
       return d.datapoints;
     })
@@ -51,8 +51,8 @@ using :func:`dashboard.types`.
   d3.select('#dashboard')
     .datum(({
       widgets: [{
-        type: 'lastvalue',
-        title: 'Configured lastvalue',
+        type: 'last',
+        title: 'Configured last',
         datapoints: [{
           x: 123,
           value: 345

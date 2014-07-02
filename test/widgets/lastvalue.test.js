@@ -1,4 +1,4 @@
-describe("sapphire.widgets.lastvalue", function() {
+describe("sapphire.widgets.last", function() {
   var el;
   var datum;
 
@@ -72,7 +72,7 @@ describe("sapphire.widgets.lastvalue", function() {
     });
 
   it("should show the last value", function() {
-    var lastvalue = sapphire.widgets.lastvalue();
+    var last = sapphire.widgets.last();
     expect(el.html()).to.be.empty;
 
     datum.values = [{
@@ -84,7 +84,7 @@ describe("sapphire.widgets.lastvalue", function() {
     }];
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     expect(el.selectAll('.last.value').size()).to.equal(1);
     expect(el.select('.last.value').text()).to.equal('910');
@@ -98,14 +98,14 @@ describe("sapphire.widgets.lastvalue", function() {
     }];
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     expect(el.selectAll('.last.value').size()).to.equal(1);
     expect(el.select('.last.value').text()).to.equal('1,910');
   });
 
   it("should use the appropriate diff class", function() {
-    var lastvalue = sapphire.widgets.lastvalue();
+    var last = sapphire.widgets.last();
     expect(el.html()).to.be.empty;
 
     datum.values = [{
@@ -117,7 +117,7 @@ describe("sapphire.widgets.lastvalue", function() {
     }];
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     expect(el.select('.values').attr('class'))
         .to.equal('good values');
@@ -131,7 +131,7 @@ describe("sapphire.widgets.lastvalue", function() {
     }];
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     expect(el.select('.values').attr('class'))
         .to.equal('bad values');
@@ -145,14 +145,14 @@ describe("sapphire.widgets.lastvalue", function() {
     }];
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     expect(el.select('.values').attr('class'))
         .to.equal('neutral values');
   });
 
   it("should use a neutral diff class for less than two values", function() {
-    var lastvalue = sapphire.widgets.lastvalue();
+    var last = sapphire.widgets.last();
     expect(el.html()).to.be.empty;
 
     datum.values = [{
@@ -161,7 +161,7 @@ describe("sapphire.widgets.lastvalue", function() {
     }];
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     expect(el.select('.values').attr('class'))
         .to.equal('neutral values');
@@ -169,14 +169,14 @@ describe("sapphire.widgets.lastvalue", function() {
     datum.values = [];
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     expect(el.select('.values').attr('class'))
         .to.equal('neutral values');
   });
 
   it("should show a diff summary if there are two or more values", function() {
-    var lastvalue = sapphire.widgets.lastvalue();
+    var last = sapphire.widgets.last();
     expect(el.html()).to.be.empty;
 
     datum.values = [{
@@ -188,7 +188,7 @@ describe("sapphire.widgets.lastvalue", function() {
     }];
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     expect(el.selectAll('.summary').size())
         .to.equal(1);
@@ -205,7 +205,7 @@ describe("sapphire.widgets.lastvalue", function() {
     }];
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     expect(el.selectAll('.summary').size())
         .to.equal(1);
@@ -215,7 +215,7 @@ describe("sapphire.widgets.lastvalue", function() {
   });
 
   it("should not show a diff summary if there are less than two values", function() {
-    var lastvalue = sapphire.widgets.lastvalue();
+    var last = sapphire.widgets.last();
     expect(el.html()).to.be.empty;
 
     datum.values = [{
@@ -224,7 +224,7 @@ describe("sapphire.widgets.lastvalue", function() {
     }];
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     expect(el.selectAll('.summary').size()).to.equal(1);
     expect(el.select('.summary').text()).to.equal('');
@@ -232,20 +232,20 @@ describe("sapphire.widgets.lastvalue", function() {
     datum.values = [];
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     expect(el.selectAll('.summary').size()).to.equal(1);
     expect(el.select('.summary').text()).to.equal('');
   });
 
   it("should show its title", function() {
-    var lastvalue = sapphire.widgets.lastvalue();
+    var last = sapphire.widgets.last();
     expect(el.html()).to.be.empty;
 
     datum.title = 'Total Bar and Baz';
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     expect(el.selectAll('.title').size()).to.equal(1);
     expect(el.select('.title').text()).to.equal(datum.title);
@@ -253,22 +253,22 @@ describe("sapphire.widgets.lastvalue", function() {
     datum.title = 'Total Qux and Corge';
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     expect(el.selectAll('.title').size()).to.equal(1);
     expect(el.select('.title').text()).to.equal(datum.title);
   });
 
   it("should show the 'none' value if values are not available", function() {
-    var lastvalue = sapphire.widgets.lastvalue()
+    var last = sapphire.widgets.last()
       .none(23);
 
     datum.values = [];
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
-    lastvalue(el);
+    last(el);
     expect(el.select('.last').text()).to.equal('23');
   });
 
@@ -280,9 +280,9 @@ describe("sapphire.widgets.lastvalue", function() {
       .fx(fx)
       .fy(fy);
 
-    var lastvalue = sapphire.widgets.lastvalue();
+    var last = sapphire.widgets.last();
 
-    lastvalue
+    last
       .width(200)
       .sparkline()
         .height(25)
@@ -307,7 +307,7 @@ describe("sapphire.widgets.lastvalue", function() {
     }];
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     fx.values(datum.values);
     fy.values(datum.values);
@@ -330,7 +330,7 @@ describe("sapphire.widgets.lastvalue", function() {
     }];
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     fx.values(datum.values);
     fy.values(datum.values);
@@ -350,9 +350,9 @@ describe("sapphire.widgets.lastvalue", function() {
       .fx(fx)
       .fy(fy);
 
-    var lastvalue = sapphire.widgets.lastvalue();
+    var last = sapphire.widgets.last();
 
-    lastvalue
+    last
       .width(200)
       .sparkline()
         .height(25)
@@ -377,7 +377,7 @@ describe("sapphire.widgets.lastvalue", function() {
     }];
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     fx.values(datum.values);
     fy.values(datum.values);
@@ -400,7 +400,7 @@ describe("sapphire.widgets.lastvalue", function() {
     }];
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     fx.values(datum.values);
     fy.values(datum.values);
@@ -415,9 +415,9 @@ describe("sapphire.widgets.lastvalue", function() {
   it("should display a dot for the last value", function() {
     var fx = helpers.fx();
     var fy = helpers.fy();
-    var lastvalue = sapphire.widgets.lastvalue();
+    var last = sapphire.widgets.last();
 
-    lastvalue
+    last
       .width(200)
       .sparkline()
         .height(25)
@@ -445,7 +445,7 @@ describe("sapphire.widgets.lastvalue", function() {
     fy.values(datum.values);
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     expect(el.selectAll('.sparkline .dot').size())
       .to.equal(1);
@@ -468,7 +468,7 @@ describe("sapphire.widgets.lastvalue", function() {
     fy.values(datum.values);
 
     el.datum(datum)
-      .call(lastvalue);
+      .call(last);
 
     expect(el.selectAll('.sparkline .dot').size())
       .to.equal(1);
