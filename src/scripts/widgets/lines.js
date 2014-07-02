@@ -12,15 +12,15 @@ module.exports = require('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.title; })
 
-  .prop('sets')
+  .prop('metrics')
   .set(d3.functor)
-  .default(function(d) { return d.sets; })
+  .default(function(d) { return d.metrics; })
 
   .prop('key')
   .set(d3.functor)
   .default(function(d) { return d.key; })
 
-  .prop('setTitle')
+  .prop('metricTitle')
   .set(d3.functor)
   .default(function(d) { return d.title; })
 
@@ -88,9 +88,9 @@ module.exports = require('./widget').extend()
     var len;
     var values = el.select('.values')
       .datum(function(d, i) {
-        d = self.sets().call(node, d, i);
+        d = self.metrics().call(node, d, i);
         len = d.length;
-        return d.map(set);
+        return d.map(metric);
       });
 
     values.select('.chart')
@@ -99,7 +99,7 @@ module.exports = require('./widget').extend()
     values.select('.legend')
       .call(this.legend());
 
-    function set(d, i) {
+    function metric(d, i) {
       var key = self.key()
         .call(node, d, i)
         .toString();
@@ -107,7 +107,7 @@ module.exports = require('./widget').extend()
       return {
         key: key,
         color: colors(utils.hash(key) % len),
-        title: self.setTitle().call(node, d, i),
+        title: self.metricTitle().call(node, d, i),
         values: self.values()
           .call(node, d, i)
           .map(value)
@@ -159,8 +159,8 @@ var chart = require('../view').extend()
 
     var allValues = el
       .datum()
-      .reduce(function(results, set) {
-        results.push.apply(results, set.values);
+      .reduce(function(results, metric) {
+        results.push.apply(results, metric.values);
         return results;
       }, []);
 
@@ -187,21 +187,21 @@ var chart = require('../view').extend()
       .select('g')
         .attr('transform', utils.translate(margin.left, margin.top));
 
-    var set = svg.select('.lines').selectAll('.set')
+    var metric = svg.select('.lines').selectAll('.metric')
       .data(function(d) { return d; },
             function(d) { return d.key; });
 
-    set.enter().append('g')
-      .attr('class', 'set')
+    metric.enter().append('g')
+      .attr('class', 'metric')
       .attr('data-id', function(d) { return d.key; })
       .append('path')
         .attr('class', 'line');
 
-    set.select('.line')
+    metric.select('.line')
       .attr('stroke', function(d) { return d.color; })
       .attr('d', function(d) { return line(d.values); });
 
-    var dot = set.selectAll('.dot')
+    var dot = metric.selectAll('.dot')
       .data(function(d) {
         if (!d.values.length) { return []; }
         var last = d.values[d.values.length - 1];
@@ -225,7 +225,7 @@ var chart = require('../view').extend()
     dot.exit()
       .remove();
 
-    set.exit()
+    metric.exit()
       .remove();
 
     svg
@@ -251,30 +251,30 @@ var legend = require('../view').extend()
     var none = this.widget().none();
     var fvalue = this.widget().fvalue();
 
-    var set = el.select('.table').selectAll('.set')
+    var metric = el.select('.table').selectAll('.metric')
       .data(function(d) { return d; },
             function(d) { return d.key; });
 
-    var enterSet = set.enter().append('tr')
+    var enterMetric = metric.enter().append('tr')
       .attr('data-id', function(d) { return d.key; })
-      .attr('class', 'set');
+      .attr('class', 'metric');
 
-    enterSet.append('td')
+    enterMetric.append('td')
       .attr('class', 'swatch');
 
-    enterSet.append('td')
+    enterMetric.append('td')
       .attr('class', 'title');
 
-    enterSet.append('td')
+    enterMetric.append('td')
       .attr('class', 'value');
 
-    set.select('.swatch')
+    metric.select('.swatch')
       .style('background', function(d) { return d.color; });
 
-    set.select('.title')
+    metric.select('.title')
       .text(function(d) { return d.title; });
 
-    set.select('.value')
+    metric.select('.value')
       .text(function(d) {
         d = d.values[d.values.length - 1];
 
@@ -283,6 +283,6 @@ var legend = require('../view').extend()
           : fvalue(none);
       });
 
-    set.exit()
+    metric.exit()
       .remove();
   });
