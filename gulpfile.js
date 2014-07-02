@@ -5,6 +5,7 @@ var less = require('gulp-less');
 var karma = require('gulp-karma');
 var streamify = require('gulp-streamify');
 var browserify = require('browserify');
+var jshint = require('gulp-jshint');
 var source = require('vinyl-source-stream');
 var version = require('./bower').version;
 
@@ -62,6 +63,19 @@ gulp.task('test', ['scripts:debug', 'styles'], function() {
         './build/sapphire.debug.js': ['sourcemap']
       }
     }));
+});
+
+
+gulp.task('lint', function() {
+  return gulp
+    .src([
+      './gulpfile.js',
+      './src/scripts/**/*.js',
+      './test/**/*.js'
+    ])
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'))
+    .pipe(jshint.reporter('fail'));
 });
 
 
