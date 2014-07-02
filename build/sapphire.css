@@ -1,6 +1,7 @@
 @import url(http://fonts.googleapis.com/css?family=Ubuntu);
 .sapphire {
-  color: #222222;
+  color: #3a3a3a;
+  font-family: 'Ubuntu', sans-serif;
 }
 .sapphire .dashboard .widgets {
   position: relative;
@@ -8,59 +9,113 @@
 .sapphire .dashboard .widgets .widget {
   position: absolute;
 }
-.sapphire .lastvalue {
-  font-family: 'Ubuntu', sans-serif;
-}
-.sapphire .lastvalue .title {
-  padding: 8px 5px;
-  background: #222222;
+.sapphire .lines.widget > .title {
+  padding: 6px 0;
+  background: #3a3a3a;
   color: #eeeeee;
   text-align: center;
 }
-.sapphire .lastvalue .values {
+.sapphire .lines.widget .chart {
+  padding: 8px;
+}
+.sapphire .lines.widget .chart .lines .set .line {
+  fill: none;
+  stroke-width: 2px;
+}
+.sapphire .lines.widget .chart .axis line,
+.sapphire .lines.widget .chart .axis path {
+  fill: none;
+  shape-rendering: crispEdges;
+  stroke: #3a3a3a;
+  stroke-width: 1px;
+}
+.sapphire .lines.widget .chart .axis .tick text {
+  fill: #3a3a3a;
+  stroke: none;
+  font-size: 11px;
+  font-family: sans-serif;
+}
+.sapphire .lines.widget .legend {
+  font-size: 15px;
+  padding: 2px 34px;
+}
+.sapphire .lines.widget .legend .table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.sapphire .lines.widget .legend .table .set {
+  background: #dfdfdf;
+}
+.sapphire .lines.widget .legend .table .set:nth-child(2n) {
+  background: #e8e8e8;
+}
+.sapphire .lines.widget .legend .table .set:nth-child(2n) .value {
+  background: #dfdfdf;
+}
+.sapphire .lines.widget .legend .table .set td {
+  padding: 4px 12px;
+}
+.sapphire .lines.widget .legend .table .set .swatch {
+  padding: 0;
+  width: 12px;
+}
+.sapphire .lines.widget .legend .table .set .title {
+  width: 70%;
+}
+.sapphire .lines.widget .legend .table .set .value {
+  text-align: right;
+  background: #e8e8e8;
+}
+.sapphire .lastvalue.widget .title {
+  padding: 6px 0;
+  background: #3a3a3a;
+  color: #eeeeee;
+  text-align: center;
+}
+.sapphire .lastvalue.widget .values {
   padding: 2px 30px;
 }
-.sapphire .lastvalue .values.neutral .sparkline .diff.path {
-  stroke: #222222;
+.sapphire .lastvalue.widget .values.neutral .sparkline .diff.path {
+  stroke: #3a3a3a;
 }
-.sapphire .lastvalue .values.neutral .sparkline .dot {
-  fill: #222222;
+.sapphire .lastvalue.widget .values.neutral .sparkline .dot {
+  fill: #3a3a3a;
 }
-.sapphire .lastvalue .values.neutral .summary .diff {
-  color: #222222;
+.sapphire .lastvalue.widget .values.neutral .summary .diff {
+  color: #3a3a3a;
 }
-.sapphire .lastvalue .values.good .sparkline .diff.path {
+.sapphire .lastvalue.widget .values.good .sparkline .diff.path {
   stroke: #188f23;
 }
-.sapphire .lastvalue .values.good .sparkline .dot {
+.sapphire .lastvalue.widget .values.good .sparkline .dot {
   fill: #188f23;
 }
-.sapphire .lastvalue .values.good .summary .diff {
+.sapphire .lastvalue.widget .values.good .summary .diff {
   color: #188f23;
 }
-.sapphire .lastvalue .values.bad .sparkline .diff.path {
+.sapphire .lastvalue.widget .values.bad .sparkline .diff.path {
   stroke: #c41933;
 }
-.sapphire .lastvalue .values.bad .sparkline .dot {
+.sapphire .lastvalue.widget .values.bad .sparkline .dot {
   fill: #c41933;
 }
-.sapphire .lastvalue .values.bad .summary .diff {
+.sapphire .lastvalue.widget .values.bad .summary .diff {
   color: #c41933;
 }
-.sapphire .lastvalue .values .last {
+.sapphire .lastvalue.widget .values .last {
   text-align: right;
   font-size: 3.75em;
 }
-.sapphire .lastvalue .values .summary {
+.sapphire .lastvalue.widget .values .summary {
   padding: 0;
   padding-bottom: 10px;
   text-align: right;
 }
-.sapphire .lastvalue .values .sparkline .path {
+.sapphire .lastvalue.widget .values .sparkline .path {
   fill: none;
-  stroke: #222222;
+  stroke: #3a3a3a;
   stroke-width: 4px;
 }
-.sapphire .lastvalue .values .sparkline .diff.path {
+.sapphire .lastvalue.widget .values .sparkline .diff.path {
   stroke-width: 4.5px;
 }
