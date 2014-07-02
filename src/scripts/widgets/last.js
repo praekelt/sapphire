@@ -24,13 +24,13 @@ module.exports = require('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.y; })
 
-  .prop('fvalue')
+  .prop('valueFormat')
   .default(d3.format(',2s'))
 
-  .prop('fdiff')
+  .prop('diffFormat')
   .default(d3.format('+,2s'))
 
-  .prop('ftime')
+  .prop('timeFormat')
   .default(d3.time.format('%-d %b %-H:%M'))
 
   .prop('none')
@@ -103,7 +103,7 @@ module.exports = require('./widget').extend()
           ? self.none()
           : d.y;
       })
-      .text(this.fvalue());
+      .text(this.valueFormat());
 
     values.select('.sparkline')
       .call(this.sparkline());
@@ -137,7 +137,7 @@ var summary = require('../view').extend()
         d = d.slice(-2);
         return d[1].y - d[0].y;
       })
-      .text(widget.fdiff());
+      .text(widget.diffFormat());
 
     el.select('.time')
       .datum(function(d) {
@@ -145,7 +145,7 @@ var summary = require('../view').extend()
 
         return [d[0].x, d[1].x]
           .map(utils.date)
-          .map(widget.ftime());
+          .map(widget.timeFormat());
       })
       .text(function(d) {
         return [' from', d[0], 'to', d[1]].join(' ');

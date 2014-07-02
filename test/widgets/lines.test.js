@@ -412,7 +412,7 @@ describe("sapphire.widgets.lines", function() {
   it("should draw a chart time axis", function() {
     var lines = sapphire.widgets.lines()
       .ticks(3)
-      .ftick(d3.time.format('%b'));
+      .tickFormat(d3.time.format('%b'));
 
     expect(el.html()).to.be.empty;
 

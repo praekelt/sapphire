@@ -36,10 +36,10 @@ module.exports = require('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.y; })
 
-  .prop('fvalue')
+  .prop('valueFormat')
   .default(d3.format(',2s'))
 
-  .prop('ftick')
+  .prop('tickFormat')
   .default(null)
 
   .prop('ticks')
@@ -175,7 +175,7 @@ var chart = require('../view').extend()
     var axis = d3.svg.axis()
       .scale(fx)
       .ticks(this.widget().ticks())
-      .tickFormat(this.widget().ftick());
+      .tickFormat(this.widget().tickFormat());
 
     var line = d3.svg.line()
       .x(function(d) { return fx(d.x); })
@@ -249,7 +249,7 @@ var legend = require('../view').extend()
 
   .draw(function(el) {
     var none = this.widget().none();
-    var fvalue = this.widget().fvalue();
+    var valueFormat = this.widget().valueFormat();
 
     var metric = el.select('.table').selectAll('.metric')
       .data(function(d) { return d; },
@@ -279,8 +279,8 @@ var legend = require('../view').extend()
         d = d.values[d.values.length - 1];
 
         return d
-          ? fvalue(d.y)
-          : fvalue(none);
+          ? valueFormat(d.y)
+          : valueFormat(none);
       });
 
     metric.exit()
