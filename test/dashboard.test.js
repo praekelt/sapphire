@@ -1,5 +1,6 @@
 describe("sapphire.dashboard", function() {
   var el;
+  var datum;
 
   var dummy = sapphire.widgets.widget.extend()
     .prop('text')
@@ -16,6 +17,18 @@ describe("sapphire.dashboard", function() {
       .attr('class', 'tmp sapphire');
 
     el = d3.select('.tmp').append('div');
+
+    datum = {
+      widgets: [{
+        key: 'a',
+        type: 'dummy',
+        text: 'foo'
+      }, {
+        key: 'b',
+        type: 'dummy',
+        text: 'bar'
+      }]
+    };
   });
 
   afterEach(function() {
@@ -26,40 +39,40 @@ describe("sapphire.dashboard", function() {
     var dashboard = sapphire.dashboard();
     dashboard.types().set('dummy', dummy());
 
-    el.datum({
-      widgets: [{
-        key: 'a',
-        type: 'dummy',
-        text: 'foo'
-      }, {
-        key: 'b',
-        type: 'dummy',
-        text: 'bar'
-      }]
-    });
+    datum.widgets = [{
+      key: 'a',
+      type: 'dummy',
+      text: 'foo'
+    }, {
+      key: 'b',
+      type: 'dummy',
+      text: 'bar'
+    }];
 
-    dashboard(el);
+    el.datum(datum)
+      .call(dashboard);
+
     expect(el.selectAll('.widget').size()).to.equal(2);
     expect(el.select('.widget[data-key=a]').text()).to.equal('foo');
     expect(el.select('.widget[data-key=b]').text()).to.equal('bar');
 
-    el.datum({
-      widgets: [{
-        key: 'a',
-        type: 'dummy',
-        text: 'foo'
-      }, {
-        key: 'b',
-        type: 'dummy',
-        text: 'bar'
-      }, {
-        key: 'c',
-        type: 'dummy',
-        text: 'baz'
-      }]
-    });
+    datum.widgets = [{
+      key: 'a',
+      type: 'dummy',
+      text: 'foo'
+    }, {
+      key: 'b',
+      type: 'dummy',
+      text: 'bar'
+    }, {
+      key: 'c',
+      type: 'dummy',
+      text: 'baz'
+    }];
 
-    dashboard(el);
+    el.datum(datum)
+      .call(dashboard);
+
     expect(el.selectAll('.widget').size()).to.equal(3);
     expect(el.select('.widget[data-key=a]').text()).to.equal('foo');
     expect(el.select('.widget[data-key=b]').text()).to.equal('bar');
@@ -77,18 +90,18 @@ describe("sapphire.dashboard", function() {
 
     dashboard.types().set('dummy', dummy());
 
-    el.datum({
-      widgets: [{
-        key: 'a',
-        type: 'dummy',
-        text: 'foo',
-        col: 3,
-        row: 6,
-        colspan: 2,
-      }]
-    });
+    datum.widgets = [{
+      key: 'a',
+      type: 'dummy',
+      text: 'foo',
+      col: 3,
+      row: 6,
+      colspan: 2,
+    }];
 
-    dashboard(el);
+    el.datum(datum)
+      .call(dashboard);
+
     expect(el.select('.widget[data-key=a]').style('height')).to.equal('380px');
   });
 
@@ -103,18 +116,18 @@ describe("sapphire.dashboard", function() {
 
     dashboard.types().set('dummy', dummy());
 
-    el.datum({
-      widgets: [{
-        key: 'a',
-        type: 'dummy',
-        text: 'foo',
-        col: 3,
-        row: 6,
-        rowspan: 2,
-      }]
-    });
+    datum.widgets = [{
+      key: 'a',
+      type: 'dummy',
+      text: 'foo',
+      col: 3,
+      row: 6,
+      rowspan: 2,
+    }];
 
-    dashboard(el);
+    el.datum(datum)
+      .call(dashboard);
+
     expect(el.select('.widget[data-key=a]').style('width')).to.equal('380px');
   });
 
@@ -125,27 +138,27 @@ describe("sapphire.dashboard", function() {
 
     dashboard.types().set('dummy', dummy());
 
-    el.datum({
-      widgets: [{
-        key: 'a',
-        type: 'dummy',
-        text: 'foo',
-        col: 3,
-        row: 6,
-        colspan: 2,
-        rowspan: 3
-      }, {
-        key: 'b',
-        type: 'dummy',
-        text: 'bar',
-        col: 2,
-        row: 9,
-        colspan: 3,
-        rowspan: 2
-      }]
-    });
+    datum.widgets = [{
+      key: 'a',
+      type: 'dummy',
+      text: 'foo',
+      col: 3,
+      row: 6,
+      colspan: 2,
+      rowspan: 3
+    }, {
+      key: 'b',
+      type: 'dummy',
+      text: 'bar',
+      col: 2,
+      row: 9,
+      colspan: 3,
+      rowspan: 2
+    }];
 
-    dashboard(el);
+    el.datum(datum)
+      .call(dashboard);
+
     expect(el.select('.widget[data-key=a]').style('left')).to.equal('310px');
     expect(el.select('.widget[data-key=a]').style('top')).to.equal('610px');
     expect(el.select('.widget[data-key=a]').style('width')).to.equal('180px');
@@ -156,35 +169,35 @@ describe("sapphire.dashboard", function() {
     expect(el.select('.widget[data-key=b]').style('width')).to.equal('280px');
     expect(el.select('.widget[data-key=b]').style('height')).to.equal('180px');
 
-    el.datum({
-      widgets: [{
-        key: 'a',
-        type: 'dummy',
-        text: 'foo',
-        col: 2,
-        row: 9,
-        colspan: 2,
-        rowspan: 3
-      }, {
-        key: 'b',
-        type: 'dummy',
-        text: 'bar',
-        col: 1,
-        row: 2,
-        colspan: 4,
-        rowspan: 2
-      }, {
-        key: 'c',
-        type: 'dummy',
-        text: 'baz',
-        col: 3,
-        row: 12,
-        colspan: 2,
-        rowspan: 4
-      }]
-    });
+    datum.widgets = [{
+      key: 'a',
+      type: 'dummy',
+      text: 'foo',
+      col: 2,
+      row: 9,
+      colspan: 2,
+      rowspan: 3
+    }, {
+      key: 'b',
+      type: 'dummy',
+      text: 'bar',
+      col: 1,
+      row: 2,
+      colspan: 4,
+      rowspan: 2
+    }, {
+      key: 'c',
+      type: 'dummy',
+      text: 'baz',
+      col: 3,
+      row: 12,
+      colspan: 2,
+      rowspan: 4
+    }];
 
-    dashboard(el);
+    el.datum(datum)
+      .call(dashboard);
+
     expect(el.select('.widget[data-key=a]').style('left')).to.equal('210px');
     expect(el.select('.widget[data-key=a]').style('top')).to.equal('910px');
     expect(el.select('.widget[data-key=a]').style('width')).to.equal('180px');
@@ -204,9 +217,13 @@ describe("sapphire.dashboard", function() {
   it("should throw an error for unrecognised widget types", function() {
     var dashboard = sapphire.dashboard();
     dashboard.types().set('dummy', dummy());
-    el.datum({widgets: [{type: 'unrecognised'}]});
+    datum.widgets = [{type: 'unrecognised'}];
 
-    function draw() { dashboard(el); }
+    function draw() {
+      el.datum(datum)
+        .call(dashboard);
+    }
+
     expect(draw).to.throw(/Unrecognised dashboard widget type 'unrecognised'/);
   });
 });
