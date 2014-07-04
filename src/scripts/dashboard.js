@@ -93,12 +93,12 @@ module.exports = require('./view').extend()
       });
 
     widget.enter().append('div')
-      .attr('class', 'widget');
+      .attr('class', 'widget')
+      .attr('data-key', function(d) { return d.key; });
 
     var gridEls = grid(widget.data());
 
     widget
-      .attr('data-key', function(d) { return d.key; })
       .each(function(d, i) {
         var gridEl = gridEls[i];
 

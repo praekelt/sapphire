@@ -47,23 +47,6 @@ describe("sapphire.dashboard", function() {
       key: 'b',
       type: 'dummy',
       text: 'bar'
-    }];
-
-    el.datum(datum)
-      .call(dashboard);
-
-    expect(el.selectAll('.widget').size()).to.equal(2);
-    expect(el.select('.widget[data-key=a]').text()).to.equal('foo');
-    expect(el.select('.widget[data-key=b]').text()).to.equal('bar');
-
-    datum.widgets = [{
-      key: 'a',
-      type: 'dummy',
-      text: 'foo'
-    }, {
-      key: 'b',
-      type: 'dummy',
-      text: 'bar'
     }, {
       key: 'c',
       type: 'dummy',
@@ -77,6 +60,23 @@ describe("sapphire.dashboard", function() {
     expect(el.select('.widget[data-key=a]').text()).to.equal('foo');
     expect(el.select('.widget[data-key=b]').text()).to.equal('bar');
     expect(el.select('.widget[data-key=c]').text()).to.equal('baz');
+
+    datum.widgets = [{
+      key: 'a',
+      type: 'dummy',
+      text: 'ham'
+    }, {
+      key: 'd',
+      type: 'dummy',
+      text: 'quux'
+    }];
+
+    el.datum(datum)
+      .call(dashboard);
+
+    expect(el.selectAll('.widget').size()).to.equal(2);
+    expect(el.select('.widget[data-key=a]').text()).to.equal('ham');
+    expect(el.select('.widget[data-key=d]').text()).to.equal('quux');
   });
 
   it("should use each widget type's rowspan as a fallback rowspan", function() {
