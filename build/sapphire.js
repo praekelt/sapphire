@@ -99,25 +99,21 @@ module.exports = _dereq_('./view').extend()
       .rowspan(function(d) { return d.rowspan; });
 
     var widget = el.select('.widgets').selectAll('.widget')
-      .data(function(d, i) {
-        return self.widgets()
-          .call(node, d, i)
-          .map(widgetData);
-      });
+      .data(widgetData, widgetKey);
 
     widget.enter().append('div')
-      .attr('class', 'widget');
+      .attr('data-key', widgetKey);
 
     var gridEls = grid(widget.data());
 
     widget
-      .attr('data-key', function(d) { return d.key; })
       .each(function(d, i) {
         var gridEl = gridEls[i];
 
         d3.select(this)
           .datum(d.data)
           .call(d.type)
+          .classed('widget', true)
           .style('left', gridEl.x + 'px')
           .style('top', gridEl.y + 'px')
           .style('width', gridEl.width + 'px')
@@ -127,6 +123,12 @@ module.exports = _dereq_('./view').extend()
     widget.exit().remove();
 
     function widgetData(d, i) {
+      return self.widgets()
+        .call(node, d, i)
+        .map(widgetDatum);
+    }
+
+    function widgetDatum(d, i) {
       var typename = self.type().call(node, d, i);
       var type = self.types().get(typename);
 
@@ -145,6 +147,10 @@ module.exports = _dereq_('./view').extend()
       result.rowspan = self.rowspan().call(node, d, i);
       result.rowspan = utils.ensure(result.rowspan, type.rowspan());
       return result;
+    }
+
+    function widgetKey(d) {
+      return d.key;
     }
   });
 
