@@ -402,9 +402,9 @@ module.exports = strain()
 },{}],6:[function(_dereq_,module,exports){
 exports.widget = _dereq_('./widget');
 exports.lines = _dereq_('./lines');
-exports.lastvalue = _dereq_('./lastvalue');
+exports.last = _dereq_('./last');
 
-},{"./lastvalue":7,"./lines":8,"./widget":9}],7:[function(_dereq_,module,exports){
+},{"./last":7,"./lines":8,"./widget":9}],7:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils');
 
 
@@ -431,13 +431,13 @@ module.exports = _dereq_('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.y; })
 
-  .prop('fvalue')
+  .prop('valueFormat')
   .default(d3.format(',2s'))
 
-  .prop('fdiff')
+  .prop('diffFormat')
   .default(d3.format('+,2s'))
 
-  .prop('ftime')
+  .prop('timeFormat')
   .default(d3.time.format('%-d %b %-H:%M'))
 
   .prop('none')
@@ -452,7 +452,7 @@ module.exports = _dereq_('./widget').extend()
   })
 
   .enter(function(el) {
-    el.attr('class', 'lastvalue widget');
+    el.attr('class', 'last widget');
 
     el.append('div')
       .attr('class', 'title');
@@ -510,7 +510,7 @@ module.exports = _dereq_('./widget').extend()
           ? self.none()
           : d.y;
       })
-      .text(this.fvalue());
+      .text(this.valueFormat());
 
     values.select('.sparkline')
       .call(this.sparkline());
@@ -521,10 +521,10 @@ module.exports = _dereq_('./widget').extend()
 
 
 var summary = _dereq_('../view').extend()
-  .prop('lastvalue')
+  .prop('widget')
 
-  .init(function(lastvalue) {
-    this.lastvalue(lastvalue);
+  .init(function(widget) {
+    this.widget(widget);
   })
 
   .enter(function(el) {
@@ -536,7 +536,7 @@ var summary = _dereq_('../view').extend()
   })
 
   .draw(function(el) {
-    var lastvalue = this.lastvalue();
+    var widget = this.widget();
     if (el.datum().length < 2) { return; }
 
     el.select('.diff')
@@ -544,7 +544,7 @@ var summary = _dereq_('../view').extend()
         d = d.slice(-2);
         return d[1].y - d[0].y;
       })
-      .text(lastvalue.fdiff());
+      .text(widget.diffFormat());
 
     el.select('.time')
       .datum(function(d) {
@@ -552,7 +552,7 @@ var summary = _dereq_('../view').extend()
 
         return [d[0].x, d[1].x]
           .map(utils.date)
-          .map(lastvalue.ftime());
+          .map(widget.timeFormat());
       })
       .text(function(d) {
         return [' from', d[0], 'to', d[1]].join(' ');
@@ -561,7 +561,7 @@ var summary = _dereq_('../view').extend()
 
 
 var sparkline = _dereq_('../view').extend()
-  .prop('lastvalue')
+  .prop('widget')
 
   .prop('height').default(25)
 
@@ -572,8 +572,8 @@ var sparkline = _dereq_('../view').extend()
     right: 4 
   })
 
-  .init(function(lastvalue) {
-    this.lastvalue(lastvalue);
+  .init(function(widget) {
+    this.widget(widget);
   })
 
   .enter(function(el) {
@@ -645,15 +645,15 @@ module.exports = _dereq_('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.title; })
 
-  .prop('sets')
+  .prop('metrics')
   .set(d3.functor)
-  .default(function(d) { return d.sets; })
+  .default(function(d) { return d.metrics; })
 
   .prop('key')
   .set(d3.functor)
   .default(function(d) { return d.key; })
 
-  .prop('setTitle')
+  .prop('metricTitle')
   .set(d3.functor)
   .default(function(d) { return d.title; })
 
@@ -669,10 +669,10 @@ module.exports = _dereq_('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.y; })
 
-  .prop('fvalue')
+  .prop('valueFormat')
   .default(d3.format(',2s'))
 
-  .prop('ftick')
+  .prop('tickFormat')
   .default(null)
 
   .prop('ticks')
@@ -721,9 +721,9 @@ module.exports = _dereq_('./widget').extend()
     var len;
     var values = el.select('.values')
       .datum(function(d, i) {
-        d = self.sets().call(node, d, i);
+        d = self.metrics().call(node, d, i);
         len = d.length;
-        return d.map(set);
+        return d.map(metric);
       });
 
     values.select('.chart')
@@ -732,7 +732,7 @@ module.exports = _dereq_('./widget').extend()
     values.select('.legend')
       .call(this.legend());
 
-    function set(d, i) {
+    function metric(d, i) {
       var key = self.key()
         .call(node, d, i)
         .toString();
@@ -740,7 +740,7 @@ module.exports = _dereq_('./widget').extend()
       return {
         key: key,
         color: colors(utils.hash(key) % len),
-        title: self.setTitle().call(node, d, i),
+        title: self.metricTitle().call(node, d, i),
         values: self.values()
           .call(node, d, i)
           .map(value)
@@ -792,8 +792,8 @@ var chart = _dereq_('../view').extend()
 
     var allValues = el
       .datum()
-      .reduce(function(results, set) {
-        results.push.apply(results, set.values);
+      .reduce(function(results, metric) {
+        results.push.apply(results, metric.values);
         return results;
       }, []);
 
@@ -808,7 +808,7 @@ var chart = _dereq_('../view').extend()
     var axis = d3.svg.axis()
       .scale(fx)
       .ticks(this.widget().ticks())
-      .tickFormat(this.widget().ftick());
+      .tickFormat(this.widget().tickFormat());
 
     var line = d3.svg.line()
       .x(function(d) { return fx(d.x); })
@@ -820,21 +820,21 @@ var chart = _dereq_('../view').extend()
       .select('g')
         .attr('transform', utils.translate(margin.left, margin.top));
 
-    var set = svg.select('.lines').selectAll('.set')
+    var metric = svg.select('.lines').selectAll('.metric')
       .data(function(d) { return d; },
             function(d) { return d.key; });
 
-    set.enter().append('g')
-      .attr('class', 'set')
+    metric.enter().append('g')
+      .attr('class', 'metric')
       .attr('data-id', function(d) { return d.key; })
       .append('path')
         .attr('class', 'line');
 
-    set.select('.line')
+    metric.select('.line')
       .attr('stroke', function(d) { return d.color; })
       .attr('d', function(d) { return line(d.values); });
 
-    var dot = set.selectAll('.dot')
+    var dot = metric.selectAll('.dot')
       .data(function(d) {
         if (!d.values.length) { return []; }
         var last = d.values[d.values.length - 1];
@@ -858,7 +858,7 @@ var chart = _dereq_('../view').extend()
     dot.exit()
       .remove();
 
-    set.exit()
+    metric.exit()
       .remove();
 
     svg
@@ -882,41 +882,41 @@ var legend = _dereq_('../view').extend()
 
   .draw(function(el) {
     var none = this.widget().none();
-    var fvalue = this.widget().fvalue();
+    var valueFormat = this.widget().valueFormat();
 
-    var set = el.select('.table').selectAll('.set')
+    var metric = el.select('.table').selectAll('.metric')
       .data(function(d) { return d; },
             function(d) { return d.key; });
 
-    var enterSet = set.enter().append('tr')
+    var enterMetric = metric.enter().append('tr')
       .attr('data-id', function(d) { return d.key; })
-      .attr('class', 'set');
+      .attr('class', 'metric');
 
-    enterSet.append('td')
+    enterMetric.append('td')
       .attr('class', 'swatch');
 
-    enterSet.append('td')
+    enterMetric.append('td')
       .attr('class', 'title');
 
-    enterSet.append('td')
+    enterMetric.append('td')
       .attr('class', 'value');
 
-    set.select('.swatch')
+    metric.select('.swatch')
       .style('background', function(d) { return d.color; });
 
-    set.select('.title')
+    metric.select('.title')
       .text(function(d) { return d.title; });
 
-    set.select('.value')
+    metric.select('.value')
       .text(function(d) {
         d = d.values[d.values.length - 1];
 
         return d
-          ? fvalue(d.y)
-          : fvalue(none);
+          ? valueFormat(d.y)
+          : valueFormat(none);
       });
 
-    set.exit()
+    metric.exit()
       .remove();
   });
 
