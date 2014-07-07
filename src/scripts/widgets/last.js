@@ -24,13 +24,13 @@ module.exports = require('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.y; })
 
-  .prop('fvalue')
+  .prop('valueFormat')
   .default(d3.format(',2s'))
 
-  .prop('fdiff')
+  .prop('diffFormat')
   .default(d3.format('+,2s'))
 
-  .prop('ftime')
+  .prop('timeFormat')
   .default(d3.time.format('%-d %b %-H:%M'))
 
   .prop('none')
@@ -45,7 +45,7 @@ module.exports = require('./widget').extend()
   })
 
   .enter(function(el) {
-    el.attr('class', 'lastvalue widget');
+    el.attr('class', 'last widget');
 
     el.append('div')
       .attr('class', 'title');
@@ -103,7 +103,7 @@ module.exports = require('./widget').extend()
           ? self.none()
           : d.y;
       })
-      .text(this.fvalue());
+      .text(this.valueFormat());
 
     values.select('.sparkline')
       .call(this.sparkline());
@@ -114,10 +114,10 @@ module.exports = require('./widget').extend()
 
 
 var summary = require('../view').extend()
-  .prop('lastvalue')
+  .prop('widget')
 
-  .init(function(lastvalue) {
-    this.lastvalue(lastvalue);
+  .init(function(widget) {
+    this.widget(widget);
   })
 
   .enter(function(el) {
@@ -129,7 +129,7 @@ var summary = require('../view').extend()
   })
 
   .draw(function(el) {
-    var lastvalue = this.lastvalue();
+    var widget = this.widget();
     if (el.datum().length < 2) { return; }
 
     el.select('.diff')
@@ -137,7 +137,7 @@ var summary = require('../view').extend()
         d = d.slice(-2);
         return d[1].y - d[0].y;
       })
-      .text(lastvalue.fdiff());
+      .text(widget.diffFormat());
 
     el.select('.time')
       .datum(function(d) {
@@ -145,7 +145,7 @@ var summary = require('../view').extend()
 
         return [d[0].x, d[1].x]
           .map(utils.date)
-          .map(lastvalue.ftime());
+          .map(widget.timeFormat());
       })
       .text(function(d) {
         return [' from', d[0], 'to', d[1]].join(' ');
@@ -154,7 +154,7 @@ var summary = require('../view').extend()
 
 
 var sparkline = require('../view').extend()
-  .prop('lastvalue')
+  .prop('widget')
 
   .prop('height').default(25)
 
@@ -165,8 +165,8 @@ var sparkline = require('../view').extend()
     right: 4 
   })
 
-  .init(function(lastvalue) {
-    this.lastvalue(lastvalue);
+  .init(function(widget) {
+    this.widget(widget);
   })
 
   .enter(function(el) {

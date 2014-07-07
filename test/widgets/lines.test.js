@@ -9,7 +9,7 @@ describe("sapphire.widgets.lines", function() {
 
     datum = {
       title: 'Total Foo and Bar',
-      sets: [{
+      metrics: [{
         key: 'foo',
         title: 'Total Foo',
         values: [{
@@ -52,15 +52,15 @@ describe("sapphire.widgets.lines", function() {
   var helpers = {};
 
   helpers.fx = strain()
-    .prop('sets')
+    .prop('metrics')
 
     .prop('width')
     .default(600 - (4 + 4))
 
     .invoke(function(input) {
-      var values = this.sets()
-        .reduce(function(results, set) {
-          results.push.apply(results, set.values);
+      var values = this.metrics()
+        .reduce(function(results, metric) {
+          results.push.apply(results, metric.values);
           return results;
         }, []);
 
@@ -72,15 +72,15 @@ describe("sapphire.widgets.lines", function() {
     });
 
   helpers.fy = strain()
-    .prop('sets')
+    .prop('metrics')
 
     .prop('height')
     .default(150 - (4 + 4))
 
     .invoke(function(input) {
-      var values = this.sets()
-        .reduce(function(results, set) {
-          results.push.apply(results, set.values);
+      var values = this.metrics()
+        .reduce(function(results, metric) {
+          results.push.apply(results, metric.values);
           return results;
         }, []);
 
@@ -138,7 +138,7 @@ describe("sapphire.widgets.lines", function() {
     expect(title.text()).to.equal(datum.title);
   });
 
-  it("should draw lines for its sets", function() {
+  it("should draw lines for its metrics", function() {
     var colors = helpers.colors();
 
     var fx = helpers.fx();
@@ -163,7 +163,7 @@ describe("sapphire.widgets.lines", function() {
 
     expect(el.html()).to.be.empty;
 
-    datum.sets[0].values = [{
+    datum.metrics[0].values = [{
       x: 123,
       y: 234
     }, {
@@ -174,7 +174,7 @@ describe("sapphire.widgets.lines", function() {
       y: 789
     }];
 
-    datum.sets[1].values = [{
+    datum.metrics[1].values = [{
       x: 123,
       y: 834
     }, {
@@ -188,21 +188,21 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    fx.sets(datum.sets);
-    fy.sets(datum.sets);
+    fx.metrics(datum.metrics);
+    fy.metrics(datum.metrics);
 
-    expect(el.selectAll('.chart .set .line').size()).to.equal(2);
-    var line = el.selectAll('.chart .set[data-id=foo] .line');
+    expect(el.selectAll('.chart .metric .line').size()).to.equal(2);
+    var line = el.selectAll('.chart .metric[data-id=foo] .line');
     expect(line.size()).to.equal(1);
-    expect(line.attr('d')).to.equal(path(datum.sets[0].values));
+    expect(line.attr('d')).to.equal(path(datum.metrics[0].values));
     expect(line.style('stroke')).to.equal(colors('foo', 2));
 
-    line = el.selectAll('.chart .set[data-id=bar] .line');
+    line = el.selectAll('.chart .metric[data-id=bar] .line');
     expect(line.size()).to.equal(1);
-    expect(line.attr('d')).to.equal(path(datum.sets[1].values));
+    expect(line.attr('d')).to.equal(path(datum.metrics[1].values));
     expect(line.style('stroke')).to.equal(colors('bar', 2));
 
-    datum.sets[0].values = [{
+    datum.metrics[0].values = [{
       x: 1123,
       y: 1234
     }, {
@@ -213,8 +213,8 @@ describe("sapphire.widgets.lines", function() {
       y: 1789
     }];
 
-    datum.sets[1].key = 'baz';
-    datum.sets[1].values = [{
+    datum.metrics[1].key = 'baz';
+    datum.metrics[1].values = [{
       x: 1123,
       y: 3234
     }, {
@@ -228,22 +228,22 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    fx.sets(datum.sets);
-    fy.sets(datum.sets);
+    fx.metrics(datum.metrics);
+    fy.metrics(datum.metrics);
 
-    expect(el.selectAll('.chart .set .line').size()).to.equal(2);
-    line = el.selectAll('.chart .set[data-id=foo] .line');
+    expect(el.selectAll('.chart .metric .line').size()).to.equal(2);
+    line = el.selectAll('.chart .metric[data-id=foo] .line');
     expect(line.size()).to.equal(1);
-    expect(line.attr('d')).to.equal(path(datum.sets[0].values));
+    expect(line.attr('d')).to.equal(path(datum.metrics[0].values));
     expect(line.style('stroke')).to.equal(colors('foo', 2));
 
-    line = el.selectAll('.chart .set[data-id=baz] .line');
+    line = el.selectAll('.chart .metric[data-id=baz] .line');
     expect(line.size()).to.equal(1);
-    expect(line.attr('d')).to.equal(path(datum.sets[1].values));
+    expect(line.attr('d')).to.equal(path(datum.metrics[1].values));
     expect(line.style('stroke')).to.equal(colors('baz', 2));
   });
 
-  it("should draw dots for its sets' last values", function() {
+  it("should draw dots for its metrics' last values", function() {
     var colors = helpers.colors();
     var fx = helpers.fx();
     var fy = helpers.fy();
@@ -263,7 +263,7 @@ describe("sapphire.widgets.lines", function() {
 
     expect(el.html()).to.be.empty;
 
-    datum.sets[0].values = [{
+    datum.metrics[0].values = [{
       x: 123,
       y: 234
     }, {
@@ -274,7 +274,7 @@ describe("sapphire.widgets.lines", function() {
       y: 789
     }];
 
-    datum.sets[1].values = [{
+    datum.metrics[1].values = [{
       x: 123,
       y: 834
     }, {
@@ -288,19 +288,19 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    fx.sets(datum.sets);
-    fy.sets(datum.sets);
+    fx.metrics(datum.metrics);
+    fy.metrics(datum.metrics);
 
-    expect(el.selectAll('.chart .set .dot').size()).to.equal(2);
-    var dot = el.selectAll('.chart .set[data-id=foo] .dot');
+    expect(el.selectAll('.chart .metric .dot').size()).to.equal(2);
+    var dot = el.selectAll('.chart .metric[data-id=foo] .dot');
     expect(dot.size()).to.equal(1);
     expect(dot.style('fill')).to.equal(colors('foo', 2));
 
-    dot = el.selectAll('.chart .set[data-id=bar] .dot');
+    dot = el.selectAll('.chart .metric[data-id=bar] .dot');
     expect(dot.size()).to.equal(1);
     expect(dot.style('fill')).to.equal(colors('bar', 2));
 
-    datum.sets[0].values = [{
+    datum.metrics[0].values = [{
       x: 1123,
       y: 1234
     }, {
@@ -311,8 +311,8 @@ describe("sapphire.widgets.lines", function() {
       y: 1789
     }];
 
-    datum.sets[1].key = 'baz';
-    datum.sets[1].values = [{
+    datum.metrics[1].key = 'baz';
+    datum.metrics[1].values = [{
       x: 1123,
       y: 3234
     }, {
@@ -326,20 +326,20 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    fx.sets(datum.sets);
-    fy.sets(datum.sets);
+    fx.metrics(datum.metrics);
+    fy.metrics(datum.metrics);
 
-    expect(el.selectAll('.chart .set .dot').size()).to.equal(2);
-    dot = el.selectAll('.chart .set[data-id=foo] .dot');
+    expect(el.selectAll('.chart .metric .dot').size()).to.equal(2);
+    dot = el.selectAll('.chart .metric[data-id=foo] .dot');
     expect(dot.size()).to.equal(1);
     expect(dot.style('fill')).to.equal(colors('foo', 2));
 
-    dot = el.selectAll('.chart .set[data-id=baz] .dot');
+    dot = el.selectAll('.chart .metric[data-id=baz] .dot');
     expect(dot.size()).to.equal(1);
     expect(dot.style('fill')).to.equal(colors('baz', 2));
   });
 
-  it("should not draw dots for empty sets", function() {
+  it("should not draw dots for empty metrics", function() {
     var colors = helpers.colors();
     var fx = helpers.fx();
     var fy = helpers.fy();
@@ -359,7 +359,7 @@ describe("sapphire.widgets.lines", function() {
 
     expect(el.html()).to.be.empty;
 
-    datum.sets[0].values = [{
+    datum.metrics[0].values = [{
       x: 123,
       y: 234
     }, {
@@ -370,23 +370,23 @@ describe("sapphire.widgets.lines", function() {
       y: 789
     }];
 
-    datum.sets[1].values = [];
+    datum.metrics[1].values = [];
 
     el.datum(datum)
       .call(lines);
 
-    fx.sets(datum.sets);
-    fy.sets(datum.sets);
+    fx.metrics(datum.metrics);
+    fy.metrics(datum.metrics);
 
-    expect(el.selectAll('.chart .set .dot').size()).to.equal(1);
-    var dot = el.selectAll('.chart .set[data-id=foo] .dot');
+    expect(el.selectAll('.chart .metric .dot').size()).to.equal(1);
+    var dot = el.selectAll('.chart .metric[data-id=foo] .dot');
     expect(dot.size()).to.equal(1);
     expect(dot.style('fill')).to.equal(colors('foo', 2));
 
-    datum.sets[0].values = [];
+    datum.metrics[0].values = [];
 
-    datum.sets[1].key = 'baz';
-    datum.sets[1].values = [{
+    datum.metrics[1].key = 'baz';
+    datum.metrics[1].values = [{
       x: 1123,
       y: 3234
     }, {
@@ -400,11 +400,11 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    fx.sets(datum.sets);
-    fy.sets(datum.sets);
+    fx.metrics(datum.metrics);
+    fy.metrics(datum.metrics);
 
-    expect(el.selectAll('.chart .set .dot').size()).to.equal(1);
-    dot = el.selectAll('.chart .set[data-id=baz] .dot');
+    expect(el.selectAll('.chart .metric .dot').size()).to.equal(1);
+    dot = el.selectAll('.chart .metric[data-id=baz] .dot');
     expect(dot.size()).to.equal(1);
     expect(dot.style('fill')).to.equal(colors('baz', 2));
   });
@@ -412,11 +412,11 @@ describe("sapphire.widgets.lines", function() {
   it("should draw a chart time axis", function() {
     var lines = sapphire.widgets.lines()
       .ticks(3)
-      .ftick(d3.time.format('%b'));
+      .tickFormat(d3.time.format('%b'));
 
     expect(el.html()).to.be.empty;
 
-    datum.sets[0].values = [{
+    datum.metrics[0].values = [{
       x: +(new Date(2014, 2)),
       y: 234
     }, {
@@ -427,7 +427,7 @@ describe("sapphire.widgets.lines", function() {
       y: 789,
     }];
 
-    datum.sets[1].values = [{
+    datum.metrics[1].values = [{
       x: +(new Date(2014, 2)),
       y: 1234
     }, {
@@ -445,7 +445,7 @@ describe("sapphire.widgets.lines", function() {
     expect(axis.size()).to.equal(1);
     expect(axis.text()).to.equal(['Mar', 'Apr', 'May'].join(''));
 
-    datum.sets[0].values = [{
+    datum.metrics[0].values = [{
       x: +(new Date(2014, 5)),
       y: 234
     }, {
@@ -456,7 +456,7 @@ describe("sapphire.widgets.lines", function() {
       y: 789
     }];
 
-    datum.sets[1].values = [{
+    datum.metrics[1].values = [{
       x: +(new Date(2014, 5)),
       y: 1234
     }, {
@@ -479,7 +479,7 @@ describe("sapphire.widgets.lines", function() {
     var lines = sapphire.widgets.lines();
     expect(el.html()).to.be.empty;
 
-    datum.sets[0].values = [{
+    datum.metrics[0].values = [{
       x: 0,
       y: 0
     }, {
@@ -493,7 +493,7 @@ describe("sapphire.widgets.lines", function() {
       y: 4000000
     }];
 
-    datum.sets[1].values = [{
+    datum.metrics[1].values = [{
       x: 0,
       y: 0
     }, {
@@ -512,9 +512,9 @@ describe("sapphire.widgets.lines", function() {
 
     var legend = el.selectAll('.legend');
     expect(legend.size()).to.equal(1);
-    expect(legend.selectAll('.set').size()).to.equal(2);
+    expect(legend.selectAll('.metric').size()).to.equal(2);
 
-    datum.sets[0].values = [{
+    datum.metrics[0].values = [{
       x: 4,
       y: 600000 
     }, {
@@ -528,8 +528,8 @@ describe("sapphire.widgets.lines", function() {
       y: 9000000
     }];
 
-    datum.sets[1].key = 'baz';
-    datum.sets[1].values = [{
+    datum.metrics[1].key = 'baz';
+    datum.metrics[1].values = [{
       x: 4,
       y: 300000 
     }, {
@@ -548,15 +548,15 @@ describe("sapphire.widgets.lines", function() {
 
     legend = el.selectAll('.legend');
     expect(legend.size()).to.equal(1);
-    expect(legend.selectAll('.set').size()).to.equal(2);
+    expect(legend.selectAll('.metric').size()).to.equal(2);
   });
 
-  it("should draw its legend's set swatches", function() {
+  it("should draw its legend's metric swatches", function() {
     var colors = helpers.colors();
     var lines = sapphire.widgets.lines();
     expect(el.html()).to.be.empty;
 
-    datum.sets[0].values = [{
+    datum.metrics[0].values = [{
       x: 0,
       y: 0
     }, {
@@ -570,7 +570,7 @@ describe("sapphire.widgets.lines", function() {
       y: 4000000
     }];
 
-    datum.sets[1].values = [{
+    datum.metrics[1].values = [{
       x: 0,
       y: 0
     }, {
@@ -588,18 +588,18 @@ describe("sapphire.widgets.lines", function() {
       .call(lines);
 
     var swatch = el
-      .select('.legend .set[data-id=foo] .swatch')
+      .select('.legend .metric[data-id=foo] .swatch')
       .style('background-color');
 
     expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('foo', 2)));
 
     swatch = el
-      .select('.legend .set[data-id=bar] .swatch')
+      .select('.legend .metric[data-id=bar] .swatch')
       .style('background-color');
 
     expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('bar', 2)));
 
-    datum.sets[0].values = [{
+    datum.metrics[0].values = [{
       x: 4,
       y: 600000 
     }, {
@@ -613,8 +613,8 @@ describe("sapphire.widgets.lines", function() {
       y: 9000000
     }];
 
-    datum.sets[1].key = 'baz';
-    datum.sets[1].values = [{
+    datum.metrics[1].key = 'baz';
+    datum.metrics[1].values = [{
       x: 4,
       y: 300000 
     }, {
@@ -632,23 +632,23 @@ describe("sapphire.widgets.lines", function() {
       .call(lines);
 
     swatch = el
-      .select('.legend .set[data-id=foo] .swatch')
+      .select('.legend .metric[data-id=foo] .swatch')
       .style('background-color');
 
     expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('foo', 2)));
 
     swatch = el
-      .select('.legend .set[data-id=baz] .swatch')
+      .select('.legend .metric[data-id=baz] .swatch')
       .style('background-color');
 
     expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('baz', 2)));
   });
 
-  it("should draw its legend's set titles", function() {
+  it("should draw its legend's metric titles", function() {
     var lines = sapphire.widgets.lines();
     expect(el.html()).to.be.empty;
 
-    datum.sets[0].values = [{
+    datum.metrics[0].values = [{
       x: 0,
       y: 0
     }, {
@@ -662,7 +662,7 @@ describe("sapphire.widgets.lines", function() {
       y: 4000000
     }];
 
-    datum.sets[1].values = [{
+    datum.metrics[1].values = [{
       x: 0,
       y: 0
     }, {
@@ -679,13 +679,13 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    var title = el.select('.legend .set[data-id=foo] .title');
+    var title = el.select('.legend .metric[data-id=foo] .title');
     expect(title.text()).to.equal('Total Foo');
 
-    title = el.select('.legend .set[data-id=bar] .title');
+    title = el.select('.legend .metric[data-id=bar] .title');
     expect(title.text()).to.equal('Total Bar');
 
-    datum.sets[0].values = [{
+    datum.metrics[0].values = [{
       x: 4,
       y: 600000 
     }, {
@@ -699,9 +699,9 @@ describe("sapphire.widgets.lines", function() {
       y: 9000000
     }];
 
-    datum.sets[1].key = 'baz';
-    datum.sets[1].title = 'Total Baz';
-    datum.sets[1].values = [{
+    datum.metrics[1].key = 'baz';
+    datum.metrics[1].title = 'Total Baz';
+    datum.metrics[1].values = [{
       x: 4,
       y: 300000 
     }, {
@@ -718,18 +718,18 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    title = el.select('.legend .set[data-id=foo] .title');
+    title = el.select('.legend .metric[data-id=foo] .title');
     expect(title.text()).to.equal('Total Foo');
 
-    title = el.select('.legend .set[data-id=baz] .title');
+    title = el.select('.legend .metric[data-id=baz] .title');
     expect(title.text()).to.equal('Total Baz');
   });
 
-  it("should draw its legend's sets' last values", function() {
+  it("should draw its legend's metrics' last values", function() {
     var lines = sapphire.widgets.lines();
     expect(el.html()).to.be.empty;
 
-    datum.sets[0].values = [{
+    datum.metrics[0].values = [{
       x: 0,
       y: 0
     }, {
@@ -743,7 +743,7 @@ describe("sapphire.widgets.lines", function() {
       y: 4000000
     }];
 
-    datum.sets[1].values = [{
+    datum.metrics[1].values = [{
       x: 0,
       y: 0
     }, {
@@ -760,13 +760,13 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    var value = el.select('.legend .set[data-id=foo] .value');
+    var value = el.select('.legend .metric[data-id=foo] .value');
     expect(value.text()).to.equal('4,000,000');
 
-    value = el.select('.legend .set[data-id=bar] .value');
+    value = el.select('.legend .metric[data-id=bar] .value');
     expect(value.text()).to.equal('5,000,000');
 
-    datum.sets[0].values = [{
+    datum.metrics[0].values = [{
       x: 4,
       y: 600000 
     }, {
@@ -780,8 +780,8 @@ describe("sapphire.widgets.lines", function() {
       y: 9000000
     }];
 
-    datum.sets[1].key = 'baz';
-    datum.sets[1].values = [{
+    datum.metrics[1].key = 'baz';
+    datum.metrics[1].values = [{
       x: 4,
       y: 300000 
     }, {
@@ -798,10 +798,10 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    value = el.select('.legend .set[data-id=foo] .value');
+    value = el.select('.legend .metric[data-id=foo] .value');
     expect(value.text()).to.equal('9,000,000');
 
-    value = el.select('.legend .set[data-id=baz] .value');
+    value = el.select('.legend .metric[data-id=baz] .value');
     expect(value.text()).to.equal('4,000,000');
   });
 });

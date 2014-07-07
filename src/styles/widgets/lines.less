@@ -2,7 +2,7 @@
 
 
 .lines.widget {
-  > .title {
+  .widget.title {
     .widget .title();
   }
 
@@ -10,7 +10,7 @@
     padding: 8px;
 
     .lines {
-      .set {
+      .metric {
         .line {
           fill: none;
           stroke-width: 2px;
@@ -45,7 +45,7 @@
       border-collapse: collapse;
       width: 100%;
 
-      .set {
+      .metric {
         background: darken(@bg-color, 6%);
 
         &:nth-child(2n) {

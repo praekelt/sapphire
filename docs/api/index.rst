@@ -4,6 +4,6 @@ api
 .. toctree::
 
     dashboard
-    widgets/lastvalue
+    widgets/last
     view
     grid

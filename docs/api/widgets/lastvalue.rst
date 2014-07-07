@@ -1,25 +1,25 @@
-``sapphire.widgets.lastvalue``
+``sapphire.widgets.last``
 ==============================
 
 A widget displaying the last ``y`` value in a series of datapoints.
 
-.. function:: sapphire.widgets.lastvalue()
+.. function:: sapphire.widgets.last()
 
-  Creates a new lastvalue widget.
+  Creates a new last widget.
 
 
-.. function:: lastvalue(el)
+.. function:: last(el)
 
   Draws the widget by applying it to the given selection. ``el`` can be a
   d3 selection, or any argument accepted by d3.select_.
 
   .. code-block:: javascript
 
-    var lastvalue = sapphire.lastvalue();
+    var last = sapphire.last();
 
-    d3.select('#lastvalue')
+    d3.select('#last')
       .datum({
-        title: 'A lastvalue widget',
+        title: 'A last widget',
         values [{
           x: 123,
           y: 345
@@ -28,43 +28,43 @@ A widget displaying the last ``y`` value in a series of datapoints.
           y: 789
         }]
       })
-      .call(lastvalue);
+      .call(last);
 
 
-.. function:: lastvalue.title([accessor])
+.. function:: last.title([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the widget's
   title from the bound datum. Defaults to ``function(d) { return d.title; }``.
 
   .. code-block:: javascript
 
-    var lastvalue = sapphire.lastvalue()
+    var last = sapphire.last()
       .title(function(d, i) {
         return d.heading;
       });
 
-    d3.select('#lastvalue')
+    d3.select('#last')
       .datum({
         ...
-        heading: 'A lastvalue widget',
+        heading: 'A last widget',
         ...
       })
-      .call(lastvalue);
+      .call(last);
 
 
-.. function:: lastvalue.values([accessor])
+.. function:: last.values([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the widget's
   sets of ``x`` and ``y`` values or datapoints.
 
   .. code-block:: javascript
 
-    var lastvalue = sapphire.lastvalue()
+    var last = sapphire.last()
       .values(function(d, i) {
         return d.datapoints;
       });
 
-    d3.select('#lastvalue')
+    d3.select('#last')
       .datum({
         ...
         datapoints: [{
@@ -76,22 +76,22 @@ A widget displaying the last ``y`` value in a series of datapoints.
         }]
         ...
       })
-      .call(lastvalue);
+      .call(last);
 
 
-.. function:: lastvalue.x([accessor])
+.. function:: last.x([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the ``x`` value
-  from each datum in the array corresponding to :func:`lastvalue.values`.
+  from each datum in the array corresponding to :func:`last.values`.
 
   .. code-block:: javascript
 
-    var lastvalue = sapphire.lastvalue()
+    var last = sapphire.last()
       .x(function(d, i) {
         return d.time;
       });
 
-    d3.select('#lastvalue')
+    d3.select('#last')
       .datum({
         ...
         values: [{
@@ -103,22 +103,22 @@ A widget displaying the last ``y`` value in a series of datapoints.
         }]
         ...
       })
-      .call(lastvalue);
+      .call(last);
 
 
-.. function:: lastvalue.y([accessor])
+.. function:: last.y([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the ``y`` value
-  from each datum in the array corresponding to :func:`lastvalue.values`.
+  from each datum in the array corresponding to :func:`last.values`.
 
   .. code-block:: javascript
 
-    var lastvalue = sapphire.lastvalue()
+    var last = sapphire.last()
       .y(function(d, i) {
         return d.value;
       });
 
-    d3.select('#lastvalue')
+    d3.select('#last')
       .datum({
         ...
         values: [{
@@ -130,27 +130,27 @@ A widget displaying the last ``y`` value in a series of datapoints.
         }]
         ...
       })
-      .call(lastvalue);
+      .call(last);
 
 
-.. function:: lastvalue.format([fn])
+.. function:: last.format([fn])
 
   Property for the formatting function to use when displaying the last value.
 
   .. code-block:: javascript
 
-    var lastvalue = sapphire.lastvalue()
+    var last = sapphire.last()
       .format(d3.format('.2s'));
 
 
-.. function:: lastvalue.none([v])
+.. function:: last.none([v])
 
   Property for the value to display as the last value when
-  :func:`lastvalue.values` returns an empty array.
+  :func:`last.values` returns an empty array.
 
   .. code-block:: javascript
 
-    var lastvalue = sapphire.lastvalue()
+    var last = sapphire.last()
       .none(0);
 
 
