@@ -18,4 +18,12 @@ describe("sapphire.widgets.widget", function() {
 
     expect(el.style('width')).to.equal('800px');
   });
+
+  it("should set the element's height", function() {
+    sapphire.widgets.widget()
+      .height(800)
+      .draw(el);
+
+    expect(el.style('height')).to.equal('800px');
+  });
 });
