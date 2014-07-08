@@ -47,6 +47,12 @@ module.exports = require('./view').extend()
     return utils.access(d, 'colspan');
   })
 
+  .prop('rowspan')
+  .set(d3.functor)
+  .default(function(d) {
+    return utils.access(d, 'rowspan');
+  })
+
   .prop('numcols')
   .default(8)
 
@@ -98,8 +104,13 @@ module.exports = require('./view').extend()
           .datum(d.data)
           .call(d.type);
 
-        var height = parseInt(widgetEl.style('height'));
-        d.rowspan = Math.ceil(height / grid.scale());
+        var rowspan = parseInt(widgetEl.style('height'));
+        rowspan = Math.ceil(rowspan / grid.scale());
+        d.rowspan = Math.max(d.rowspan, rowspan);
+
+        var colspan = parseInt(widgetEl.style('width'));
+        colspan = Math.ceil(colspan / grid.scale());
+        d.colspan = Math.max(d.colspan, colspan);
       });
 
     var gridEls = grid(widgets.datum());
@@ -134,6 +145,8 @@ module.exports = require('./view').extend()
       result.row = self.row().call(node, d, i);
       result.colspan = self.colspan().call(node, d, i);
       result.colspan = utils.ensure(result.colspan, type.colspan());
+      result.rowspan = self.rowspan().call(node, d, i);
+      result.rowspan = utils.ensure(result.rowspan, type.rowspan());
       return result;
     }
 
