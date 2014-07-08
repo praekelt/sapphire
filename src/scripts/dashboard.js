@@ -87,6 +87,9 @@ module.exports = require('./view').extend()
       .row(function(d) { return d.row; })
       .colspan(function(d) { return d.colspan; })
       .rowspan(function(d) { return d.rowspan; });
+    
+    var width = (grid.scale() + grid.padding()) * grid.numcols();
+    el.style('width', width + 'px');
 
     var widgets = el.select('.widgets')
       .datum(widgetData);

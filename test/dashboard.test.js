@@ -35,6 +35,20 @@ describe("sapphire.dashboard", function() {
     d3.select('.tmp').remove();
   });
 
+  it("should set its width", function() {
+    var dashboard = sapphire.dashboard()
+      .numcols(4)
+      .padding(10)
+      .scale(100);
+
+    datum.widgets = [];
+
+    el.datum(datum)
+      .call(dashboard);
+
+    expect(el.style('width')).to.equal(((100 + 10) * 4) + 'px');
+  });
+
   it("should draw its widgets", function() {
     var dashboard = sapphire.dashboard();
     dashboard.types().set('dummy', dummy());
