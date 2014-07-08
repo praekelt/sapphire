@@ -79,32 +79,6 @@ describe("sapphire.dashboard", function() {
     expect(el.select('.widget[data-key=d]').text()).to.equal('quux');
   });
 
-  it("should use each widget type's rowspan as a fallback rowspan", function() {
-    var dummy = sapphire.widgets.widget.extend()
-      .prop('rowspan')
-      .default(4);
-
-    var dashboard = sapphire.dashboard()
-      .numcols(4)
-      .padding(10);
-
-    dashboard.types().set('dummy', dummy());
-
-    datum.widgets = [{
-      key: 'a',
-      type: 'dummy',
-      text: 'foo',
-      col: 3,
-      row: 6,
-      colspan: 2,
-    }];
-
-    el.datum(datum)
-      .call(dashboard);
-
-    expect(el.select('.widget[data-key=a]').style('height')).to.equal('380px');
-  });
-
   it("should use each widget type's colspan as a fallback colspan", function() {
     var dummy = sapphire.widgets.widget.extend()
       .prop('colspan')
@@ -122,7 +96,6 @@ describe("sapphire.dashboard", function() {
       text: 'foo',
       col: 3,
       row: 6,
-      rowspan: 2,
     }];
 
     el.datum(datum)
@@ -132,9 +105,18 @@ describe("sapphire.dashboard", function() {
   });
 
   it("should position its widgets in a grid", function() {
+    var dummy = sapphire.widgets.widget.extend()
+      .prop('colspan')
+      .default(4)
+
+      .draw(function(el) {
+        el.style('height', function(d) { return d.height + 'px'; });
+      });
+
     var dashboard = sapphire.dashboard()
       .numcols(4)
-      .padding(10);
+      .padding(10)
+      .scale(100);
 
     dashboard.types().set('dummy', dummy());
 
@@ -145,7 +127,7 @@ describe("sapphire.dashboard", function() {
       col: 3,
       row: 6,
       colspan: 2,
-      rowspan: 3
+      height: 300
     }, {
       key: 'b',
       type: 'dummy',
@@ -153,7 +135,7 @@ describe("sapphire.dashboard", function() {
       col: 2,
       row: 9,
       colspan: 3,
-      rowspan: 2
+      height: 198
     }];
 
     el.datum(datum)
@@ -176,7 +158,7 @@ describe("sapphire.dashboard", function() {
       col: 2,
       row: 9,
       colspan: 2,
-      rowspan: 3
+      height: 250
     }, {
       key: 'b',
       type: 'dummy',
@@ -184,7 +166,7 @@ describe("sapphire.dashboard", function() {
       col: 1,
       row: 2,
       colspan: 4,
-      rowspan: 2
+      height: 200
     }, {
       key: 'c',
       type: 'dummy',
@@ -192,7 +174,7 @@ describe("sapphire.dashboard", function() {
       col: 3,
       row: 12,
       colspan: 2,
-      rowspan: 4
+      height: 400
     }];
 
     el.datum(datum)

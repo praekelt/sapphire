@@ -2,14 +2,7 @@ module.exports = require('../view').extend()
   .prop('colspan')
   .default(1)
 
-  .prop('rowspan')
-  .default(1)
-
   .prop('width')
-  .set(d3.functor)
-  .default(200)
-
-  .prop('height')
   .set(d3.functor)
   .default(200)
 
@@ -18,8 +11,5 @@ module.exports = require('../view').extend()
 
     el.style('width', function(d, i) {
         return self.width().call(this, d, i) + 'px';
-      })
-      .style('height', function(d, i) {
-        return self.height().call(this, d, i) + 'px';
       });
   });
