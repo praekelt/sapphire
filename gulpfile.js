@@ -92,10 +92,8 @@ gulp.task('build:develop', function() {
   if (branch !== 'develop') { return; }
 
   gulp.start('build', function() {
-    sh.exec('git update-index --no-assume-unchanged ./build/*');
     sh.exec('git add ./build');
     sh.exec('git commit -m "Build"');
-    sh.exec('git update-index --assume-unchanged ./build/*');
   });
 });
 
@@ -103,7 +101,6 @@ gulp.task('build:develop', function() {
 gulp.task('install', function() {
   if (!sh.test('-d', './.git')) { return; }
   sh.mkdir('-p', './.git/hooks');
-  sh.exec('git update-index --assume-unchanged ./build/*');
 
   var hookfile = './.git/hooks/post-merge';
   ['#!/bin/sh', 'npm run-script build:develop']
