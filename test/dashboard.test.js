@@ -38,7 +38,6 @@ describe("sapphire.dashboard", function() {
   it("should set its width", function() {
     var dashboard = sapphire.dashboard()
       .numcols(4)
-      .padding(10)
       .scale(100);
 
     datum.widgets = [];
@@ -46,7 +45,7 @@ describe("sapphire.dashboard", function() {
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.style('width')).to.equal(((100 + 10) * 4) + 'px');
+    expect(el.style('width')).to.equal((100 * 4) + 'px');
   });
 
   it("should draw its widgets", function() {
