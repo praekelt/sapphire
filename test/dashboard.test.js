@@ -79,32 +79,6 @@ describe("sapphire.dashboard", function() {
     expect(el.select('.widget[data-key=d]').text()).to.equal('quux');
   });
 
-  it("should use each widget type's rowspan as a fallback rowspan", function() {
-    var dummy = sapphire.widgets.widget.extend()
-      .prop('rowspan')
-      .default(4);
-
-    var dashboard = sapphire.dashboard()
-      .numcols(4)
-      .padding(10);
-
-    dashboard.types().set('dummy', dummy());
-
-    datum.widgets = [{
-      key: 'a',
-      type: 'dummy',
-      text: 'foo',
-      col: 3,
-      row: 6,
-      colspan: 2,
-    }];
-
-    el.datum(datum)
-      .call(dashboard);
-
-    expect(el.select('.widget[data-key=a]').style('height')).to.equal('380px');
-  });
-
   it("should use each widget type's colspan as a fallback colspan", function() {
     var dummy = sapphire.widgets.widget.extend()
       .prop('colspan')
@@ -122,7 +96,6 @@ describe("sapphire.dashboard", function() {
       text: 'foo',
       col: 3,
       row: 6,
-      rowspan: 2,
     }];
 
     el.datum(datum)
@@ -131,10 +104,83 @@ describe("sapphire.dashboard", function() {
     expect(el.select('.widget[data-key=a]').style('width')).to.equal('380px');
   });
 
+  it("should use each widget's colspan as the minimum width", function() {
+    var dummy = sapphire.widgets.widget.extend()
+      .draw(function(el) {
+          el.style('width', function(d) { return d.width + 'px'; });
+      });
+
+    var dashboard = sapphire.dashboard()
+      .numcols(4)
+      .padding(10)
+      .scale(100);
+
+    dashboard.types().set('dummy', dummy());
+
+    datum.widgets = [{
+      key: 'a',
+      type: 'dummy',
+      text: 'foo',
+      col: 3,
+      row: 6,
+      colspan: 2,
+      width: 350
+    }];
+
+    el.datum(datum)
+      .call(dashboard);
+
+    expect(el.select('.widget[data-key=a]').style('width')).to.equal('380px');
+
+    datum.widgets[0].width = 50;
+
+    el.datum(datum)
+      .call(dashboard);
+
+    expect(el.select('.widget[data-key=a]').style('width')).to.equal('180px');
+  });
+
+  it("should use each widget's rowspan as the minimum height", function() {
+    var dummy = sapphire.widgets.widget.extend()
+      .draw(function(el) {
+          el.style('height',  function(d) { return d.height + 'px'; });
+      });
+
+    var dashboard = sapphire.dashboard()
+      .numcols(4)
+      .padding(10)
+      .scale(100);
+
+    dashboard.types().set('dummy', dummy());
+
+    datum.widgets = [{
+      key: 'a',
+      type: 'dummy',
+      text: 'foo',
+      col: 3,
+      row: 6,
+      rowspan: 2,
+      height: 350
+    }];
+
+    el.datum(datum)
+      .call(dashboard);
+
+    expect(el.select('.widget[data-key=a]').style('height')).to.equal('380px');
+
+    datum.widgets[0].height = 50;
+
+    el.datum(datum)
+      .call(dashboard);
+
+    expect(el.select('.widget[data-key=a]').style('height')).to.equal('180px');
+  });
+
   it("should position its widgets in a grid", function() {
     var dashboard = sapphire.dashboard()
       .numcols(4)
-      .padding(10);
+      .padding(10)
+      .scale(100);
 
     dashboard.types().set('dummy', dummy());
 

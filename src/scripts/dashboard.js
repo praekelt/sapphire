@@ -4,6 +4,9 @@ var widgets = require('./widgets');
 
 
 module.exports = require('./view').extend()
+  .prop('scale')
+  .default(100)
+
   .prop('types')
 
   .prop('title')
@@ -77,7 +80,7 @@ module.exports = require('./view').extend()
     var node = el.node();
 
     var grid = layout()
-      .scale(100)
+      .scale(this.scale())
       .numcols(this.numcols())
       .padding(this.padding())
       .col(function(d) { return d.col; })
@@ -85,27 +88,38 @@ module.exports = require('./view').extend()
       .colspan(function(d) { return d.colspan; })
       .rowspan(function(d) { return d.rowspan; });
 
-    var widget = el.select('.widgets').selectAll('.widget')
-      .data(widgetData, widgetKey);
+    var widgets = el.select('.widgets')
+      .datum(widgetData);
+
+    var widget = widgets.selectAll('.widget')
+      .data(function(d) { return d; }, widgetKey);
 
     widget.enter().append('div')
       .attr('data-key', widgetKey);
 
-    var gridEls = grid(widget.data());
+    widget
+      .classed('widget', true)
+      .each(function(d, i) {
+        var widgetEl = d3.select(this)
+          .datum(d.data)
+          .call(d.type);
+
+        var rowspan = parseInt(widgetEl.style('height'));
+        rowspan = Math.ceil(rowspan / grid.scale());
+        d.rowspan = Math.max(d.rowspan, rowspan);
+
+        var colspan = parseInt(widgetEl.style('width'));
+        colspan = Math.ceil(colspan / grid.scale());
+        d.colspan = Math.max(d.colspan, colspan);
+      });
+
+    var gridEls = grid(widgets.datum());
 
     widget
-      .each(function(d, i) {
-        var gridEl = gridEls[i];
-
-        d3.select(this)
-          .datum(d.data)
-          .call(d.type)
-          .classed('widget', true)
-          .style('left', gridEl.x + 'px')
-          .style('top', gridEl.y + 'px')
-          .style('width', gridEl.width + 'px')
-          .style('height', gridEl.height + 'px');
-      });
+      .style('left', function(d, i) { return gridEls[i].x + 'px'; })
+      .style('top', function(d, i) { return gridEls[i].y + 'px'; })
+      .style('width', function(d, i) { return gridEls[i].width + 'px'; })
+      .style('height', function(d, i) { return gridEls[i].height + 'px'; });
 
     widget.exit().remove();
 
