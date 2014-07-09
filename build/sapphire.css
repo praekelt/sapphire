@@ -3,6 +3,9 @@
   color: #3a3a3a;
   font-family: 'Ubuntu', sans-serif;
 }
+.sapphire .dashboard {
+  margin: 0 auto;
+}
 .sapphire .dashboard .widgets {
   position: relative;
 }

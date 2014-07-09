@@ -100,6 +100,8 @@ module.exports = _dereq_('./view').extend()
       .row(function(d) { return d.row; })
       .colspan(function(d) { return d.colspan; })
       .rowspan(function(d) { return d.rowspan; });
+    
+    el.style('width', (grid.scale() * grid.numcols()) + 'px');
 
     var widgets = el.select('.widgets')
       .datum(widgetData);
