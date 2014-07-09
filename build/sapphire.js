@@ -710,7 +710,7 @@ module.exports = _dereq_('./widget').extend()
     el.attr('class', 'lines widget');
 
     el.append('div')
-      .attr('class', 'widget title');
+      .attr('class', 'title');
 
     var values = el.append('div')
       .attr('class', 'values');
@@ -727,7 +727,7 @@ module.exports = _dereq_('./widget').extend()
     var node = el.node();
     var colors = this.colors();
 
-    el.select('.widget.title')
+    el.select('.widget .title')
       .text(function(d, i) {
         return self.title().call(node, d, i);
       });
