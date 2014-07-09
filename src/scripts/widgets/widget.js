@@ -1,4 +1,7 @@
 module.exports = require('../view').extend()
+  .prop('standalone')
+  .default(true)
+
   .prop('colspan')
   .default(1)
 
@@ -14,10 +17,9 @@ module.exports = require('../view').extend()
   .default(100)
 
   .draw(function(el) {
+    if (!this.standalone()) { return; }
     var self = this;
 
-    // note: if the widget is part of a dashboard (as opposed to a standalone
-    // widget), its width and height are overridden by the dashboard
     el.style('width', function(d, i) {
         return self.width().call(this, d, i) + 'px';
       })

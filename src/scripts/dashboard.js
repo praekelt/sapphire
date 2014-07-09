@@ -79,6 +79,9 @@ module.exports = require('./view').extend()
     var self = this;
     var node = el.node();
 
+    this.types()
+      .forEach(function(name, type) { type.standalone(false); });
+
     var grid = layout()
       .scale(this.scale())
       .numcols(this.numcols())
