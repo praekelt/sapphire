@@ -85,12 +85,11 @@ module.exports = require('./widget').extend()
         return self.title().call(node, d, i);
       });
 
-    var len;
     var values = el.select('.values')
       .datum(function(d, i) {
-        d = self.metrics().call(node, d, i);
-        len = d.length;
-        return d.map(metric);
+        return self.metrics()
+          .call(node, d, i)
+          .map(metric);
       });
 
     values.select('.chart')
@@ -106,7 +105,7 @@ module.exports = require('./widget').extend()
 
       return {
         key: key,
-        color: colors(utils.hash(key) % len),
+        color: colors(i),
         title: self.metricTitle().call(node, d, i),
         values: self.values()
           .call(node, d, i)

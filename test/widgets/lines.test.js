@@ -106,15 +106,6 @@ describe("sapphire.widgets.lines", function() {
       return line(data);
     });
 
-  helpers.colors = strain()
-    .prop('colors')
-    .default(d3.scale.category10())
-
-    .invoke(function(key, len) {
-      var colors = this.colors();
-      return colors(sapphire.utils.hash(key) % len);
-    });
-
   it("should show its title", function() {
     var lines = sapphire.widgets.lines();
     expect(el.html()).to.be.empty;
@@ -139,7 +130,7 @@ describe("sapphire.widgets.lines", function() {
   });
 
   it("should draw lines for its metrics", function() {
-    var colors = helpers.colors();
+    var colors = d3.scale.category10();
 
     var fx = helpers.fx();
     var fy = helpers.fy();
@@ -195,12 +186,12 @@ describe("sapphire.widgets.lines", function() {
     var line = el.selectAll('.chart .metric[data-id=foo] .line');
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.metrics[0].values));
-    expect(line.style('stroke')).to.equal(colors('foo', 2));
+    expect(line.style('stroke')).to.equal(colors(0));
 
     line = el.selectAll('.chart .metric[data-id=bar] .line');
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.metrics[1].values));
-    expect(line.style('stroke')).to.equal(colors('bar', 2));
+    expect(line.style('stroke')).to.equal(colors(1));
 
     datum.metrics[0].values = [{
       x: 1123,
@@ -235,16 +226,16 @@ describe("sapphire.widgets.lines", function() {
     line = el.selectAll('.chart .metric[data-id=foo] .line');
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.metrics[0].values));
-    expect(line.style('stroke')).to.equal(colors('foo', 2));
+    expect(line.style('stroke')).to.equal(colors(0));
 
     line = el.selectAll('.chart .metric[data-id=baz] .line');
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.metrics[1].values));
-    expect(line.style('stroke')).to.equal(colors('baz', 2));
+    expect(line.style('stroke')).to.equal(colors(1));
   });
 
   it("should draw dots for its metrics' last values", function() {
-    var colors = helpers.colors();
+    var colors = d3.scale.category10();
     var fx = helpers.fx();
     var fy = helpers.fy();
 
@@ -294,11 +285,11 @@ describe("sapphire.widgets.lines", function() {
     expect(el.selectAll('.chart .metric .dot').size()).to.equal(2);
     var dot = el.selectAll('.chart .metric[data-id=foo] .dot');
     expect(dot.size()).to.equal(1);
-    expect(dot.style('fill')).to.equal(colors('foo', 2));
+    expect(dot.style('fill')).to.equal(colors(0));
 
     dot = el.selectAll('.chart .metric[data-id=bar] .dot');
     expect(dot.size()).to.equal(1);
-    expect(dot.style('fill')).to.equal(colors('bar', 2));
+    expect(dot.style('fill')).to.equal(colors(1));
 
     datum.metrics[0].values = [{
       x: 1123,
@@ -332,15 +323,15 @@ describe("sapphire.widgets.lines", function() {
     expect(el.selectAll('.chart .metric .dot').size()).to.equal(2);
     dot = el.selectAll('.chart .metric[data-id=foo] .dot');
     expect(dot.size()).to.equal(1);
-    expect(dot.style('fill')).to.equal(colors('foo', 2));
+    expect(dot.style('fill')).to.equal(colors(0));
 
     dot = el.selectAll('.chart .metric[data-id=baz] .dot');
     expect(dot.size()).to.equal(1);
-    expect(dot.style('fill')).to.equal(colors('baz', 2));
+    expect(dot.style('fill')).to.equal(colors(1));
   });
 
   it("should not draw dots for empty metrics", function() {
-    var colors = helpers.colors();
+    var colors = d3.scale.category10();
     var fx = helpers.fx();
     var fy = helpers.fy();
 
@@ -381,7 +372,7 @@ describe("sapphire.widgets.lines", function() {
     expect(el.selectAll('.chart .metric .dot').size()).to.equal(1);
     var dot = el.selectAll('.chart .metric[data-id=foo] .dot');
     expect(dot.size()).to.equal(1);
-    expect(dot.style('fill')).to.equal(colors('foo', 2));
+    expect(dot.style('fill')).to.equal(colors(0));
 
     datum.metrics[0].values = [];
 
@@ -406,7 +397,7 @@ describe("sapphire.widgets.lines", function() {
     expect(el.selectAll('.chart .metric .dot').size()).to.equal(1);
     dot = el.selectAll('.chart .metric[data-id=baz] .dot');
     expect(dot.size()).to.equal(1);
-    expect(dot.style('fill')).to.equal(colors('baz', 2));
+    expect(dot.style('fill')).to.equal(colors(1));
   });
 
   it("should draw a chart time axis", function() {
@@ -552,7 +543,7 @@ describe("sapphire.widgets.lines", function() {
   });
 
   it("should draw its legend's metric swatches", function() {
-    var colors = helpers.colors();
+    var colors = d3.scale.category10();
     var lines = sapphire.widgets.lines();
     expect(el.html()).to.be.empty;
 
@@ -591,13 +582,13 @@ describe("sapphire.widgets.lines", function() {
       .select('.legend .metric[data-id=foo] .swatch')
       .style('background-color');
 
-    expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('foo', 2)));
+    expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors(0)));
 
     swatch = el
       .select('.legend .metric[data-id=bar] .swatch')
       .style('background-color');
 
-    expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('bar', 2)));
+    expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors(1)));
 
     datum.metrics[0].values = [{
       x: 4,
@@ -635,13 +626,13 @@ describe("sapphire.widgets.lines", function() {
       .select('.legend .metric[data-id=foo] .swatch')
       .style('background-color');
 
-    expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('foo', 2)));
+    expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors(0)));
 
     swatch = el
       .select('.legend .metric[data-id=baz] .swatch')
       .style('background-color');
 
-    expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('baz', 2)));
+    expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors(1)));
   });
 
   it("should draw its legend's metric titles", function() {
