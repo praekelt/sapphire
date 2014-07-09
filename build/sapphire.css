@@ -9,7 +9,7 @@
 .sapphire .dashboard .widgets .widget {
   position: absolute;
 }
-.sapphire .lines.widget .widget.title {
+.sapphire .lines.widget > .title {
   padding: 6px 0;
   background: #3a3a3a;
   color: #eeeeee;
@@ -66,7 +66,7 @@
   text-align: right;
   background: #e8e8e8;
 }
-.sapphire .last.widget .title {
+.sapphire .last.widget > .title {
   padding: 6px 0;
   background: #3a3a3a;
   color: #eeeeee;
