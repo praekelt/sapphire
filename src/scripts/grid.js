@@ -39,18 +39,17 @@ var grid = module.exports = strain()
     var self = this;
     var best = counter().numcols(this.numcols());
 
-    data = (data || []).map(function(d, i) {
-      d = {
-        data: d,
-        col: utils.ensure(self.col().call(self, d, i), best.col()), 
-        row: utils.ensure(self.row().call(self, d, i), best.row()),
-        rowspan: self.rowspan().call(self, d, i),
-        colspan: self.colspan().call(self, d, i)
-      };
-
-      best.inc(d);
-      return d;
-    });
+    data = (data || [])
+      .map(function(d, i) {
+        return {
+          data: d,
+          col: self.col().call(self, d, i), 
+          row: self.row().call(self, d, i),
+          rowspan: self.rowspan().call(self, d, i),
+          colspan: self.colspan().call(self, d, i)
+        };
+      })
+      .map(best);
 
     var quadtree = d3.geom.quadtree()
       .x(function(d) { return d.col; })
@@ -118,18 +117,20 @@ var counter = strain()
   .prop('row')
   .default(0)
 
-  .meth(function inc(d) {
-    var col = d.col + d.colspan;
-    var row = this.row();
+  .invoke(function(d) {
+    d.col = utils.ensure(d.col, this.col());
+    d.row = utils.ensure(d.row, this.row());
 
-    if (col >= this.numcols()) {
-      col = 0;
-      row += this.rowspan();
+    if (d.col + d.colspan > this.numcols()) {
+      d.col = 0;
+      d.row += this.rowspan();
       this.rowspan(0);
     }
 
     this
-      .col(col)
-      .row(row)
+      .col(d.col + d.colspan)
+      .row(d.row)
       .rowspan(Math.max(this.rowspan(), d.rowspan));
+
+    return d;
   });
