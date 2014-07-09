@@ -273,6 +273,31 @@ describe("sapphire.dashboard", function() {
     expect(el.select('.widget[data-key=c]').style('height')).to.equal('380px');
   });
 
+  it("should set its widgets dimensions before drawing them", function(done) {
+    var dummy = sapphire.widgets.widget.extend()
+      .draw(function(el) {
+        expect(el.style('width')).to.equal('180px');
+        expect(el.style('height')).to.equal('280px');
+        done();
+      });
+
+    var dashboard = sapphire.dashboard()
+      .padding(10);
+
+    dashboard.types().set('dummy', dummy());
+
+    datum.widgets = [{
+      key: 'a',
+      type: 'dummy',
+      text: 'foo',
+      colspan: 2,
+      rowspan: 3
+    }];
+
+    el.datum(datum)
+      .call(dashboard);
+  });
+
   it("should throw an error for unrecognised widget types", function() {
     var dashboard = sapphire.dashboard();
     dashboard.types().set('dummy', dummy());
