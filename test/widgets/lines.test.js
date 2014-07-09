@@ -124,7 +124,7 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    var title = el.selectAll('.widget.title');
+    var title = el.selectAll('.widget > .title');
     expect(title.size()).to.equal(1);
     expect(title.text()).to.equal(datum.title);
 
@@ -133,7 +133,7 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    title = el.selectAll('.widget.title');
+    title = el.selectAll('.widget > .title');
     expect(title.size()).to.equal(1);
     expect(title.text()).to.equal(datum.title);
   });
