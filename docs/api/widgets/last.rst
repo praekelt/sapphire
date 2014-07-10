@@ -1,6 +1,23 @@
 ``sapphire.widgets.last``
 =========================
 
+
+.. raw:: html
+
+  <div class="sapphire">
+    <div id="last"></div>
+  </div>
+
+  <script>
+  d3.select('#last')
+    .datum({
+      title: 'Microscopic Hummingbirds',
+      values: [{"x":1405017106899,"y":6641},{"x":1405017108931,"y":50321},{"x":1405017110931,"y":79122},{"x":1405017112932,"y":31465},{"x":1405017114932,"y":30737},{"x":1405017116932,"y":61283},{"x":1405017118933,"y":31470},{"x":1405017120934,"y":90216},{"x":1405017122935,"y":88903},{"x":1405017124936,"y":37578},{"x":1405017126936,"y":99229},{"x":1405017128936,"y":82901},{"x":1405017130937,"y":23089},{"x":1405017132938,"y":20542},{"x":1405017134938,"y":13830},{"x":1405017136939,"y":33817},{"x":1405017138940,"y":85146},{"x":1405017140941,"y":14832},{"x":1405017142942,"y":15119}]
+    })
+    .call(sapphire.widgets.last());
+  </script>
+
+
 A widget displaying the last ``y`` value in a series of datapoints, a sparkline
 of the values, and a summary of the difference between the last value and the
 value preceding it.
