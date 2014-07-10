@@ -380,22 +380,6 @@ utils.date = function(t) {
   return new Date(t);
 };
 
-
-// adapted from http://erlycoder.com/49/javascript-hash-functions-to-
-// convert-string-into-integer-hash-
-utils.hash = function(s) {
-  var result = 0;
-  var c;
-
-  for (i = 0; i < s.length; i++) {
-      c = s.charCodeAt(i);
-      result = ((result << 5) - result) + c;
-      result = result & result;
-  }
-
-  return result;
-};
-
 },{}],5:[function(_dereq_,module,exports){
 module.exports = strain()
   .static(function draw(fn) {
@@ -757,12 +741,11 @@ module.exports = _dereq_('./widget').extend()
         return self.title().call(node, d, i);
       });
 
-    var len;
     var values = el.select('.values')
       .datum(function(d, i) {
-        d = self.metrics().call(node, d, i);
-        len = d.length;
-        return d.map(metric);
+        return self.metrics()
+          .call(node, d, i)
+          .map(metric);
       });
 
     values.select('.chart')
@@ -778,7 +761,7 @@ module.exports = _dereq_('./widget').extend()
 
       return {
         key: key,
-        color: colors(utils.hash(key) % len),
+        color: colors(i),
         title: self.metricTitle().call(node, d, i),
         values: self.values()
           .call(node, d, i)
