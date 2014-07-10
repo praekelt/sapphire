@@ -15,7 +15,7 @@
 .sapphire .lines.widget > .title {
   padding: 6px 0;
   background: #3a3a3a;
-  color: #eeeeee;
+  color: #f2f2f2;
   text-align: center;
 }
 .sapphire .lines.widget .chart {
@@ -46,14 +46,14 @@
   border-collapse: collapse;
   width: 100%;
 }
-.sapphire .lines.widget .legend .table .metric {
-  background: #dfdfdf;
+.sapphire .lines.widget .legend .table .metric td {
+  background: rgba(58, 58, 58, 0.07);
 }
-.sapphire .lines.widget .legend .table .metric:nth-child(2n) {
-  background: #e8e8e8;
+.sapphire .lines.widget .legend .table .metric:nth-child(2n) td {
+  background: rgba(58, 58, 58, 0.025);
 }
 .sapphire .lines.widget .legend .table .metric:nth-child(2n) .value {
-  background: #dfdfdf;
+  background: rgba(58, 58, 58, 0.07);
 }
 .sapphire .lines.widget .legend .table .metric td {
   padding: 4px 12px;
@@ -67,12 +67,12 @@
 }
 .sapphire .lines.widget .legend .table .metric .value {
   text-align: right;
-  background: #e8e8e8;
+  background: rgba(58, 58, 58, 0.025);
 }
 .sapphire .last.widget > .title {
   padding: 6px 0;
   background: #3a3a3a;
-  color: #eeeeee;
+  color: #f2f2f2;
   text-align: center;
 }
 .sapphire .last.widget .values {
