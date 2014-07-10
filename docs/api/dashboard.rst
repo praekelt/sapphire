@@ -11,6 +11,7 @@ Component for drawing a dashboard of widgets laid out in a grid.
 
 
 .. function:: dashboard(el)
+
   Draws the dashboard by applying it to the given selection. ``el`` can be a
   d3 selection, or any argument accepted by d3.select_.
 
