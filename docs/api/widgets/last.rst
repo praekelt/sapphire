@@ -217,4 +217,3 @@ value preceding it.
 
 
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements
-.. _d3.map: https://github.com/mbostock/d3/wiki/Arrays#maps

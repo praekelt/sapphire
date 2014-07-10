@@ -89,4 +89,3 @@ as `view.extend` and :func:`view.draw` are also available on widget types.
 
 
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements
-.. _d3.map: https://github.com/mbostock/d3/wiki/Arrays#maps
