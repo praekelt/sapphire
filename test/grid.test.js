@@ -24,6 +24,12 @@ describe("sapphire.grid", function() {
     }, {
       colspan: 1,
       rowspan: 1
+    }, {
+      colspan: 3,
+      rowspan: 1
+    }, {
+      colspan: 2,
+      rowspan: 1
     }]);
 
     expect(sapphire.testutils.pick(result, ['col', 'row'])).to.deep.equal([{
@@ -47,6 +53,12 @@ describe("sapphire.grid", function() {
     }, {
       col: 3,
       row: 7,
+    }, {
+      col: 0,
+      row: 10,
+    }, {
+      col: 0,
+      row: 11,
     }]);
   });
 

@@ -218,13 +218,13 @@ describe("sapphire.dashboard", function() {
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.select('.widget[data-key=a]').style('left')).to.equal('310px');
+    expect(el.select('.widget[data-key=a]').style('left')).to.equal('10px');
     expect(el.select('.widget[data-key=a]').style('top')).to.equal('610px');
     expect(el.select('.widget[data-key=a]').style('width')).to.equal('180px');
     expect(el.select('.widget[data-key=a]').style('height')).to.equal('280px');
 
-    expect(el.select('.widget[data-key=b]').style('left')).to.equal('210px');
-    expect(el.select('.widget[data-key=b]').style('top')).to.equal('910px');
+    expect(el.select('.widget[data-key=b]').style('left')).to.equal('10px');
+    expect(el.select('.widget[data-key=b]').style('top')).to.equal('1210px');
     expect(el.select('.widget[data-key=b]').style('width')).to.equal('280px');
     expect(el.select('.widget[data-key=b]').style('height')).to.equal('180px');
 
@@ -262,13 +262,13 @@ describe("sapphire.dashboard", function() {
     expect(el.select('.widget[data-key=a]').style('width')).to.equal('180px');
     expect(el.select('.widget[data-key=a]').style('height')).to.equal('280px');
 
-    expect(el.select('.widget[data-key=b]').style('left')).to.equal('110px');
-    expect(el.select('.widget[data-key=b]').style('top')).to.equal('210px');
+    expect(el.select('.widget[data-key=b]').style('left')).to.equal('10px');
+    expect(el.select('.widget[data-key=b]').style('top')).to.equal('510px');
     expect(el.select('.widget[data-key=b]').style('width')).to.equal('380px');
     expect(el.select('.widget[data-key=b]').style('height')).to.equal('180px');
 
-    expect(el.select('.widget[data-key=c]').style('left')).to.equal('310px');
-    expect(el.select('.widget[data-key=c]').style('top')).to.equal('1210px');
+    expect(el.select('.widget[data-key=c]').style('left')).to.equal('10px');
+    expect(el.select('.widget[data-key=c]').style('top')).to.equal('1410px');
     expect(el.select('.widget[data-key=c]').style('width')).to.equal('180px');
     expect(el.select('.widget[data-key=c]').style('height')).to.equal('380px');
   });
