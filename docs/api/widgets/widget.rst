@@ -25,7 +25,7 @@ as `view.extend` and :func:`view.draw` are also available on widget types.
 
 .. function:: widget.width([v])
 
-  Property for the widget's width. Used if the widget is standalone (see
+  Accessor for the widget's width. Used if the widget is standalone (see
   :func:`widget.standalone`). Defaults to ``100``.
 
   .. code-block:: javascript
@@ -36,8 +36,12 @@ as `view.extend` and :func:`view.draw` are also available on widget types.
 
 .. function:: widget.colspan([v])
 
-  Property for the widget's column span in a dashboard. Used if the widget is
-  not standalone (see :func:`widget.standalone`). Defaults to ``1``.
+  Property for the widget's default column span in a dashboard. Used if the
+  widget is not standalone (see :func:`widget.standalone` and
+  :func:`dashboard.colspan`). Defaults to ``1``.
+
+  Note that widgets may exceed this width, depending on the behaviour of the
+  widget type.
 
   .. code-block:: javascript
 
@@ -47,8 +51,12 @@ as `view.extend` and :func:`view.draw` are also available on widget types.
 
 .. function:: widget.height([v])
 
-  Property for the widget's height. Used if the widget is standalone (see
+  Accessor for the widget's height. Used if the widget is standalone (see
   :func:`widget.standalone`). Defaults to ``100``.
+
+  Note that widgets may exceed this height, depending on the behaviour of the
+  widget type. For example, :func:`sapphire.widgets.lines` has a dynamic height
+  to support the dynamic height of its legend table.
 
   .. code-block:: javascript
 
@@ -56,10 +64,11 @@ as `view.extend` and :func:`view.draw` are also available on widget types.
       .height(1);
 
 
-.. function:: widget.row([v])
+.. function:: widget.rowspan([v])
 
-  Property for the widget's row span in a dashboard. Used if the widget is
-  not standalone (see :func:`widget.standalone`). Defaults to ``1``.
+  Property for the widget's default row span in a dashboard. Used if the widget
+  is not standalone (see :func:`widget.standalone` and
+  :func:`dashboard.rowspan`). Defaults to ``1``.
 
   .. code-block:: javascript
 

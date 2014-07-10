@@ -183,7 +183,7 @@ value preceding it.
 
 .. function:: last.width([v])
 
-  Property for the widget's width. Used if the widget is standalone (see
+  Accessor for the widget's width. Used if the widget is standalone (see
   :func:`last.standalone`). Defaults to ``400``.
 
   .. code-block:: javascript
@@ -194,8 +194,9 @@ value preceding it.
 
 .. function:: last.colspan([v])
 
-  Property for the widget's column span in a dashboard. Used if the widget is
-  not standalone (see :func:`last.standalone`). Defaults to ``4``.
+  Property for the widget's default column span in a dashboard. Used if the
+  widget is not standalone (see :func:`last.standalone` and
+  :func:`dashboard.colspan`). Defaults to ``4``.
 
   .. code-block:: javascript
 
