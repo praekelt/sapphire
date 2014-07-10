@@ -39,19 +39,3 @@ utils.ensureEl = function(el) {
 utils.date = function(t) {
   return new Date(t);
 };
-
-
-// adapted from http://erlycoder.com/49/javascript-hash-functions-to-
-// convert-string-into-integer-hash-
-utils.hash = function(s) {
-  var result = 0;
-  var c;
-
-  for (i = 0; i < s.length; i++) {
-      c = s.charCodeAt(i);
-      result = ((result << 5) - result) + c;
-      result = result & result;
-  }
-
-  return result;
-};
