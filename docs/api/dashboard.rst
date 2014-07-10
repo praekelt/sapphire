@@ -298,7 +298,7 @@ Component for drawing a dashboard of widgets laid out in a grid.
   .. code-block:: javascript
 
     var dashboard = sapphire.dashboard()
-      .numcols(4)
+      .numcols(4);
 
 
 .. function:: dashboard.scale([v])
@@ -310,7 +310,7 @@ Component for drawing a dashboard of widgets laid out in a grid.
   .. code-block:: javascript
 
     var dashboard = sapphire.dashboard()
-      .scale(50)
+      .scale(50);
 
 
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements
