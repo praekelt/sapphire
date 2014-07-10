@@ -158,7 +158,8 @@ Component for drawing a dashboard of widgets laid out in a grid.
 
   Property for the :ref:`accessor <accessors>` to use to access the column
   index for each widget. If the accessor returns ``null`` or ``undefined``, the
-  dashboard rely on its :func:`grid layout <sapphire.grid>` to choose the next column position for the widget.
+  dashboard relies on its :func:`grid layout <sapphire.grid>` to choose the
+  next column position for the widget.
 
   The default accessor looks up the ``col`` property of each datum, returning
   ``null`` if the property does not exist, is undefined, or if the datum is not
@@ -188,8 +189,8 @@ Component for drawing a dashboard of widgets laid out in a grid.
 
   Property for the :ref:`accessor <accessors>` to use to access the row index
   for each widget. If the accessor returns ``null`` or ``undefined``, the
-  dashboard rely on its :func:`grid layout <sapphire.grid>` to choose the next
-  row position for the widget.
+  dashboard relies on its :func:`grid layout <sapphire.grid>` to choose the
+  next row position for the widget.
 
   The default accessor looks up the ``row`` property of each datum, returning
   ``null`` if the property does not exist, is undefined, or if the datum is not
@@ -217,12 +218,14 @@ Component for drawing a dashboard of widgets laid out in a grid.
 
 .. function:: dashboard.colspan([accessor])
 
-  Property for the :ref:`accessor <accessors>` to use to access the number of
-  columns to span for each datum. If the accessor returns ``null`` or
-  ``undefined``, the dashboard will fall back to the relevant widget type's
-  ``colspan`` property.
-
-  The default accessor looks up the ``colspan`` property of each datum.
+  Property for the :ref:`accessor <accessors>` to use to access the *minimum*
+  number of columns to span for each widget. Each widget's column span is
+  recalculated after the widget is drawn, so a widget may exceed the span given,
+  depending on the behaviour of the widget's type.
+  
+  If the accessor returns ``null`` or ``undefined``, the dashboard will fall
+  back to the relevant widget type's ``colspan`` property. The default accessor
+  looks up the ``colspan`` property of each datum.
 
   .. code-block:: javascript
 
@@ -246,10 +249,14 @@ Component for drawing a dashboard of widgets laid out in a grid.
 
 .. function:: dashboard.rowspan([accessor])
 
-  Property for the :ref:`accessor <accessors>` to use to access the number of
-  rows to span for each datum. If the accessor returns ``null`` or
-  ``undefined``, the dashboard will fall back to the relevant widget type's
-  ``rowspan`` property.
+  Property for the :ref:`accessor <accessors>` to use to access the *minimum*
+  number of rows to span for each widget. Each widget's row span is
+  recalculated after the widget is drawn, so a widget may exceed the span
+  given, depending on the behaviour of the widget's type.
+  
+  If the accessor returns ``null`` or ``undefined``, the dashboard will fall
+  back to the relevant widget type's ``rowspan`` property. The default accessor
+  looks up the ``rowspan`` property of each datum.
 
   The default accessor looks up the ``rowspan`` property of each datum.
 
