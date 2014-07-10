@@ -15,16 +15,16 @@
   </div>
 
   <script>
-  d3.json('../../data.json', function(data) {
+  !sapphire.docData || (function() {
     var lines = sapphire.widgets.lines()
       .width(600)
       .key(function(d) { return d.name; })
       .metricTitle(function(d) { return d.name; });
 
     d3.select('#lines')
-      .datum(data.lines)
+      .datum(sapphire.docData.lines)
       .call(lines);
-  });
+  })();
   </script>
 
 

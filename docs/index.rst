@@ -9,6 +9,7 @@ A js library for drawing dashboards.
    <script src="http://d3js.org/d3.v3.min.js"></script>
    <script src="https://rawgit.com/justinvdm/strain/master/strain.js"></script>
    <script src="https://rawgit.com/praekelt/sapphire/develop/build/sapphire.js"></script>
+   <script src="https://rawgit.com/praekelt/sapphire/develop/docs/data.js"></script>
 
 
 .. toctree::

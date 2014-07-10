@@ -15,11 +15,11 @@
   </div>
 
   <script>
-  d3.json('../../data.json', function(data) {
+  !sapphire.docData || (function() {
     d3.select('#last')
-      .datum(data)
+      .datum(sapphire.docData.last)
       .call(sapphire.widgets.last());
-  });
+  })();
   </script>
 
 
