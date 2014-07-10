@@ -5,6 +5,7 @@ api
 
     dashboard
     widgets/last
+    widgets/lines
     widgets/widget
     view
     grid
