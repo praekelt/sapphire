@@ -92,6 +92,9 @@ module.exports = _dereq_('./view').extend()
     var self = this;
     var node = el.node();
 
+    this.types()
+      .forEach(function(name, type) { type.standalone(false); });
+
     var grid = layout()
       .scale(this.scale())
       .numcols(this.numcols())
@@ -114,18 +117,22 @@ module.exports = _dereq_('./view').extend()
 
     widget
       .classed('widget', true)
-      .each(function(d, i) {
+      .style('width', function(d) {
+        return grid.spanLength(d.colspan) + 'px';
+      })
+      .style('min-height', function(d) {
+        return grid.spanLength(d.rowspan) + 'px';
+      })
+      .each(function(d) {
         var widgetEl = d3.select(this)
           .datum(d.data)
           .call(d.type);
 
-        var rowspan = parseInt(widgetEl.style('height'));
-        rowspan = Math.ceil(rowspan / grid.scale());
-        d.rowspan = Math.max(d.rowspan, rowspan);
+        var width = parseInt(widgetEl.style('width'));
+        d.colspan = Math.max(d.colspan, grid.lengthSpan(width));
 
-        var colspan = parseInt(widgetEl.style('width'));
-        colspan = Math.ceil(colspan / grid.scale());
-        d.colspan = Math.max(d.colspan, colspan);
+        var height = parseInt(widgetEl.style('height'));
+        d.rowspan = Math.max(d.rowspan, grid.lengthSpan(height));
       });
 
     var gridEls = grid(widgets.datum());
@@ -229,17 +236,32 @@ var grid = module.exports = strain()
       .y(function(d) { return d.row; });
 
     var root = quadtree(data);
-    var dblPadding = this.padding() * 2;
 
     data.forEach(function(d) {
       root.visit(grid.uncollide(d));
-      d.x = (d.col * self.scale()) + self.padding();
-      d.y = (d.row * self.scale()) + self.padding();
-      d.width = (d.colspan * self.scale()) - dblPadding;
-      d.height = (d.rowspan * self.scale()) - dblPadding;
+      d.x = self.indexOffset(d.col);
+      d.y = self.indexOffset(d.row);
+      d.width = self.spanLength(d.colspan);
+      d.height = self.spanLength(d.rowspan);
     });
 
     return data;
+  })
+
+  .meth(function indexOffset(index) {
+    return (index * this.scale()) + this.padding();
+  })
+
+  .meth(function spanLength(span) {
+    return (span * this.scale()) - (this.padding() * 2);
+  })
+
+  .meth(function offsetIndex(offset) {
+    return Math.ceil((offset - this.padding()) / this.scale());
+  })
+
+  .meth(function lengthSpan(len) {
+    return Math.ceil((len + (this.padding() * 2)) / this.scale());
   })
 
   .static(function box(d) {
@@ -939,6 +961,9 @@ var legend = _dereq_('../view').extend()
 
 },{"../utils":4,"../view":5,"./widget":9}],9:[function(_dereq_,module,exports){
 module.exports = _dereq_('../view').extend()
+  .prop('standalone')
+  .default(true)
+
   .prop('colspan')
   .default(1)
 
@@ -954,10 +979,9 @@ module.exports = _dereq_('../view').extend()
   .default(100)
 
   .draw(function(el) {
+    if (!this.standalone()) { return; }
     var self = this;
 
-    // note: if the widget is part of a dashboard (as opposed to a standalone
-    // widget), its width and height are overridden by the dashboard
     el.style('width', function(d, i) {
         return self.width().call(this, d, i) + 'px';
       })
