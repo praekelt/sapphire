@@ -1,5 +1,3 @@
-.. _saphire.dashboard
-
 ``sapphire.dashboard``
 ======================
 
@@ -121,7 +119,11 @@ Component for drawing a dashboard of widgets laid out in a grid.
 
   Property for the :ref:`accessor <accessors>` to use to access the key to use
   to control how the widget data is joined to elements.
-  
+
+  The default accessor will use each widget datum's ``key`` property if it
+  exists, falling back to the widget datum's index in the array of widget data
+  if it does not find the property.
+
   .. code-block:: javascript
 
     var dashboard = sapphire.dashboard()
@@ -138,11 +140,6 @@ Component for drawing a dashboard of widgets laid out in a grid.
         }]
       })
       .call(dashboard);
-
-  The default accessor will use each widget datum's ``key`` property if it
-  exists, falling back to the widget datum's index in the array of widget data
-  if it does not find the property.
-
 
 .. function:: dashboard.types()
 
