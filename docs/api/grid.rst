@@ -146,7 +146,6 @@ The layout used by :ref:`sapphire.dashboard` to position widgets.
       .padding(5)
 
 
-
 .. function:: grid.numcols([v])
 
   Property for the number of columns the grid's width is divided up into.
@@ -156,3 +155,63 @@ The layout used by :ref:`sapphire.dashboard` to position widgets.
 
     var grid = sapphire.grid()
       .numcols(4)
+
+
+.. function:: grid.indexOffset(index)
+
+  Calculates the x or y offset of the given row or column index using
+  :func:`grid.scale` and :func:`grid.padding`. Inverse of
+  :func:`grid.offsetIndex`.
+
+  .. code-block:: javascript
+
+    var grid = sapphire.grid()
+      .scale(10)
+      .padding(4);
+
+    grid.indexOffset(3);  // (10 * 3) + 4
+
+
+.. function:: grid.spanLength(span)
+
+  Calculates the width or height of the given row or column span using
+  :func:`grid.scale` and :func:`grid.padding`. Inverse of
+  :func:`grid.lengthSpan`.
+
+  .. code-block:: javascript
+
+    var grid = sapphire.grid()
+      .scale(10)
+      .padding(4);
+
+    grid.spanLength(3);  // (10 * 3) - (2 * 4)
+
+
+.. function:: grid.offsetIndex(offset)
+
+  Calculates the column or row index of the given x or y offset using
+  :func:`grid.scale` and :func:`grid.padding`. Inverse of
+  :func:`grid.indexOffset`.
+
+  .. code-block:: javascript
+
+    var grid = sapphire.grid()
+      .scale(10)
+      .padding(4);
+
+    grid.indexOffset((10 * 3) + 4);  // 3
+
+
+.. function:: grid.lengthSpan(length)
+
+  Calculates the column or row span of the given width or height using
+  :func:`grid.scale` and :func:`grid.padding`. Inverse of
+  :func:`grid.spanLength`.
+
+  .. code-block:: javascript
+
+    var grid = sapphire.grid()
+      .scale(10)
+      .padding(4);
+
+    grid.lengthSpan((10 * 3) - (2 * 4));  // 3
