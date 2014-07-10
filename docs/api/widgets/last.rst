@@ -183,8 +183,9 @@ value preceding it.
 
 .. function:: last.width([v])
 
-  Accessor for the widget's width. Used if the widget is standalone (see
-  :func:`last.standalone`). Defaults to ``400``.
+  Property for the :ref:`accessor <accessors>` to use to access the widget's
+  width. Used if the widget is standalone (see :func:`last.standalone`).
+  Defaults to ``400``.
 
   .. code-block:: javascript
 

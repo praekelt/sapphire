@@ -25,8 +25,9 @@ as `view.extend` and :func:`view.draw` are also available on widget types.
 
 .. function:: widget.width([v])
 
-  Accessor for the widget's width. Used if the widget is standalone (see
-  :func:`widget.standalone`). Defaults to ``100``.
+  Property for the :ref:`accessor <accessors>` to use to access the widget's
+  width. Used if the widget is standalone (see :func:`widget.standalone`).
+  Defaults to ``100``.
 
   .. code-block:: javascript
 
@@ -51,8 +52,8 @@ as `view.extend` and :func:`view.draw` are also available on widget types.
 
 .. function:: widget.height([v])
 
-  Accessor for the widget's height. Used if the widget is standalone (see
-  :func:`widget.standalone`). Defaults to ``100``.
+  Property for the :ref:`accessor <accessors>` the widget's height. Used if the
+  widget is standalone (see :func:`widget.standalone`). Defaults to ``100``.
 
   Note that widgets may exceed this height, depending on the behaviour of the
   widget type. For example, :func:`sapphire.widgets.lines` has a dynamic height
