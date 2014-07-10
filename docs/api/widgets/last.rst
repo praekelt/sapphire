@@ -5,6 +5,7 @@ A widget displaying the last ``y`` value in a series of datapoints, a sparkline
 of the values, and a summary of the difference between the last value and the
 value preceding it.
 
+
 .. function:: sapphire.widgets.last()
 
   Creates a new last widget.
@@ -22,7 +23,7 @@ value preceding it.
     d3.select('#last')
       .datum({
         title: 'A last widget',
-        values [{
+        values: [{
           x: 123,
           y: 345
         }, {

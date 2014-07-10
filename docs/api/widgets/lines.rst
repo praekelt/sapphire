@@ -254,7 +254,7 @@ displaying each metric's title, colour and last ``y`` value.
         ...
         metrics: [{
           ...
-          values [{
+          values: [{
             x 1405013457677,
             value: 1000000
           }, {
