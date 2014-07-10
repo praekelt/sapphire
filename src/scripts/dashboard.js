@@ -79,6 +79,9 @@ module.exports = require('./view').extend()
     var self = this;
     var node = el.node();
 
+    this.types()
+      .forEach(function(name, type) { type.standalone(false); });
+
     var grid = layout()
       .scale(this.scale())
       .numcols(this.numcols())
@@ -101,18 +104,22 @@ module.exports = require('./view').extend()
 
     widget
       .classed('widget', true)
-      .each(function(d, i) {
+      .style('width', function(d) {
+        return grid.spanLength(d.colspan) + 'px';
+      })
+      .style('min-height', function(d) {
+        return grid.spanLength(d.rowspan) + 'px';
+      })
+      .each(function(d) {
         var widgetEl = d3.select(this)
           .datum(d.data)
           .call(d.type);
 
-        var rowspan = parseInt(widgetEl.style('height'));
-        rowspan = Math.ceil(rowspan / grid.scale());
-        d.rowspan = Math.max(d.rowspan, rowspan);
+        var width = parseInt(widgetEl.style('width'));
+        d.colspan = Math.max(d.colspan, grid.lengthSpan(width));
 
-        var colspan = parseInt(widgetEl.style('width'));
-        colspan = Math.ceil(colspan / grid.scale());
-        d.colspan = Math.max(d.colspan, colspan);
+        var height = parseInt(widgetEl.style('height'));
+        d.rowspan = Math.max(d.rowspan, grid.lengthSpan(height));
       });
 
     var gridEls = grid(widgets.datum());

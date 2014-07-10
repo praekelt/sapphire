@@ -56,17 +56,32 @@ var grid = module.exports = strain()
       .y(function(d) { return d.row; });
 
     var root = quadtree(data);
-    var dblPadding = this.padding() * 2;
 
     data.forEach(function(d) {
       root.visit(grid.uncollide(d));
-      d.x = (d.col * self.scale()) + self.padding();
-      d.y = (d.row * self.scale()) + self.padding();
-      d.width = (d.colspan * self.scale()) - dblPadding;
-      d.height = (d.rowspan * self.scale()) - dblPadding;
+      d.x = self.indexOffset(d.col);
+      d.y = self.indexOffset(d.row);
+      d.width = self.spanLength(d.colspan);
+      d.height = self.spanLength(d.rowspan);
     });
 
     return data;
+  })
+
+  .meth(function indexOffset(index) {
+    return (index * this.scale()) + this.padding();
+  })
+
+  .meth(function spanLength(span) {
+    return (span * this.scale()) - (this.padding() * 2);
+  })
+
+  .meth(function offsetIndex(offset) {
+    return Math.ceil((offset - this.padding()) / this.scale());
+  })
+
+  .meth(function lengthSpan(len) {
+    return Math.ceil((len + (this.padding() * 2)) / this.scale());
   })
 
   .static(function box(d) {

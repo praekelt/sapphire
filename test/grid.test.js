@@ -238,6 +238,62 @@ describe("sapphire.grid", function() {
     }]);
   });
 
+  describe(".indexOffset", function() {
+    it("should determine the offset of the given index", function() {
+      var grid = sapphire.grid()
+        .scale(10)
+        .padding(2);
+
+      expect(grid.indexOffset(0)).to.equal((10 * 0) + 2);
+      expect(grid.indexOffset(1)).to.equal((10 * 1) + 2);
+      expect(grid.indexOffset(2)).to.equal((10 * 2) + 2);
+      expect(grid.indexOffset(3)).to.equal((10 * 3) + 2);
+      expect(grid.indexOffset(4)).to.equal((10 * 4) + 2);
+    });
+  });
+
+  describe(".spanLength", function() {
+    it("should determine the span of the given length", function() {
+      var grid = sapphire.grid()
+        .scale(10)
+        .padding(2);
+
+      expect(grid.spanLength(0)).to.equal((10 * 0) - (2 * 2));
+      expect(grid.spanLength(1)).to.equal((10 * 1) - (2 * 2));
+      expect(grid.spanLength(2)).to.equal((10 * 2) - (2 * 2));
+      expect(grid.spanLength(3)).to.equal((10 * 3) - (2 * 2));
+      expect(grid.spanLength(4)).to.equal((10 * 4) - (2 * 2));
+    });
+  });
+
+  describe(".offsetIndex", function() {
+    it("should determine the index of the given offset", function() {
+      var grid = sapphire.grid()
+        .scale(10)
+        .padding(2);
+
+      expect(grid.offsetIndex((10 * 0) + 2)).to.equal(0);
+      expect(grid.offsetIndex((10 * 1) + 2)).to.equal(1);
+      expect(grid.offsetIndex((10 * 2) + 2)).to.equal(2);
+      expect(grid.offsetIndex((10 * 3) + 2)).to.equal(3);
+      expect(grid.offsetIndex((10 * 4) + 2)).to.equal(4);
+    });
+  });
+
+  describe(".lengthSpan", function() {
+    it("should determine the length of the given span", function() {
+      var grid = sapphire.grid()
+        .scale(10)
+        .padding(2);
+
+      expect(grid.lengthSpan((10 * 0) - (2 * 2))).to.equal(0);
+      expect(grid.lengthSpan((10 * 1) - (2 * 2))).to.equal(1);
+      expect(grid.lengthSpan((10 * 2) - (2 * 2))).to.equal(2);
+      expect(grid.lengthSpan((10 * 3) - (2 * 2))).to.equal(3);
+      expect(grid.lengthSpan((10 * 4) - (2 * 2))).to.equal(4);
+    });
+  });
+
   describe(".intersection", function() {
     it("should determine whether two boxes intersect", function() {
       var a, b;
