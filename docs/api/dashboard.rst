@@ -301,5 +301,17 @@ Component for drawing a dashboard of widgets laid out in a grid.
       .numcols(4)
 
 
+.. function:: dashboard.scale([v])
+
+  Property for the row and column scale to use when calculating each widget's
+  (x, y) offset, width and height from its column, row, column span and row
+  span respectively. Defaults to ``100``.
+
+  .. code-block:: javascript
+
+    var dashboard = sapphire.dashboard()
+      .scale(50)
+
+
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements
 .. _d3.map: https://github.com/mbostock/d3/wiki/Arrays#maps
