@@ -88,22 +88,22 @@
   color: #3a3a3a;
 }
 .sapphire .last.widget .values.good .sparkline .diff.path {
-  stroke: #188f23;
+  stroke: #2ca02c;
 }
 .sapphire .last.widget .values.good .sparkline .dot {
-  fill: #188f23;
+  fill: #2ca02c;
 }
 .sapphire .last.widget .values.good .summary .diff {
-  color: #188f23;
+  color: #2ca02c;
 }
 .sapphire .last.widget .values.bad .sparkline .diff.path {
-  stroke: #c41933;
+  stroke: #d62728;
 }
 .sapphire .last.widget .values.bad .sparkline .dot {
-  fill: #c41933;
+  fill: #d62728;
 }
 .sapphire .last.widget .values.bad .summary .diff {
-  color: #c41933;
+  color: #d62728;
 }
 .sapphire .last.widget .values .last {
   text-align: right;
