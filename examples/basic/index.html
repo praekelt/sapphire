@@ -9,9 +9,6 @@
 body {
   background: #eee;
 }
-
-.sapphire {
-}
     </style>
   </head>
   <body>
@@ -110,21 +107,42 @@ var el = d3.select('body').append('div')
   });
 
 
-update();
+init();
 setInterval(update, conf.step);
 
 
+function init() {
+  var now = +(new Date());
+  var then = now - (conf.limit * conf.step);
+
+  d3.range(then, now, conf.step)
+    .forEach(function(date) { push(date); });
+
+  dashboard(el);
+}
+
+
 function update() {
+  push(+(new Date()));
+  pop();
+  dashboard(el);
+}
+
+
+function push(date) {
   metrics.forEach(function(name, metric) {
     metric.values.push({
-      x: +(new Date()),
+      x: date,
       y: randint(0, 100000)
     });
-
-    metric.values = metric.values.slice(-conf.limit);
   });
+}
 
-  el.call(dashboard);
+
+function pop() {
+  metrics.forEach(function(name, metric) {
+    metric.values.shift();
+  });
 }
 
 
