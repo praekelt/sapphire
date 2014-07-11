@@ -42,9 +42,7 @@ Component for drawing a dashboard of widgets laid out in a grid.
   .. code-block:: javascript
 
     var dashboard = sapphire.dashboard()
-      .title(function(d, i) {
-        return d.heading;
-      });
+      .title(function(d) { return d.heading; });
 
     d3.select('#dashboard')
       .datum({
@@ -63,9 +61,7 @@ Component for drawing a dashboard of widgets laid out in a grid.
   .. code-block:: javascript
 
     var dashboard = sapphire.dashboard()
-      .widgets(function(d, i) {
-        return d.things;
-      });
+      .widgets(function(d) { return d.things; });
 
     d3.select('#dashboard')
       .datum({
@@ -95,9 +91,7 @@ Component for drawing a dashboard of widgets laid out in a grid.
   .. code-block:: javascript
 
     var dashboard = sapphire.dashboard()
-      .type(function(d) {
-        return d.typename;
-      });
+      .type(function(d) { return d.typename; });
 
     dashboard.types().set('dummy', sapphire.view.extend()
       .draw(function() {

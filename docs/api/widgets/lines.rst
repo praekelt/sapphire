@@ -77,7 +77,7 @@ displaying each metric's title, colour and last ``y`` value.
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .title(function(d, i) { return d.heading; });
+      .title(function(d) { return d.heading; });
 
     d3.select('#lines')
       .datum({
@@ -96,12 +96,12 @@ displaying each metric's title, colour and last ``y`` value.
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .metrics(function(d, i) { return d.sets; });
+      .metrics(function(d) { return d.sets; });
 
     d3.select('#lines')
       .datum({
         ...
-        sets [{
+        sets: [{
          ...
           values: [{
             x: 1405013457677,
@@ -135,12 +135,12 @@ displaying each metric's title, colour and last ``y`` value.
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .key(function(d, i) { return d.name; });
+      .key(function(d) { return d.name; });
 
     d3.select('#lines')
       .datum({
         ...
-        metrics [{
+        metrics: [{
           ...
           name: 'Foo',
           ...
@@ -156,17 +156,18 @@ displaying each metric's title, colour and last ``y`` value.
 .. function:: lines.metricTitle([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the title of
-  each metric in the array returned by :func:`lines.metrics`.
+  each metric in the array returned by :func:`lines.metrics`. Defaults to
+  ``function(d) { return d.title; }``.
 
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .metricTitle(function(d, i) { return d.name; });
+      .metricTitle(function(d) { return d.name; });
 
     d3.select('#lines')
       .datum({
         ...
-        metrics [{
+        metrics: [{
           ...
           name: 'Foo',
           ...
@@ -184,17 +185,17 @@ displaying each metric's title, colour and last ``y`` value.
 
   Property for the :ref:`accessor <accessors>` to use to access the sets of
   ``x`` and ``y`` values or datapoints from each item in the array returned by
-  :func:`lines.metrics`.
+  :func:`lines.metrics`. Defaults to ``function(d) { return d.values; }``.
 
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .values(function(d, i) { return d.datapoints; });
+      .values(function(d) { return d.datapoints; });
 
     d3.select('#lines')
       .datum({
         ...
-        metrics [{
+        metrics: [{
           ...
           datapoints: [{
             x: 1405013457677,
@@ -222,17 +223,18 @@ displaying each metric's title, colour and last ``y`` value.
 .. function:: lines.x([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the ``x`` value
-  from each datum in the array returned by :func:`lines.values`.
+  from each datum in the array returned by :func:`lines.values`. Defaults to
+  ``function() { return d.x; }``.
 
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .x(function(d, i) { return d.time; });
+      .x(function(d) { return d.time; });
 
     d3.select('#lines')
       .datum({
         ...
-        metrics [{
+        metrics: [{
           ...
           datapoints: [{
             time: 1405013457677,
@@ -261,12 +263,13 @@ displaying each metric's title, colour and last ``y`` value.
 .. function:: lines.y([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the ``y`` value
-  from each datum in the array corresponding to :func:`lines.values`.
+  from each datum in the array corresponding to :func:`lines.values`. Defaults
+  to ``function() { return d.y; }``.
 
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .y(function(d, i) { return d.value; });
+      .y(function(d) { return d.value; });
 
     d3.select('#lines')
       .datum({
@@ -320,7 +323,7 @@ displaying each metric's title, colour and last ``y`` value.
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .diffFormat(d3.format('.2s'));
+      .tickFormat(d3.format('.2s'));
 
 
 .. function:: lines.ticks([v])
@@ -332,17 +335,6 @@ displaying each metric's title, colour and last ``y`` value.
 
     var lines = sapphire.widgets.lines()
       .ticks(7);
-
-
-.. function:: lines.ticks([v])
-
-  Property for the value to display as the last value when
-  :func:`lines.values` returns an empty array.
-
-  .. code-block:: javascript
-
-    var lines = sapphire.widgets.lines()
-      .none(0);
 
 
 .. function:: lines.colors([fn])

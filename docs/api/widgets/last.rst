@@ -58,7 +58,7 @@ value preceding it.
   .. code-block:: javascript
 
     var last = sapphire.widgets.last()
-      .title(function(d, i) { return d.heading; });
+      .title(function(d) { return d.heading; });
 
     d3.select('#last')
       .datum({
@@ -72,12 +72,13 @@ value preceding it.
 .. function:: last.values([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the widget's
-  sets of ``x`` and ``y`` values or datapoints.
+  sets of ``x`` and ``y`` values or datapoints. Defaults to
+  ``function(d) { return d.values; }``.
 
   .. code-block:: javascript
 
     var last = sapphire.widgets.last()
-      .values(function(d, i) { return d.datapoints; });
+      .values(function(d) { return d.datapoints; });
 
     d3.select('#last')
       .datum({
@@ -97,12 +98,13 @@ value preceding it.
 .. function:: last.x([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the ``x`` value
-  from each datum in the array corresponding to :func:`last.values`.
+  from each datum in the array corresponding to :func:`last.values`. Defaults
+  to ``function(d) { return d.x; }``.
 
   .. code-block:: javascript
 
     var last = sapphire.widgets.last()
-      .x(function(d, i) { return d.time; });
+      .x(function(d) { return d.time; });
 
     d3.select('#last')
       .datum({
@@ -122,12 +124,13 @@ value preceding it.
 .. function:: last.y([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the ``y`` value
-  from each datum in the array corresponding to :func:`last.values`.
+  from each datum in the array corresponding to :func:`last.values`. Defaults
+  to ``function(d) { return d.y; }``.
 
   .. code-block:: javascript
 
     var last = sapphire.widgets.last()
-      .y(function(d, i) { return d.value; });
+      .y(function(d) { return d.value; });
 
     d3.select('#last')
       .datum({
