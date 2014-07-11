@@ -229,4 +229,52 @@ value preceding it.
       .standalone(true);
 
 
+.. function:: last.sparkline([v])
+
+  Property for the widget's sparkline.
+
+  .. code-block:: javascript
+
+    sapphire.widgets.last().sparkline();
+
+
+.. function:: sparkline.limit([v])
+
+  Property for the minimum number of values or datapoints needed for the
+  sparkline to be drawn. Defaults to ``15``.
+
+  Note that the given value will be floored at ``2``.
+
+  .. code-block:: javascript
+
+    var last = sapphire.widgets.last();
+
+    last.sparkline()
+      .limit(3);
+
+.. function:: last.summary([v])
+
+  Property for the widget's summary, the component used to display the
+  difference between the last value and the value preceding it.
+
+  .. code-block:: javascript
+
+    sapphire.widgets.last().summary();
+
+
+.. function:: summary.limit([v])
+
+  Property for the minimum number of values or datapoints needed for the
+  summary to be drawn. Defaults to ``2``.
+
+  Note that the given value will be floored at ``2``.
+
+  .. code-block:: javascript
+
+    var last = sapphire.widgets.last();
+
+    last.summary()
+      .limit(3);
+
+
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements
