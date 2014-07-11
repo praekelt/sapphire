@@ -63,9 +63,7 @@ The layout used by :ref:`sapphire.dashboard` to position widgets.
   .. code-block:: javascript
 
     var grid = sapphire.grid()
-      .col(function(d) {
-        return d[0];
-      })
+      .col(function(d) { return d[0]; })
 
 
 .. function:: grid.row([accessor])
@@ -81,9 +79,7 @@ The layout used by :ref:`sapphire.dashboard` to position widgets.
   .. code-block:: javascript
 
     var grid = sapphire.grid()
-      .row(function(d) {
-        return d[1];
-      })
+      .row(function(d) { return d[1]; })
 
 
 .. function:: grid.colspan([accessor])
@@ -98,9 +94,7 @@ The layout used by :ref:`sapphire.dashboard` to position widgets.
   .. code-block:: javascript
 
     var grid = sapphire.grid()
-      .colspan(function(d) {
-        return d.width;
-      })
+      .colspan(function(d) { return d.width; })
 
 
 .. function:: grid.rowspan([accessor])
@@ -115,9 +109,7 @@ The layout used by :ref:`sapphire.dashboard` to position widgets.
   .. code-block:: javascript
 
     var grid = sapphire.grid()
-      .rowspan(function(d) {
-        return d.height;
-      })
+      .rowspan(function(d) { return d.height; })
 
 
 .. function:: grid.scale([v])

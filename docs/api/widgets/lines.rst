@@ -77,7 +77,7 @@ displaying each metric's title, colour and last ``y`` value.
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .title(function(d, i) { return d.heading; });
+      .title(function(d) { return d.heading; });
 
     d3.select('#lines')
       .datum({
@@ -96,7 +96,7 @@ displaying each metric's title, colour and last ``y`` value.
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .metrics(function(d, i) { return d.sets; });
+      .metrics(function(d) { return d.sets; });
 
     d3.select('#lines')
       .datum({
@@ -135,7 +135,7 @@ displaying each metric's title, colour and last ``y`` value.
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .key(function(d, i) { return d.name; });
+      .key(function(d) { return d.name; });
 
     d3.select('#lines')
       .datum({
@@ -161,7 +161,7 @@ displaying each metric's title, colour and last ``y`` value.
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .metricTitle(function(d, i) { return d.name; });
+      .metricTitle(function(d) { return d.name; });
 
     d3.select('#lines')
       .datum({
@@ -189,7 +189,7 @@ displaying each metric's title, colour and last ``y`` value.
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .values(function(d, i) { return d.datapoints; });
+      .values(function(d) { return d.datapoints; });
 
     d3.select('#lines')
       .datum({
@@ -227,7 +227,7 @@ displaying each metric's title, colour and last ``y`` value.
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .x(function(d, i) { return d.time; });
+      .x(function(d) { return d.time; });
 
     d3.select('#lines')
       .datum({
@@ -266,7 +266,7 @@ displaying each metric's title, colour and last ``y`` value.
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .y(function(d, i) { return d.value; });
+      .y(function(d) { return d.value; });
 
     d3.select('#lines')
       .datum({

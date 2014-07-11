@@ -58,7 +58,7 @@ value preceding it.
   .. code-block:: javascript
 
     var last = sapphire.widgets.last()
-      .title(function(d, i) { return d.heading; });
+      .title(function(d) { return d.heading; });
 
     d3.select('#last')
       .datum({
@@ -77,7 +77,7 @@ value preceding it.
   .. code-block:: javascript
 
     var last = sapphire.widgets.last()
-      .values(function(d, i) { return d.datapoints; });
+      .values(function(d) { return d.datapoints; });
 
     d3.select('#last')
       .datum({
@@ -102,7 +102,7 @@ value preceding it.
   .. code-block:: javascript
 
     var last = sapphire.widgets.last()
-      .x(function(d, i) { return d.time; });
+      .x(function(d) { return d.time; });
 
     d3.select('#last')
       .datum({
@@ -127,7 +127,7 @@ value preceding it.
   .. code-block:: javascript
 
     var last = sapphire.widgets.last()
-      .y(function(d, i) { return d.value; });
+      .y(function(d) { return d.value; });
 
     d3.select('#last')
       .datum({
