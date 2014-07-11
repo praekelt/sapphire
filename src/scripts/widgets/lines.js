@@ -18,7 +18,7 @@ module.exports = require('./widget').extend()
 
   .prop('key')
   .set(d3.functor)
-  .default(function(d) { return d.key; })
+  .default(function(d, i) { return i; })
 
   .prop('metricTitle')
   .set(d3.functor)
@@ -192,7 +192,7 @@ var chart = require('../view').extend()
 
     metric.enter().append('g')
       .attr('class', 'metric')
-      .attr('data-id', function(d) { return d.key; })
+      .attr('data-key', function(d) { return d.key; })
       .append('path')
         .attr('class', 'line');
 
@@ -255,7 +255,7 @@ var legend = require('../view').extend()
             function(d) { return d.key; });
 
     var enterMetric = metric.enter().append('tr')
-      .attr('data-id', function(d) { return d.key; })
+      .attr('data-key', function(d) { return d.key; })
       .attr('class', 'metric');
 
     enterMetric.append('td')
