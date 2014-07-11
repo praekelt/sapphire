@@ -4,12 +4,6 @@
 
 .. raw:: html
 
-  <style>
-  .sapphire .lines.widget > .title {
-    color: #fcfcfc;
-  }
-  </style>
-
   <div class="sapphire">
     <div id="lines"></div>
   </div>

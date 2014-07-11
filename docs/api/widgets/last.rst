@@ -4,12 +4,6 @@
 
 .. raw:: html
 
-  <style>
-  .sapphire .last.widget > .title {
-    color: #fcfcfc;
-  }
-  </style>
-
   <div class="sapphire">
     <div id="last"></div>
   </div>
