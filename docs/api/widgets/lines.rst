@@ -156,7 +156,8 @@ displaying each metric's title, colour and last ``y`` value.
 .. function:: lines.metricTitle([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the title of
-  each metric in the array returned by :func:`lines.metrics`.
+  each metric in the array returned by :func:`lines.metrics`. Defaults to
+  ``function(d) { return d.title; }``.
 
   .. code-block:: javascript
 
@@ -184,7 +185,7 @@ displaying each metric's title, colour and last ``y`` value.
 
   Property for the :ref:`accessor <accessors>` to use to access the sets of
   ``x`` and ``y`` values or datapoints from each item in the array returned by
-  :func:`lines.metrics`.
+  :func:`lines.metrics`. Defaults to ``function(d) { return d.values; }``.
 
   .. code-block:: javascript
 
@@ -222,7 +223,8 @@ displaying each metric's title, colour and last ``y`` value.
 .. function:: lines.x([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the ``x`` value
-  from each datum in the array returned by :func:`lines.values`.
+  from each datum in the array returned by :func:`lines.values`. Defaults to
+  ``function() { return d.x; }``.
 
   .. code-block:: javascript
 
@@ -261,7 +263,8 @@ displaying each metric's title, colour and last ``y`` value.
 .. function:: lines.y([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the ``y`` value
-  from each datum in the array corresponding to :func:`lines.values`.
+  from each datum in the array corresponding to :func:`lines.values`. Defaults
+  to ``function() { return d.y; }``.
 
   .. code-block:: javascript
 

@@ -72,7 +72,8 @@ value preceding it.
 .. function:: last.values([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the widget's
-  sets of ``x`` and ``y`` values or datapoints.
+  sets of ``x`` and ``y`` values or datapoints. Defaults to
+  ``function(d) { return d.values; }``.
 
   .. code-block:: javascript
 
@@ -97,7 +98,8 @@ value preceding it.
 .. function:: last.x([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the ``x`` value
-  from each datum in the array corresponding to :func:`last.values`.
+  from each datum in the array corresponding to :func:`last.values`. Defaults
+  to ``function(d) { return d.x; }``.
 
   .. code-block:: javascript
 
@@ -122,7 +124,8 @@ value preceding it.
 .. function:: last.y([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the ``y`` value
-  from each datum in the array corresponding to :func:`last.values`.
+  from each datum in the array corresponding to :func:`last.values`. Defaults
+  to ``function(d) { return d.y; }``.
 
   .. code-block:: javascript
 
