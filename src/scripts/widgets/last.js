@@ -156,14 +156,20 @@ var summary = require('../view').extend()
 var sparkline = require('../view').extend()
   .prop('widget')
 
-  .prop('height').default(25)
+  .prop('height')
+  .default(25)
 
-  .prop('margin').default({
+  .prop('margin')
+  .default({
     top: 4,
     left: 4,
     bottom: 4,
     right: 4 
   })
+  
+  .prop('limit')
+  .default(15)
+  .set(function(v) { return Math.max(utils.ensure(v, 2), 2); })
 
   .init(function(widget) {
     this.widget(widget);
@@ -181,6 +187,11 @@ var sparkline = require('../view').extend()
   })
 
   .draw(function(el) {
+    if (el.datum().length < this.limit()) {
+      el.style('height', 0);
+      return;
+    }
+
     var margin = this.margin();
     var width = parseInt(el.style('width'));
 

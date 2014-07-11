@@ -282,6 +282,9 @@ describe("sapphire.widgets.last", function() {
 
     var last = sapphire.widgets.last();
 
+    last.sparkline()
+      .limit(2);
+
     last
       .width(200)
       .sparkline()
@@ -342,6 +345,54 @@ describe("sapphire.widgets.last", function() {
       .to.equal(path(datum.values));
   });
 
+  it("should not display a sparkline under the configured limit", function() {
+    var last = sapphire.widgets.last();
+
+    last.sparkline()
+      .limit(2)
+      .height(35);
+
+    expect(el.html()).to.be.empty;
+
+    datum.values = [{
+      x: 123,
+      y: 234
+    }, {
+      x: 345,
+      y: 456
+    }, {
+      x: 567,
+      y: 789
+    }];
+
+    el.datum(datum)
+      .call(last);
+
+    expect(parseInt(el.selectAll('.sparkline').style('height')))
+      .to.be.above(0);
+
+    datum.values = [{
+      x: 1123,
+      y: 1234
+    }];
+
+    el.datum(datum)
+      .call(last);
+
+    expect(parseInt(el.selectAll('.sparkline').style('height')))
+      .to.equal(0);
+  });
+
+  it("should floor its sparkline's limit at 2", function() {
+    var sparkline = sapphire.widgets.last().sparkline();
+    expect(sparkline.limit(-1).limit()).to.equal(2);
+    expect(sparkline.limit(0).limit()).to.equal(2);
+    expect(sparkline.limit(1).limit()).to.equal(2);
+    expect(sparkline.limit(2).limit()).to.equal(2);
+    expect(sparkline.limit(3).limit()).to.equal(3);
+    expect(sparkline.limit(4).limit()).to.equal(4);
+  });
+
   it("should display a diff line", function() {
     var fx = helpers.fx();
     var fy = helpers.fy();
@@ -351,6 +402,9 @@ describe("sapphire.widgets.last", function() {
       .fy(fy);
 
     var last = sapphire.widgets.last();
+
+    last.sparkline()
+      .limit(2);
 
     last
       .width(200)
@@ -416,6 +470,9 @@ describe("sapphire.widgets.last", function() {
     var fx = helpers.fx();
     var fy = helpers.fy();
     var last = sapphire.widgets.last();
+
+    last.sparkline()
+      .limit(2);
 
     last
       .width(200)
