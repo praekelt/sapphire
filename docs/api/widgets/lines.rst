@@ -323,7 +323,7 @@ displaying each metric's title, colour and last ``y`` value.
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .diffFormat(d3.format('.2s'));
+      .tickFormat(d3.format('.2s'));
 
 
 .. function:: lines.ticks([v])
@@ -335,17 +335,6 @@ displaying each metric's title, colour and last ``y`` value.
 
     var lines = sapphire.widgets.lines()
       .ticks(7);
-
-
-.. function:: lines.ticks([v])
-
-  Property for the value to display as the last value when
-  :func:`lines.values` returns an empty array.
-
-  .. code-block:: javascript
-
-    var lines = sapphire.widgets.lines()
-      .none(0);
 
 
 .. function:: lines.colors([fn])
