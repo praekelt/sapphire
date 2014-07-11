@@ -116,6 +116,10 @@ module.exports = require('./widget').extend()
 var summary = require('../view').extend()
   .prop('widget')
 
+  .prop('limit')
+  .default(2)
+  .set(function(v) { return Math.max(utils.ensure(v, 2), 2); })
+
   .init(function(widget) {
     this.widget(widget);
   })
@@ -130,7 +134,11 @@ var summary = require('../view').extend()
 
   .draw(function(el) {
     var widget = this.widget();
-    if (el.datum().length < 2) { return; }
+
+    if (el.datum().length < this.limit()) {
+      el.style('height', 0);
+      return;
+    }
 
     el.select('.diff')
       .datum(function(d) {
