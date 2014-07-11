@@ -674,10 +674,10 @@ var utils = _dereq_('../utils');
 
 module.exports = _dereq_('./widget').extend()
   .prop('width')
-  .default(600)
+  .default(400)
 
   .prop('colspan')
-  .default(3)
+  .default(4)
 
   .prop('title')
   .set(d3.functor)
