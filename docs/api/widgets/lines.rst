@@ -126,14 +126,11 @@ displaying each metric's title, colour and last ``y`` value.
       .call(lines);
 
 
-.. function:: lines.metricTitle([accessor])
+.. function:: lines.key([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the key of
-  each metric in the array returned by :func:`lines.metrics`.
-
-  The default accessor will use each metric datum's ``key`` property if it
-  exists, falling back to the metric datum's index in the array of metric data
-  if it does not find the property.
+  each metric in the array returned by :func:`lines.metrics`. Defaults to
+  ``function(d, i) { return i; })``.
 
   .. code-block:: javascript
 

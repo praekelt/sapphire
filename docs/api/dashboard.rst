@@ -118,11 +118,8 @@ Component for drawing a dashboard of widgets laid out in a grid.
 .. function:: dashboard.key([accessor])
 
   Property for the :ref:`accessor <accessors>` to use to access the key to use
-  to control how the widget data is joined to elements.
-
-  The default accessor will use each widget datum's ``key`` property if it
-  exists, falling back to the widget datum's index in the array of widget data
-  if it does not find the property.
+  to control how the widget data is joined to elements. Defaults to
+  ``function(d, i) { return i; })``.
 
   .. code-block:: javascript
 
@@ -132,10 +129,10 @@ Component for drawing a dashboard of widgets laid out in a grid.
     d3.select('#dashboard')
       .datum({
         widgets: [{
-          key: 'a',
+          name 'a',
           ...
         }, {
-          key: 'b',
+          name 'b',
           ...
         }]
       })
