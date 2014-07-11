@@ -28,11 +28,7 @@ module.exports = _dereq_('./view').extend()
 
   .prop('key')
   .set(d3.functor)
-  .default(function(d, i) {
-    return 'key' in d
-      ? d.key
-      : i;
-  })
+  .default(function(d, i) { return i; })
 
   .prop('type')
   .set(d3.functor)
@@ -674,7 +670,7 @@ module.exports = _dereq_('./widget').extend()
 
   .prop('key')
   .set(d3.functor)
-  .default(function(d) { return d.key; })
+  .default(function(d, i) { return i; })
 
   .prop('metricTitle')
   .set(d3.functor)
@@ -848,7 +844,7 @@ var chart = _dereq_('../view').extend()
 
     metric.enter().append('g')
       .attr('class', 'metric')
-      .attr('data-id', function(d) { return d.key; })
+      .attr('data-key', function(d) { return d.key; })
       .append('path')
         .attr('class', 'line');
 
@@ -911,7 +907,7 @@ var legend = _dereq_('../view').extend()
             function(d) { return d.key; });
 
     var enterMetric = metric.enter().append('tr')
-      .attr('data-id', function(d) { return d.key; })
+      .attr('data-key', function(d) { return d.key; })
       .attr('class', 'metric');
 
     enterMetric.append('td')
