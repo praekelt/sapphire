@@ -15,11 +15,7 @@ module.exports = require('./view').extend()
 
   .prop('key')
   .set(d3.functor)
-  .default(function(d, i) {
-    return 'key' in d
-      ? d.key
-      : i;
-  })
+  .default(function(d, i) { return i; })
 
   .prop('type')
   .set(d3.functor)

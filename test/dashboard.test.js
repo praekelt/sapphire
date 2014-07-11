@@ -20,11 +20,9 @@ describe("sapphire.dashboard", function() {
 
     datum = {
       widgets: [{
-        key: 'a',
         type: 'dummy',
         text: 'foo'
       }, {
-        key: 'b',
         type: 'dummy',
         text: 'bar'
       }]
@@ -49,7 +47,9 @@ describe("sapphire.dashboard", function() {
   });
 
   it("should draw its widgets", function() {
-    var dashboard = sapphire.dashboard();
+    var dashboard = sapphire.dashboard()
+      .key(function(d) { return d.key; });
+
     dashboard.types().set('dummy', dummy());
 
     datum.widgets = [{
@@ -104,7 +104,6 @@ describe("sapphire.dashboard", function() {
     dashboard.types().set('dummy', dummy());
 
     datum.widgets = [{
-      key: 'a',
       type: 'dummy',
       text: 'foo',
       col: 3,
@@ -114,7 +113,7 @@ describe("sapphire.dashboard", function() {
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.select('.widget[data-key=a]').style('width')).to.equal('380px');
+    expect(el.select('.widget[data-key="0"]').style('width')).to.equal('380px');
   });
 
   it("should use each widget's colspan as the minimum width", function() {
@@ -131,7 +130,6 @@ describe("sapphire.dashboard", function() {
     dashboard.types().set('dummy', dummy());
 
     datum.widgets = [{
-      key: 'a',
       type: 'dummy',
       text: 'foo',
       col: 3,
@@ -143,14 +141,14 @@ describe("sapphire.dashboard", function() {
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.select('.widget[data-key=a]').style('width')).to.equal('380px');
+    expect(el.select('.widget[data-key="0"]').style('width')).to.equal('380px');
 
     datum.widgets[0].width = 50;
 
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.select('.widget[data-key=a]').style('width')).to.equal('180px');
+    expect(el.select('.widget[data-key="0"]').style('width')).to.equal('180px');
   });
 
   it("should use each widget's rowspan as the minimum height", function() {
@@ -167,7 +165,6 @@ describe("sapphire.dashboard", function() {
     dashboard.types().set('dummy', dummy());
 
     datum.widgets = [{
-      key: 'a',
       type: 'dummy',
       text: 'foo',
       col: 3,
@@ -179,21 +176,22 @@ describe("sapphire.dashboard", function() {
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.select('.widget[data-key=a]').style('height')).to.equal('380px');
+    expect(el.select('.widget[data-key="0"]').style('height')).to.equal('380px');
 
     datum.widgets[0].height = 50;
 
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.select('.widget[data-key=a]').style('height')).to.equal('180px');
+    expect(el.select('.widget[data-key="0"]').style('height')).to.equal('180px');
   });
 
   it("should position its widgets in a grid", function() {
     var dashboard = sapphire.dashboard()
       .numcols(4)
       .padding(10)
-      .scale(100);
+      .scale(100)
+      .key(function(d) { return d.key; });
 
     dashboard.types().set('dummy', dummy());
 
