@@ -101,7 +101,7 @@ displaying each metric's title, colour and last ``y`` value.
     d3.select('#lines')
       .datum({
         ...
-        sets [{
+        sets: [{
          ...
           values: [{
             x: 1405013457677,
@@ -140,7 +140,7 @@ displaying each metric's title, colour and last ``y`` value.
     d3.select('#lines')
       .datum({
         ...
-        metrics [{
+        metrics: [{
           ...
           name: 'Foo',
           ...
@@ -166,7 +166,7 @@ displaying each metric's title, colour and last ``y`` value.
     d3.select('#lines')
       .datum({
         ...
-        metrics [{
+        metrics: [{
           ...
           name: 'Foo',
           ...
@@ -194,7 +194,7 @@ displaying each metric's title, colour and last ``y`` value.
     d3.select('#lines')
       .datum({
         ...
-        metrics [{
+        metrics: [{
           ...
           datapoints: [{
             x: 1405013457677,
@@ -232,7 +232,7 @@ displaying each metric's title, colour and last ``y`` value.
     d3.select('#lines')
       .datum({
         ...
-        metrics [{
+        metrics: [{
           ...
           datapoints: [{
             time: 1405013457677,
