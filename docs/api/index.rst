@@ -3,7 +3,9 @@ api
 
 .. toctree::
 
-    dashboard
-    widgets/last
-    view
-    grid
+  dashboard
+  widgets/last
+  widgets/lines
+  widgets/widget
+  view
+  grid
