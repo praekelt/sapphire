@@ -152,9 +152,11 @@ var chart = require('../view').extend()
   })
 
   .draw(function(el) {
-    var margin = this.margin();
-    var width = parseInt(el.style('width'));
-    var innerHeight = this.height() - (margin.top + margin.bottom);
+    var dims = utils.box()
+      .margin(this.margin())
+      .width(parseInt(el.style('width')))
+      .height(this.height())
+      .calc();
 
     var allValues = el
       .datum()
@@ -165,11 +167,11 @@ var chart = require('../view').extend()
 
     var fx = d3.time.scale()
       .domain(d3.extent(allValues, function(d) { return d.x; }))
-      .range([0, width - (margin.left + margin.right)]);
+      .range([0, dims.innerWidth]);
 
     var fy = d3.scale.linear()
       .domain(d3.extent(allValues, function(d) { return d.y; }))
-      .range([innerHeight, 0]);
+      .range([dims.innerHeight, 0]);
 
     var axis = d3.svg.axis()
       .scale(fx)
@@ -181,10 +183,10 @@ var chart = require('../view').extend()
       .y(function(d) { return fy(d.y); });
 
     var svg = el.select('svg')
-      .attr('width', width)
-      .attr('height', this.height())
+      .attr('width', dims.width)
+      .attr('height', dims.height)
       .select('g')
-        .attr('transform', utils.translate(margin.left, margin.top));
+        .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
 
     var metric = svg.select('.lines').selectAll('.metric')
       .data(function(d) { return d; },
@@ -229,7 +231,7 @@ var chart = require('../view').extend()
 
     svg
       .select('.axis')
-      .attr('transform', utils.translate(0, innerHeight))
+      .attr('transform', utils.translate(0, dims.innerHeight))
       .call(axis);
   });
 
