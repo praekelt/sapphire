@@ -200,26 +200,29 @@ var sparkline = require('../view').extend()
       return;
     }
 
-    var margin = this.margin();
-    var width = parseInt(el.style('width'));
+    var dims = utils.box()
+      .margin(this.margin())
+      .width(parseInt(el.style('width')))
+      .height(this.height())
+      .calc();
 
     var fx = d3.scale.linear()
       .domain(d3.extent(el.datum(), function(d) { return d.x; }))
-      .range([0, width - (margin.left + margin.right)]);
+      .range([0, dims.innerWidth]);
 
     var fy = d3.scale.linear()
       .domain(d3.extent(el.datum(), function(d) { return d.y; }))
-      .range([this.height() - (margin.top + margin.bottom), 0]);
+      .range([dims.innerHeight, 0]);
 
     var line = d3.svg.line()
       .x(function(d) { return fx(d.x); })
       .y(function(d) { return fy(d.y); });
 
     var svg = el.select('svg')
-      .attr('width', width)
-      .attr('height', this.height())
+      .attr('width', dims.width)
+      .attr('height', dims.height)
       .select('g')
-        .attr('transform', utils.translate(margin.left, margin.top));
+        .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
 
     svg.select('.rest.path')
       .attr('d', line);
