@@ -14,6 +14,12 @@ module.exports = require('./widget').extend()
   .prop('barPadding')
   .default(5)
 
+  .prop('tickFormat')
+  .default(null)
+
+  .prop('ticks')
+  .default(7)
+
   .prop('margin')
   .default({
     top: 4,
@@ -44,6 +50,9 @@ module.exports = require('./widget').extend()
 
     svg.append('g')
       .attr('class', 'bars');
+
+    svg.append('g')
+      .attr('class', 'axis');
   })
 
   .draw(function(el) {
@@ -105,6 +114,15 @@ module.exports = require('./widget').extend()
 
     bar.exit()
       .remove();
+
+    var axis = d3.svg.axis()
+      .scale(fx)
+      .ticks(this.ticks())
+      .tickFormat(this.tickFormat());
+
+    svg.select('.axis')
+      .attr('transform', utils.translate(0, height))
+      .call(axis);
 
     function value(d, i) {
       return {

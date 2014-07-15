@@ -152,4 +152,48 @@ describe("sapphire.widgets.histogram", function() {
     expect(bar.select('rect').attr('width')).to.be.closeTo(barWidth, eps);
     expect(bar.select('rect').attr('height')).to.be.closeTo(height - fy(1789), eps);
 	});
+
+  it("should show its time axis", function() {
+    var histogram = sapphire.widgets.histogram()
+      .ticks(3)
+      .tickFormat(d3.time.format('%b'));
+
+    expect(el.html()).to.be.empty;
+
+    datum.values = [{
+      x: +(new Date(2014, 2)),
+      y: 234
+    }, {
+      x: +(new Date(2014, 3)),
+      y: 456
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 789,
+    }];
+
+    el.datum(datum)
+      .call(histogram);
+
+    var axis = el.selectAll('.chart .axis');
+    expect(axis.size()).to.equal(1);
+    expect(axis.text()).to.equal(['Mar', 'Apr', 'May'].join(''));
+
+    datum.values = [{
+      x: +(new Date(2014, 5)),
+      y: 234
+    }, {
+      x: +(new Date(2014, 6)),
+      y: 456
+    }, {
+      x: +(new Date(2014, 7)),
+      y: 789
+    }];
+
+    el.datum(datum)
+      .call(histogram);
+
+    axis = el.selectAll('.chart .axis');
+    expect(axis.size()).to.equal(1);
+    expect(axis.text()).to.equal(['Jun', 'Jul', 'Aug'].join(''));
+  });
 });
