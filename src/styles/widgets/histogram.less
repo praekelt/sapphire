@@ -2,9 +2,15 @@
 
 
 .histogram.widget {
-  .widget();
+  > .title {
+    .widget .title();
+  }
 
   .chart {
     padding: 8px;
+  }
+
+  .axis {
+    .widget .axis();
   }
 }
