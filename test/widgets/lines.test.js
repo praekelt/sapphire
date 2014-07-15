@@ -53,9 +53,7 @@ describe("sapphire.widgets.lines", function() {
 
   helpers.fx = strain()
     .prop('metrics')
-
     .prop('width')
-    .default(600 - (4 + 4))
 
     .invoke(function(input) {
       var values = this.metrics()
@@ -73,9 +71,7 @@ describe("sapphire.widgets.lines", function() {
 
   helpers.fy = strain()
     .prop('metrics')
-
     .prop('height')
-    .default(150 - (4 + 4))
 
     .invoke(function(input) {
       var values = this.metrics()
@@ -130,15 +126,6 @@ describe("sapphire.widgets.lines", function() {
   });
 
   it("should draw lines for its metrics", function() {
-    var colors = d3.scale.category10();
-
-    var fx = helpers.fx();
-    var fy = helpers.fy();
-
-    var path = helpers.path()
-      .fx(fx)
-      .fy(fy);
-
     var lines = sapphire.widgets.lines()
       .key(function(d) { return d.key; });
 
@@ -152,6 +139,24 @@ describe("sapphire.widgets.lines", function() {
           bottom: 4,
           right: 4 
         });
+
+    var dims = sapphire.utils.box()
+      .width(lines.width()())
+      .height(lines.chart().height())
+      .margin(lines.chart().margin())
+      .calc();
+
+    var colors = d3.scale.category10();
+      
+    var fx = helpers.fx()
+      .width(dims.innerWidth);
+
+    var fy = helpers.fy()
+      .height(dims.innerHeight);
+
+    var path = helpers.path()
+      .fx(fx)
+      .fy(fy);
 
     expect(el.html()).to.be.empty;
 
@@ -236,10 +241,6 @@ describe("sapphire.widgets.lines", function() {
   });
 
   it("should draw dots for its metrics' last values", function() {
-    var colors = d3.scale.category10();
-    var fx = helpers.fx();
-    var fy = helpers.fy();
-
     var lines = sapphire.widgets.lines()
       .key(function(d) { return d.key; });
 
@@ -253,6 +254,20 @@ describe("sapphire.widgets.lines", function() {
           bottom: 4,
           right: 4 
         });
+
+    var dims = sapphire.utils.box()
+      .width(lines.width())
+      .height(lines.chart().height())
+      .margin(lines.chart().margin())
+      .calc();
+
+    var fx = helpers.fx()
+      .width(dims.innerWidth);
+
+    var fy = helpers.fy()
+      .height(dims.innerHeight);
+
+    var colors = d3.scale.category10();
 
     expect(el.html()).to.be.empty;
 
@@ -333,12 +348,33 @@ describe("sapphire.widgets.lines", function() {
   });
 
   it("should not draw dots for empty metrics", function() {
-    var colors = d3.scale.category10();
-    var fx = helpers.fx();
-    var fy = helpers.fy();
-
     var lines = sapphire.widgets.lines()
       .key(function(d) { return d.key; });
+
+    lines
+      .width(600)
+      .chart()
+        .height(150)
+        .margin({
+          top: 4,
+          left: 4,
+          bottom: 4,
+          right: 4 
+        });
+
+    var dims = sapphire.utils.box()
+      .width(lines.width()())
+      .height(lines.chart().height())
+      .margin(lines.chart().margin())
+      .calc();
+
+    var fx = helpers.fx()
+      .width(dims.innerWidth);
+
+    var fy = helpers.fy()
+      .height(dims.innerHeight);
+
+    var colors = d3.scale.category10();
 
     lines
       .width(600)
