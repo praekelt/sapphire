@@ -59,45 +59,48 @@ module.exports = require('./widget').extend()
     var self = this;
     var node = el.node();
 
-    el.datum(function(d, i) {
-        return {
-          values: self.values()
-            .call(node, d, i)
-            .map(value),
-          height: self.height()
-            .call(node, d, i)
-        };
-      })
-      .style('height', function(d) { return d.height + 'px'; });
+    el.style('height', function(d, i) {
+      return self.height().call(node, d, i) + 'px';
+    });
 
-    var values = el.datum().values;
-    var margin = this.margin();
     var chart = el.select('.chart');
-    var width = chart.style('width');
-    var height = chart.style('height');
-    chart.style('width', width);
-    chart.style('height', height);
-    width = parseInt(width) - (margin.left + margin.right);
-    height = parseInt(height) - (margin.top + margin.bottom);
-    var barWidth = (width / values.length) - (this.barPadding() / 2);
+
+    var dims = utils.box()
+      .width(parseInt(chart.style('width')))
+      .height(parseInt(chart.style('height')))
+      .margin(this.margin())
+      .calc();
+
+    chart
+      .datum(function(d, i) {
+        return self.values()
+          .call(node, d, i)
+          .map(value);
+      })
+      .style('width', dims.width + 'px')
+      .style('height', dims.height + 'px');
+
+    var barWidth = (dims.innerWidth / chart.datum().length);
+    barWidth -= (this.barPadding() / 2);
 
     var fx = d3.time.scale()
-      .domain(d3.extent(values, function(d) { return d.x; }))
-      .range([0, width]);
+      .domain(d3.extent(chart.datum(), function(d) { return d.x; }))
+      .range([0, dims.innerWidth]);
 
     var fy = d3.scale.linear()
-      .domain([0, d3.max(values, function(d) { return d.y; })])
-      .range([height, 0]);
+      .domain([0, d3.max(chart.datum(), function(d) { return d.y; })])
+      .range([dims.innerHeight, 0]);
 
-    var svg = el.select('svg')
-      .attr('width', width + (margin.left + margin.right))
-      .attr('height', height + (margin.top + margin.bottom))
+    var svg = chart.select('svg')
+      .attr('width', dims.width)
+      .attr('height', dims.height)
       .select('g')
-        .attr('transform', utils.translate(margin.left, margin.top));
+        .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
 
     var bar = svg.select('.bars')
       .selectAll('.bar')
-      .data(values, function(d) { return d.x; });
+      .data(function(d) { return d; },
+            function(d) { return d.x; });
 
     bar.enter().append('g')
       .attr('class', 'bar')
@@ -110,7 +113,7 @@ module.exports = require('./widget').extend()
 
     bar.select('rect')
       .attr('width', barWidth)
-      .attr('height', function(d) { return height - fy(d.y); });
+      .attr('height', function(d) { return dims.innerHeight - fy(d.y); });
 
     bar.exit()
       .remove();
@@ -121,7 +124,7 @@ module.exports = require('./widget').extend()
       .tickFormat(this.tickFormat());
 
     svg.select('.axis')
-      .attr('transform', utils.translate(0, height))
+      .attr('transform', utils.translate(0, dims.innerHeight))
       .call(axis);
 
     function value(d, i) {
