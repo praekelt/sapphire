@@ -30,9 +30,7 @@ describe("sapphire.widgets.last", function() {
 
   helpers.fx = strain()
     .prop('values')
-
     .prop('width')
-    .default(200 - (4 + 4))
 
     .invoke(function(input) {
       var scale = d3.scale.linear()
@@ -44,9 +42,7 @@ describe("sapphire.widgets.last", function() {
 
   helpers.fy = strain()
     .prop('values')
-
     .prop('height')
-    .default(25 - (4 + 4))
 
     .invoke(function(input) {
       var scale = d3.scale.linear()
@@ -273,13 +269,6 @@ describe("sapphire.widgets.last", function() {
   });
 
   it("should display a sparkline", function() {
-    var fx = helpers.fx();
-    var fy = helpers.fy();
-
-    var path = helpers.path()
-      .fx(fx)
-      .fy(fy);
-
     var last = sapphire.widgets.last();
 
     last.sparkline()
@@ -295,6 +284,22 @@ describe("sapphire.widgets.last", function() {
           bottom: 4,
           right: 4 
         });
+
+    var dims = sapphire.utils.box()
+      .width(last.width()())
+      .height(last.sparkline().height())
+      .margin(last.sparkline().margin())
+      .calc();
+
+    var fx = helpers.fx()
+      .width(dims.innerWidth);
+
+    var fy = helpers.fy()
+      .height(dims.innerHeight);
+
+    var path = helpers.path()
+      .fx(fx)
+      .fy(fy);
 
     expect(el.html()).to.be.empty;
 
@@ -440,13 +445,6 @@ describe("sapphire.widgets.last", function() {
   });
 
   it("should display a diff line", function() {
-    var fx = helpers.fx();
-    var fy = helpers.fy();
-
-    var path = helpers.path()
-      .fx(fx)
-      .fy(fy);
-
     var last = sapphire.widgets.last();
 
     last.sparkline()
@@ -462,6 +460,22 @@ describe("sapphire.widgets.last", function() {
           bottom: 4,
           right: 4 
         });
+
+    var dims = sapphire.utils.box()
+      .width(last.width()())
+      .height(last.sparkline().height())
+      .margin(last.sparkline().margin())
+      .calc();
+
+    var fx = helpers.fx()
+      .width(dims.innerWidth);
+
+    var fy = helpers.fy()
+      .height(dims.innerHeight);
+
+    var path = helpers.path()
+      .fx(fx)
+      .fy(fy);
 
     expect(el.html()).to.be.empty;
 
@@ -513,8 +527,6 @@ describe("sapphire.widgets.last", function() {
   });
 
   it("should display a dot for the last value", function() {
-    var fx = helpers.fx();
-    var fy = helpers.fy();
     var last = sapphire.widgets.last();
 
     last.sparkline()
@@ -530,6 +542,18 @@ describe("sapphire.widgets.last", function() {
           bottom: 4,
           right: 4 
         });
+
+    var dims = sapphire.utils.box()
+      .width(last.width()())
+      .height(last.sparkline().height())
+      .margin(last.sparkline().margin())
+      .calc();
+
+    var fx = helpers.fx()
+      .width(dims.innerWidth);
+
+    var fy = helpers.fy()
+      .height(dims.innerHeight);
 
     expect(el.html()).to.be.empty;
 
