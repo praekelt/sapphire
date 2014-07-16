@@ -85,3 +85,13 @@ utils.hash = function(s) {
 
   return result;
 };
+
+
+utils.colors = strain()
+  .prop('uid').default('')
+  .prop('scale').default(d3.scale.category10())
+  .invoke(function(i) {
+    var scale = this.scale();
+    var offset = utils.hash(this.uid());
+    return scale(offset + i);
+  });

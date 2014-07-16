@@ -126,4 +126,22 @@ describe("sapphire.utils", function() {
       expect(sapphire.utils.hash('foo')).to.be.a.number;
     });
   });
+
+  describe(".colors", function() {
+    it("should return a color for the given integer", function() {
+      var scale = d3.scale.category10();
+      var colors = sapphire.utils.colors().scale(scale);
+      expect(colors(23)).to.equal(scale(23));
+    });
+
+    it("should allow colours to be hashed", function() {
+      var scale = d3.scale.category10();
+      var offset = sapphire.utils.hash('foo');
+      var colors = sapphire.utils.colors()
+        .uid('foo')
+        .scale(scale);
+
+      expect(colors(23)).to.equal(scale(offset + 23));
+    });
+  });
 });
