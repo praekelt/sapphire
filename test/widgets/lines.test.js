@@ -146,7 +146,9 @@ describe("sapphire.widgets.lines", function() {
       .margin(lines.chart().margin())
       .calc();
 
-    var colors = d3.scale.category10();
+    var colors = sapphire.utils.colors()
+      .scale(lines.colors())
+      .uid(datum.title);
       
     var fx = helpers.fx()
       .width(dims.innerWidth);
@@ -267,7 +269,9 @@ describe("sapphire.widgets.lines", function() {
     var fy = helpers.fy()
       .height(dims.innerHeight);
 
-    var colors = d3.scale.category10();
+    var colors = sapphire.utils.colors()
+      .scale(lines.colors())
+      .uid(datum.title);
 
     expect(el.html()).to.be.empty;
 
@@ -374,7 +378,9 @@ describe("sapphire.widgets.lines", function() {
     var fy = helpers.fy()
       .height(dims.innerHeight);
 
-    var colors = d3.scale.category10();
+    var colors = sapphire.utils.colors()
+      .scale(lines.colors())
+      .uid(datum.title);
 
     lines
       .width(600)
@@ -582,9 +588,12 @@ describe("sapphire.widgets.lines", function() {
   });
 
   it("should draw its legend's metric swatches", function() {
-    var colors = d3.scale.category10();
     var lines = sapphire.widgets.lines()
       .key(function(d) { return d.key; });
+
+    var colors = sapphire.utils.colors()
+      .scale(lines.colors())
+      .uid(datum.title);
 
     expect(el.html()).to.be.empty;
 

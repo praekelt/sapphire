@@ -75,28 +75,24 @@ module.exports = require('./widget').extend()
       .attr('class', 'legend');
   })
 
-  .draw(function(el) {
+  .meth(function normalize(el) {
     var self = this;
     var node = el.node();
-    var colors = this.colors();
 
-    el.select('.widget .title')
-      .text(function(d, i) {
-        return self.title().call(node, d, i);
-      });
+    var colors = utils.colors()
+      .scale(this.colors());
 
-    var values = el.select('.values')
-      .datum(function(d, i) {
-        return self.metrics()
+    el.datum(function(d, i) {
+      var title = self.title().call(node, d, i);
+      colors.uid(title);
+
+      return {
+        title: title,
+        metrics: self.metrics()
           .call(node, d, i)
-          .map(metric);
-      });
-
-    values.select('.chart')
-      .call(this.chart());
-
-    values.select('.legend')
-      .call(this.legend());
+          .map(metric)
+      };
+    });
 
     function metric(d, i) {
       var key = self.key()
@@ -119,6 +115,23 @@ module.exports = require('./widget').extend()
         y: self.y().call(node, d, i)
       };
     }
+  })
+
+  .draw(function(el) {
+    this.normalize(el);
+
+    el.select('.widget .title')
+      .text(function(d) { return d.title; });
+
+    var values = el.select('.values')
+      .datum(function(d, i) { return d.metrics; });
+
+    values.select('.chart')
+      .call(this.chart());
+
+    values.select('.legend')
+      .call(this.legend());
+
   });
 
 
