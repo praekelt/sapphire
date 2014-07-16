@@ -60,4 +60,60 @@ describe("sapphire.utils", function() {
       expect(sapphire.utils.date(+d)).to.be.an.instanceof(Date);
     });
   });
+
+  describe(".box", function() {
+    it("should contain its width", function() {
+      var box = sapphire.utils.box()
+        .width(200);
+
+      expect(box()).to.have.property('width', 200);
+    });
+
+    it("should contain its margin", function() {
+      var margin = {
+        top: 1,
+        left: 2,
+        right: 3,
+        bottom: 4
+      };
+
+      var box = sapphire.utils.box()
+        .margin(margin);
+
+      expect(box()).to.have.property('margin', margin);
+    });
+
+    it("should contain its height", function() {
+      var box = sapphire.utils.box()
+        .height(200);
+
+      expect(box()).to.have.property('height', 200);
+    });
+
+    it("should calculate its inner width", function() {
+      var box = sapphire.utils.box()
+        .width(200)
+        .margin({
+          top: 0,
+          left: 2,
+          right: 3,
+          bottom: 0
+        });
+
+      expect(box().innerWidth).to.equal(195);
+    });
+
+    it("should calculate its inner height", function() {
+      var box = sapphire.utils.box()
+        .height(200)
+        .margin({
+          top: 2,
+          left: 0,
+          right: 0,
+          bottom: 3
+        });
+
+      expect(box().innerHeight).to.equal(195);
+    });
+  });
 });
