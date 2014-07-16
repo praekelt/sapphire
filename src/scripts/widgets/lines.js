@@ -78,12 +78,16 @@ module.exports = require('./widget').extend()
   .meth(function normalize(el) {
     var self = this;
     var node = el.node();
-    var colors = this.colors();
+
+    var colors = utils.colors()
+      .scale(this.colors());
 
     el.datum(function(d, i) {
+      var title = self.title().call(node, d, i);
+      colors.uid(title);
+
       return {
-        title: self.title()
-          .call(node, d, i),
+        title: title,
         metrics: self.metrics()
           .call(node, d, i)
           .map(metric)
