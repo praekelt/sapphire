@@ -18,7 +18,7 @@ module.exports = require('./widget').extend()
   .default(null)
 
   .prop('ticks')
-  .default(7)
+  .default(8)
 
   .prop('margin')
   .default({
@@ -40,6 +40,10 @@ module.exports = require('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.y; })
 
+  .prop('dx')
+  .set(d3.functor)
+  .default(null)
+
   .meth(function normalize(el) {
     var self = this;
     var node = el.node();
@@ -48,6 +52,15 @@ module.exports = require('./widget').extend()
       var values = self.values()
         .call(node, d, i)
         .map(value);
+
+      var len = values.length;
+      var dxAvg = values.length
+        ? (values[len - 1].x - values[0].x) / len
+        : 0;
+
+      values.forEach(function(d) {
+        d.dx = utils.ensure(d.dx, dxAvg);
+      });
 
       return {
         values: values,
@@ -58,7 +71,8 @@ module.exports = require('./widget').extend()
     function value(d, i) {
       return {
         x: self.x().call(node, d, i),
-        y: self.y().call(node, d, i)
+        y: self.y().call(node, d, i),
+        dx: self.dx().call(node, d, i)
       };
     }
   })
@@ -79,6 +93,7 @@ module.exports = require('./widget').extend()
   })
 
   .draw(function(el) {
+    var self = this;
     this.normalize(el);
 
     el.style('height', function(d) { return d.height + 'px'; });
@@ -95,11 +110,11 @@ module.exports = require('./widget').extend()
       .style('width', dims.width + 'px')
       .style('height', dims.height + 'px');
 
-    var barWidth = (dims.innerWidth / chart.datum().length);
-    barWidth -= (this.barPadding() / 2);
-
     var fx = d3.time.scale()
-      .domain(d3.extent(chart.datum(), function(d) { return d.x; }))
+      .domain([
+        d3.min(chart.datum(), function(d) { return d.x; }),
+        d3.max(chart.datum(), function(d) { return d.x + d.dx; })
+      ])
       .range([0, dims.innerWidth]);
 
     var fy = d3.scale.linear()
@@ -123,12 +138,16 @@ module.exports = require('./widget').extend()
 
     bar
       .attr('transform', function(d) {
-        return utils.translate(fx(d.x) - (barWidth / 2), fy(d.y));
+        return utils.translate(fx(d.x), fy(d.y));
       });
 
     bar.select('rect')
-      .attr('width', barWidth)
-      .attr('height', function(d) { return dims.innerHeight - fy(d.y); });
+      .attr('width', function(d) {
+        return (fx(d.x + d.dx) - fx(d.x)) - (self.barPadding() / 2);
+      })
+      .attr('height', function(d) {
+        return dims.innerHeight - fy(d.y); 
+      });
 
     bar.exit()
       .remove();

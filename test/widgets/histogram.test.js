@@ -1,7 +1,6 @@
 describe("sapphire.widgets.histogram", function() {
   var el;
   var datum;
-  var eps = 0.000001;
 
   beforeEach(function() {
     el = d3.select('body')
@@ -30,35 +29,9 @@ describe("sapphire.widgets.histogram", function() {
     el.remove();
   });
 
-  var helpers = {};
-
-  helpers.fx = strain()
-    .prop('values')
-    .prop('width')
-
-    .invoke(function(input) {
-      var scale = d3.scale.linear()
-        .domain(d3.extent(this.values(), function(d) { return d.x; }))
-        .range([0, this.width()]);
-
-      return scale(input);
-    });
-
-  helpers.fy = strain()
-    .prop('values')
-    .prop('height')
-
-    .invoke(function(input) {
-      var scale = d3.scale.linear()
-        .domain([0, d3.max(this.values(), function(d) { return d.y; })])
-        .range([this.height(), 0]);
-
-      return scale(input);
-    });
-
 	it("should show its bars", function() {
-    var fx = helpers.fx();
-    var fy = helpers.fy();
+    var fx = d3.scale.linear();
+    var fy = d3.scale.linear();
 
     var histogram = sapphire.widgets.histogram()
       .width(400)
@@ -87,34 +60,36 @@ describe("sapphire.widgets.histogram", function() {
     el.datum(datum)
       .call(histogram);
 
-    var width = parseInt(el.select('.chart').style('width')) - (4 + 4);
-    var height = parseInt(el.select('.chart').style('height')) - (4 + 4);
-
-    fx.width(width)
-      .values(datum.values);
-
-    fy.height(height)
-      .values(datum.values);
-
-    var barWidth = (width / 3) - (8 / 2);
-		var bar = el.select('.bar:nth-child(1)');
-    var transform = sapphire.utils.translate(fx(0) - (barWidth / 2), fy(234));
-    expect(bar.attr('transform')).to.equal(transform);
     expect(el.selectAll('.bar').size()).to.equal(3);
-    expect(bar.select('rect').attr('width')).to.be.closeTo(barWidth, eps);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height - fy(234), eps);
+
+    var dims = sapphire.utils.box()
+      .width(parseInt(el.select('.chart').style('width')))
+      .height(parseInt(el.select('.chart').style('height')))
+      .margin(histogram.margin())
+      .calc();
+
+    var dx = (10 - 0) / 3;
+
+    fx.domain([0, 10 + dx])
+      .range([0, dims.innerWidth]);
+
+    fy.domain([0, 789])
+      .range([dims.innerHeight, 0]);
+
+		var bar = el.select('.bar:nth-child(1)');
+    expect(bar.attr('transform')).to.equal(transform(0, 234));
+    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(bar.select('rect').attr('height')).to.be.closeTo(height(234), 0.01);
 
 		bar = el.select('.bar:nth-child(2)');
-    transform = sapphire.utils.translate(fx(5) - (barWidth / 2), fy(456)) ;
-    expect(bar.attr('transform')).to.equal(transform);
-    expect(bar.select('rect').attr('width')).to.be.closeTo(barWidth, eps);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height - fy(456), eps);
+    expect(bar.attr('transform')).to.equal(transform(5, 456));
+    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(bar.select('rect').attr('height')).to.be.closeTo(height(456), 0.01);
 
 		bar = el.select('.bar:nth-child(3)');
-    transform = sapphire.utils.translate(fx(10) - (barWidth / 2), fy(789));
-    expect(bar.attr('transform')).to.equal(transform);
-    expect(bar.select('rect').attr('width')).to.be.closeTo(barWidth, eps);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height - fy(789), eps);
+    expect(bar.attr('transform')).to.equal(transform(10, 789));
+    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(bar.select('rect').attr('height')).to.be.closeTo(height(789), 0.01);
 
     datum.values = [{
       x: 15,
@@ -130,28 +105,127 @@ describe("sapphire.widgets.histogram", function() {
     el.datum(datum)
       .call(histogram);
 
-    fx.values(datum.values);
-    fy.values(datum.values);
+    expect(el.selectAll('.bar').size()).to.equal(3);
+
+    dx = (25 - 15) / 3;
+    fx.domain([15, 25 + dx]);
+    fy.domain([0, 1789]);
 
 		bar = el.select('.bar:nth-child(1)');
-    transform = sapphire.utils.translate(fx(15) - (barWidth / 2), fy(1234));
-    expect(el.selectAll('.bar').size()).to.equal(3);
-    expect(bar.attr('transform')).to.equal(transform);
-    expect(bar.select('rect').attr('width')).to.be.closeTo(barWidth, eps);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height - fy(1234), eps);
+    expect(bar.attr('transform')).to.equal(transform(15, 1234));
+    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(bar.select('rect').attr('height')).to.be.closeTo(height(1234), 0.01);
 
 		bar = el.select('.bar:nth-child(2)');
-    transform = sapphire.utils.translate(fx(20) - (barWidth / 2), fy(1456));
-    expect(bar.attr('transform')).to.equal(transform);
-    expect(bar.select('rect').attr('width')).to.be.closeTo(barWidth, eps);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height - fy(1456), eps);
+    expect(bar.attr('transform')).to.equal(transform(20, 1456));
+    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(bar.select('rect').attr('height')).to.be.closeTo(height(1456), 0.01);
 
 		bar = el.select('.bar:nth-child(3)');
-    transform = sapphire.utils.translate(fx(25) - (barWidth / 2), fy(1789));
-    expect(bar.attr('transform')).to.equal(transform);
-    expect(bar.select('rect').attr('width')).to.be.closeTo(barWidth, eps);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height - fy(1789), eps);
+    expect(bar.attr('transform')).to.equal(transform(25, 1789));
+    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(bar.select('rect').attr('height')).to.be.closeTo(height(1789), 0.01);
+
+    function width() {
+      return (fx(dx) - fx(0)) - (histogram.barPadding() / 2);
+    }
+
+    function height(y) {
+      return dims.innerHeight - fy(y);
+    }
+
+    function transform(x, y) {
+      return sapphire.utils.translate(fx(x), fy(y));
+    }
 	});
+
+  it("should allow its bars to have variable widths", function() {
+    var fx = d3.scale.linear();
+
+    var histogram = sapphire.widgets.histogram()
+      .width(400)
+			.barPadding(8)
+			.margin({
+				top: 4,
+				left: 4,
+				bottom: 4,
+				right: 4 
+			})
+      .dx(function(d) { return d.dx; });
+
+    expect(el.html()).to.be.empty;
+
+    datum.values = [{
+      x: 0,
+      y: 234,
+      dx: 2
+    }, {
+      x: 5,
+      y: 456,
+      dx: 4
+    }, {
+      x: 10,
+      y: 789,
+      dx: 6
+    }];
+
+    el.datum(datum)
+      .call(histogram);
+
+    expect(el.selectAll('.bar').size()).to.equal(3);
+
+    var dims = sapphire.utils.box()
+      .width(parseInt(el.select('.chart').style('width')))
+      .height(parseInt(el.select('.chart').style('height')))
+      .margin(histogram.margin())
+      .calc();
+
+    fx.domain([0, 10 + 6])
+      .range([0, dims.innerWidth]);
+
+		var bar = el.select('.bar:nth-child(1)');
+    expect(bar.select('rect').attr('width')).to.be.closeTo(width(0, 2), 0.01);
+
+		bar = el.select('.bar:nth-child(2)');
+    expect(bar.select('rect').attr('width')).to.be.closeTo(width(5, 4), 0.01);
+
+		bar = el.select('.bar:nth-child(3)');
+    expect(bar.select('rect').attr('width')).to.be.closeTo(width(10, 6), 0.01);
+
+    datum.values = [{
+      x: 15,
+      y: 1234,
+      dx: 8
+    }, {
+      x: 20,
+      y: 1456,
+      dx: 10 
+    }, {
+      x: 25,
+      y: 1789,
+      dx: 12
+    }];
+
+    el.datum(datum)
+      .call(histogram);
+
+    expect(el.selectAll('.bar').size()).to.equal(3);
+
+    fx.domain([15, 25 + 12]);
+
+		bar = el.select('.bar:nth-child(1)');
+    expect(bar.select('rect').attr('width')).to.be.closeTo(width(15, 8), 0.01);
+
+		bar = el.select('.bar:nth-child(2)');
+    expect(bar.select('rect').attr('width')).to.be.closeTo(width(20, 10), 0.01);
+
+		bar = el.select('.bar:nth-child(3)');
+    expect(bar.select('rect').attr('width')).to.be.closeTo(width(25, 12), 0.01);
+
+    function width(x, dx) {
+      return (fx(x + dx) - fx(x)) - (histogram.barPadding() / 2);
+    }
+  });
 
   it("should show its time axis", function() {
     var histogram = sapphire.widgets.histogram()
