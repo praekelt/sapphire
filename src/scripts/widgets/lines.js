@@ -126,7 +126,6 @@ module.exports = require('./widget').extend()
 
     values.select('.legend')
       .call(this.legend());
-
   });
 
 
