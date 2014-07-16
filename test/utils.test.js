@@ -69,7 +69,7 @@ describe("sapphire.utils", function() {
       expect(box()).to.have.property('width', 200);
     });
 
-    it("should contain its height", function() {
+    it("should contain its margin", function() {
       var margin = {
         top: 1,
         left: 2,
@@ -83,7 +83,7 @@ describe("sapphire.utils", function() {
       expect(box()).to.have.property('margin', margin);
     });
 
-    it("should contain its margin", function() {
+    it("should contain its height", function() {
       var box = sapphire.utils.box()
         .height(200);
 
