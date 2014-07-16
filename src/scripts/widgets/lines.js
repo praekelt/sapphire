@@ -46,7 +46,6 @@ module.exports = require('./widget').extend()
   .default(7)
 
   .prop('colors')
-  .default(d3.scale.category10())
 
   .prop('none')
   .default(0)
@@ -57,6 +56,7 @@ module.exports = require('./widget').extend()
   .init(function() {
     this.chart(chart(this));
     this.legend(legend(this));
+    this.colors(this.colors() || d3.scale.category10());
   })
 
   .enter(function(el) {
