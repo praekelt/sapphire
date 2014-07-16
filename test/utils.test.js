@@ -116,4 +116,14 @@ describe("sapphire.utils", function() {
       expect(box().innerHeight).to.equal(195);
     });
   });
+
+  describe(".hash", function() {
+    it("should return 0 for empty strings", function() {
+      expect(sapphire.utils.hash('')).to.equal(0);
+    });
+
+    it("should return an integer", function() {
+      expect(sapphire.utils.hash('foo')).to.be.a.number;
+    });
+  });
 });
