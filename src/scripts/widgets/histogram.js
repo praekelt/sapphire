@@ -40,6 +40,29 @@ module.exports = require('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.y; })
 
+  .meth(function normalize(el) {
+    var self = this;
+    var node = el.node();
+
+    el.datum(function(d, i) {
+      var values = self.values()
+        .call(node, d, i)
+        .map(value);
+
+      return {
+        values: values,
+        height: self.height().call(node, d, i)
+      };
+    });
+
+    function value(d, i) {
+      return {
+        x: self.x().call(node, d, i),
+        y: self.y().call(node, d, i)
+      };
+    }
+  })
+
   .enter(function(el) {
     el.attr('class', 'histogram widget');
 
@@ -56,13 +79,9 @@ module.exports = require('./widget').extend()
   })
 
   .draw(function(el) {
-    var self = this;
-    var node = el.node();
+    this.normalize(el);
 
-    el.style('height', function(d, i) {
-      return self.height().call(node, d, i) + 'px';
-    });
-
+    el.style('height', function(d) { return d.height + 'px'; });
     var chart = el.select('.chart');
 
     var dims = utils.box()
@@ -72,11 +91,7 @@ module.exports = require('./widget').extend()
       .calc();
 
     chart
-      .datum(function(d, i) {
-        return self.values()
-          .call(node, d, i)
-          .map(value);
-      })
+      .datum(function(d) { return d.values; })
       .style('width', dims.width + 'px')
       .style('height', dims.height + 'px');
 
@@ -126,11 +141,4 @@ module.exports = require('./widget').extend()
     svg.select('.axis')
       .attr('transform', utils.translate(0, dims.innerHeight))
       .call(axis);
-
-    function value(d, i) {
-      return {
-        x: self.x().call(node, d, i),
-        y: self.y().call(node, d, i)
-      };
-    }
   });
