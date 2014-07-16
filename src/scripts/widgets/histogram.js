@@ -28,6 +28,10 @@ module.exports = require('./widget').extend()
     bottom: 25
   })
 
+  .prop('title')
+  .set(d3.functor)
+  .default(function(d) { return d.title; })
+
   .prop('values')
   .set(d3.functor)
   .default(function(d) { return d.values; })
@@ -64,6 +68,7 @@ module.exports = require('./widget').extend()
 
       return {
         values: values,
+        title: self.title().call(node, d, i),
         height: self.height().call(node, d, i)
       };
     });
@@ -79,6 +84,9 @@ module.exports = require('./widget').extend()
 
   .enter(function(el) {
     el.attr('class', 'histogram widget');
+
+    el.append('div')
+      .attr('class', 'title');
 
     var svg = el.append('div')
       .attr('class', 'chart')
@@ -97,6 +105,10 @@ module.exports = require('./widget').extend()
     this.normalize(el);
 
     el.style('height', function(d) { return d.height + 'px'; });
+
+    el.select('.widget .title')
+      .text(function(d) { return d.title; });
+
     var chart = el.select('.chart');
 
     var dims = utils.box()

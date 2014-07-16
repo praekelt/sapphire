@@ -29,6 +29,25 @@ describe("sapphire.widgets.histogram", function() {
     el.remove();
   });
 
+  it("should show its title", function() {
+    var histogram = sapphire.widgets.histogram();
+    expect(el.html()).to.be.empty;
+
+    datum.title = 'Total Bar';
+
+    el.datum(datum)
+      .call(histogram);
+
+    expect(el.select('.title').text()).to.equal('Total Bar');
+
+    datum.title = 'Total Baz';
+
+    el.datum(datum)
+      .call(histogram);
+
+    expect(el.select('.title').text()).to.equal('Total Baz');
+  });
+
 	it("should show its bars", function() {
     var fx = d3.scale.linear();
     var fy = d3.scale.linear();
