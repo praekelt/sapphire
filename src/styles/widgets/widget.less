@@ -12,19 +12,20 @@
   }
 
   .axis {
+    @color: lighten(@fg-color, 16%);
+
     line, path {
       fill: none;
       shape-rendering: crispEdges;
-      stroke: @fg-color;
+      stroke: @color;
       stroke-width: 1px;
     }
 
     .tick {
       text {
-        fill: @fg-color;
+        fill: @color;
         stroke: none;
-        font-size: 11px;
-        font-family: sans-serif;
+        font-size: 12px;
       }
     }
   }
