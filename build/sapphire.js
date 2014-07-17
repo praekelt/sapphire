@@ -422,15 +422,15 @@ module.exports = strain()
     el = sapphire.utils.ensureEl(el);
 
     if (el.node() && !el.node().hasChildNodes()) {
-      this.enter(el);
+      this.enter.apply(this, arguments);
     }
 
     var parent = this._type_._super_.prototype;
     if ('_draw_' in parent) {
-      parent._draw_.call(this, el);
+      parent._draw_.apply(this, arguments);
     }
 
-    return this._draw_(el);
+    return this._draw_.apply(this, arguments);
   })
 
   .meth(function enter(el) {
@@ -438,14 +438,14 @@ module.exports = strain()
 
     var parent = this._type_._super_.prototype;
     if ('_enter_' in parent) {
-      parent._enter_.call(this, el);
+      parent._enter_.apply(this, arguments);
     }
 
-    this._enter_(el);
+    this._enter_.apply(this, arguments);
   })
 
-  .invoke(function(el) {
-    return this.draw(el);
+  .invoke(function() {
+    return this.draw.apply(this, arguments);
   });
 
 },{}],6:[function(_dereq_,module,exports){
