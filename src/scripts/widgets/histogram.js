@@ -21,8 +21,8 @@ module.exports = require('./widget').extend()
   .prop('margin')
   .default({
     top: 10,
-    left: 30,
-    right: 10,
+    left: 35,
+    right: 15,
     bottom: 20
   })
 
@@ -238,7 +238,7 @@ var yAxis = view.extend()
     var axis = d3.svg.axis()
       .orient('left')
       .scale(params.fy)
-      .tickPadding(5)
+      .tickPadding(8)
       .tickSize(-params.dims.innerWidth)
       .ticks(this.ticks())
       .tickFormat(this.tickFormat());
