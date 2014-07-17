@@ -292,17 +292,11 @@ var legend = require('../view').extend()
 
 
 var xAxis = view.extend()
-  .prop('widget')
-
   .prop('tickFormat')
   .default(null)
 
   .prop('ticks')
   .default(8)
-
-  .init(function(widget) {
-    this.widget(widget);
-  })
 
   .enter(function(el) {
     el.attr('class', 'x axis');
@@ -323,17 +317,11 @@ var xAxis = view.extend()
 
 
 var yAxis = view.extend()
-  .prop('widget')
-
   .prop('tickFormat')
   .default(d3.format('.2s'))
 
   .prop('ticks')
   .default(5)
-
-  .init(function(widget) {
-    this.widget(widget);
-  })
 
   .enter(function(el) {
     el.attr('class', 'y axis');
