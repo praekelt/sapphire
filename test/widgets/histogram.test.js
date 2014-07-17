@@ -305,8 +305,10 @@ describe("sapphire.widgets.histogram", function() {
     }
   });
 
-  it("should show its time axis", function() {
-    var histogram = sapphire.widgets.histogram()
+  it("should show its x axis", function() {
+    var histogram = sapphire.widgets.histogram();
+
+    histogram.xAxis()
       .ticks(3)
       .tickFormat(d3.time.format('%b'));
 
@@ -326,7 +328,7 @@ describe("sapphire.widgets.histogram", function() {
     el.datum(datum)
       .call(histogram);
 
-    var axis = el.selectAll('.chart .axis');
+    var axis = el.selectAll('.chart .x.axis');
     expect(axis.size()).to.equal(1);
     expect(axis.text()).to.equal(['Mar', 'Apr', 'May'].join(''));
 
@@ -344,8 +346,54 @@ describe("sapphire.widgets.histogram", function() {
     el.datum(datum)
       .call(histogram);
 
-    axis = el.selectAll('.chart .axis');
+    axis = el.selectAll('.chart .x.axis');
     expect(axis.size()).to.equal(1);
     expect(axis.text()).to.equal(['Jun', 'Jul', 'Aug'].join(''));
+  });
+
+  it("should show its y axis", function() {
+    var histogram = sapphire.widgets.histogram();
+
+    histogram.yAxis()
+      .ticks(3)
+      .tickFormat(d3.format('s'));
+
+    expect(el.html()).to.be.empty;
+
+    datum.values = [{
+      x: +(new Date(2014, 2)),
+      y: 234000
+    }, {
+      x: +(new Date(2014, 3)),
+      y: 456000
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 789000,
+    }];
+
+    el.datum(datum)
+      .call(histogram);
+
+    var axis = el.selectAll('.chart .y.axis');
+    expect(axis.size()).to.equal(1);
+    expect(axis.text()).to.equal(['0', '200k', '400k', '600k'].join(''));
+
+    datum.values = [{
+      x: +(new Date(2014, 5)),
+      y: 2340000
+    }, {
+      x: +(new Date(2014, 6)),
+      y: 4560000
+    }, {
+      x: +(new Date(2014, 7)),
+      y: 7890000
+    }];
+
+    el.datum(datum)
+      .call(histogram);
+
+    axis = el.selectAll('.chart .y.axis');
+    expect(axis.size()).to.equal(1);
+    expect(axis.text()).to.equal(['0', '2M', '4M', '6M'].join(''));
   });
 });

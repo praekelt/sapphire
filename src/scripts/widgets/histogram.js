@@ -1,4 +1,5 @@
 var utils = require('../utils');
+var view = require('../view');
 
 
 module.exports = require('./widget').extend()
@@ -8,24 +9,21 @@ module.exports = require('./widget').extend()
   .prop('colspan')
   .default(4)
 
+  .prop('rowspan')
+  .default(1)
+
   .prop('height')
   .default(150)
 
   .prop('barPadding')
   .default(5)
 
-  .prop('tickFormat')
-  .default(null)
-
-  .prop('ticks')
-  .default(8)
-
   .prop('margin')
   .default({
-    top: 4,
-    left: 25,
-    right: 25,
-    bottom: 25
+    top: 10,
+    left: 30,
+    right: 10,
+    bottom: 20
   })
 
   .prop('title')
@@ -50,8 +48,13 @@ module.exports = require('./widget').extend()
 
   .prop('colors')
 
+  .prop('xAxis')
+  .prop('yAxis')
+
   .init(function() {
-    this.colors(this.colors() || d3.scale.category10());
+    this.colors(d3.scale.category10());
+    this.xAxis(xAxis());
+    this.yAxis(yAxis());
   })
 
   .meth(function normalize(el) {
@@ -103,7 +106,10 @@ module.exports = require('./widget').extend()
       .attr('class', 'bars');
 
     svg.append('g')
-      .attr('class', 'axis');
+      .attr('class', 'y axis');
+
+    svg.append('g')
+      .attr('class', 'x axis');
   })
 
   .draw(function(el) {
@@ -115,7 +121,16 @@ module.exports = require('./widget').extend()
     el.select('.widget .title')
       .text(function(d) { return d.title; });
 
-    var chart = el.select('.chart');
+    var chart = el.select('.chart')
+      .datum(function(d) { return d.values; });
+
+    var fx = d3.time.scale()
+      .domain([
+        d3.min(chart.datum(), function(d) { return d.x; }),
+        d3.max(chart.datum(), function(d) { return d.x + d.dx; })]);
+
+    var fy = d3.scale.linear()
+      .domain([0, d3.max(chart.datum(), function(d) { return d.y; })]);
 
     var dims = utils.box()
       .width(parseInt(chart.style('width')))
@@ -124,20 +139,11 @@ module.exports = require('./widget').extend()
       .calc();
 
     chart
-      .datum(function(d) { return d.values; })
       .style('width', dims.width + 'px')
       .style('height', dims.height + 'px');
 
-    var fx = d3.time.scale()
-      .domain([
-        d3.min(chart.datum(), function(d) { return d.x; }),
-        d3.max(chart.datum(), function(d) { return d.x + d.dx; })
-      ])
-      .range([0, dims.innerWidth]);
-
-    var fy = d3.scale.linear()
-      .domain([0, d3.max(chart.datum(), function(d) { return d.y; })])
-      .range([dims.innerHeight, 0]);
+    fx.range([0, dims.innerWidth]);
+    fy.range([dims.innerHeight, 0]);
 
     var svg = chart.select('svg')
       .attr('width', dims.width)
@@ -171,12 +177,72 @@ module.exports = require('./widget').extend()
     bar.exit()
       .remove();
 
-    var axis = d3.svg.axis()
-      .scale(fx)
+    this.xAxis()(svg.select('.x.axis'), {
+      fx: fx,
+      dims: dims
+    });
+
+    this.yAxis()(svg.select('.y.axis'), {
+      fy: fy,
+      dims: dims
+    });
+  });
+
+
+var xAxis = view.extend()
+  .prop('widget')
+
+  .prop('tickFormat')
+  .default(null)
+
+  .prop('ticks')
+  .default(8)
+
+  .init(function(widget) {
+    this.widget(widget);
+  })
+
+  .enter(function(el) {
+    el.attr('class', 'x axis');
+  })
+
+  .draw(function(el, params) {
+    axis = d3.svg.axis()
+      .scale(params.fx)
       .ticks(this.ticks())
       .tickFormat(this.tickFormat());
 
-    svg.select('.axis')
-      .attr('transform', utils.translate(0, dims.innerHeight))
+    el
+      .attr('transform', utils.translate(0, params.dims.innerHeight))
       .call(axis);
+  });
+
+
+var yAxis = view.extend()
+  .prop('widget')
+
+  .prop('tickFormat')
+  .default(d3.format('.2s'))
+
+  .prop('ticks')
+  .default(5)
+
+  .init(function(widget) {
+    this.widget(widget);
+  })
+
+  .enter(function(el) {
+    el.attr('class', 'y axis');
+  })
+
+  .draw(function(el, params) {
+    var axis = d3.svg.axis()
+      .orient('left')
+      .scale(params.fy)
+      .tickPadding(5)
+      .tickSize(-params.dims.innerWidth)
+      .ticks(this.ticks())
+      .tickFormat(this.tickFormat());
+    
+    el.call(axis);
   });

@@ -7,10 +7,23 @@
   }
 
   .chart {
-    padding: 8px;
+    margin: 8px;
   }
 
-  .axis {
+  .x.axis {
     .widget .axis();
+  }
+
+  .y.axis {
+    .widget .axis();
+
+    line {
+      stroke-width: 1px;
+      stroke: fade(@bg-color, 50%);
+    }
+    
+    path {
+      stroke: none;
+    }
   }
 }
