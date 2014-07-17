@@ -55,6 +55,13 @@
   stroke: none;
   font-size: 12px;
 }
+.sapphire .lines.widget .axis line {
+  stroke-width: 1px;
+  stroke: rgba(58, 58, 58, 0.07);
+}
+.sapphire .lines.widget .axis path {
+  stroke: none;
+}
 .sapphire .lines.widget .legend {
   font-size: 15px;
   padding: 2px 34px;

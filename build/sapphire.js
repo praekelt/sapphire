@@ -703,6 +703,7 @@ var sparkline = _dereq_('../view').extend()
 
 },{"../utils":4,"../view":5,"./widget":9}],8:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils');
+var view = _dereq_('../view');
 
 
 module.exports = _dereq_('./widget').extend()
@@ -742,12 +743,6 @@ module.exports = _dereq_('./widget').extend()
 
   .prop('valueFormat')
   .default(d3.format(',2s'))
-
-  .prop('tickFormat')
-  .default(null)
-
-  .prop('ticks')
-  .default(7)
 
   .prop('colors')
   .default(d3.scale.category10())
@@ -832,16 +827,20 @@ var chart = _dereq_('../view').extend()
 
   .prop('margin')
   .default({
-    top: 4,
-    left: 25,
-    right: 25,
-    bottom: 25
+    top: 10,
+    left: 35,
+    right: 15,
+    bottom: 20
   })
 
   .prop('widget')
+  .prop('xAxis')
+  .prop('yAxis')
 
   .init(function(widget) {
     this.widget(widget);
+    this.xAxis(xAxis());
+    this.yAxis(yAxis());
   })
 
   .enter(function(el) {
@@ -849,10 +848,13 @@ var chart = _dereq_('../view').extend()
       .append('g');
 
     svg.append('g')
-      .attr('class', 'lines');
+      .attr('class', 'x axis');
 
     svg.append('g')
-      .attr('class', 'axis');
+      .attr('class', 'y axis');
+
+    svg.append('g')
+      .attr('class', 'lines');
   })
 
   .draw(function(el) {
@@ -876,11 +878,6 @@ var chart = _dereq_('../view').extend()
     var fy = d3.scale.linear()
       .domain(d3.extent(allValues, function(d) { return d.y; }))
       .range([dims.innerHeight, 0]);
-
-    var axis = d3.svg.axis()
-      .scale(fx)
-      .ticks(this.widget().ticks())
-      .tickFormat(this.widget().tickFormat());
 
     var line = d3.svg.line()
       .x(function(d) { return fx(d.x); })
@@ -933,10 +930,15 @@ var chart = _dereq_('../view').extend()
     metric.exit()
       .remove();
 
-    svg
-      .select('.axis')
-      .attr('transform', utils.translate(0, dims.innerHeight))
-      .call(axis);
+    this.xAxis()(svg.select('.x.axis'), {
+      fx: fx,
+      dims: dims
+    });
+
+    this.yAxis()(svg.select('.y.axis'), {
+      fy: fy,
+      dims: dims
+    });
   });
 
 
@@ -990,6 +992,55 @@ var legend = _dereq_('../view').extend()
 
     metric.exit()
       .remove();
+  });
+
+
+var xAxis = view.extend()
+  .prop('tickFormat')
+  .default(null)
+
+  .prop('ticks')
+  .default(8)
+
+  .enter(function(el) {
+    el.attr('class', 'x axis');
+  })
+
+  .draw(function(el, params) {
+    axis = d3.svg.axis()
+      .scale(params.fx)
+      .tickPadding(8)
+      .ticks(this.ticks())
+      .tickFormat(this.tickFormat())
+      .tickSize(-params.dims.innerHeight);
+
+    el
+      .attr('transform', utils.translate(0, params.dims.innerHeight))
+      .call(axis);
+  });
+
+
+var yAxis = view.extend()
+  .prop('tickFormat')
+  .default(d3.format('.2s'))
+
+  .prop('ticks')
+  .default(5)
+
+  .enter(function(el) {
+    el.attr('class', 'y axis');
+  })
+
+  .draw(function(el, params) {
+    var axis = d3.svg.axis()
+      .orient('left')
+      .scale(params.fy)
+      .tickPadding(8)
+      .ticks(this.ticks())
+      .tickFormat(this.tickFormat())
+      .tickSize(-params.dims.innerWidth);
+    
+    el.call(axis);
   });
 
 },{"../utils":4,"../view":5,"./widget":9}],9:[function(_dereq_,module,exports){
