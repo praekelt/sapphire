@@ -442,7 +442,7 @@ describe("sapphire.widgets.lines", function() {
   it("should draw a chart x axis", function() {
     var lines = sapphire.widgets.lines();
 
-    lines.xAxis()
+    lines.chart().xAxis()
       .ticks(3)
       .tickFormat(d3.time.format('%b'));
 
@@ -510,7 +510,7 @@ describe("sapphire.widgets.lines", function() {
   it("should draw a chart y axis", function() {
     var lines = sapphire.widgets.lines();
 
-    lines.yAxis()
+    lines.chart().yAxis()
       .ticks(3)
       .tickFormat(d3.format('s'));
 

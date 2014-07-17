@@ -48,12 +48,8 @@ module.exports = require('./widget').extend()
 
   .prop('chart')
   .prop('legend')
-  .prop('xAxis')
-  .prop('yAxis')
 
   .init(function() {
-    this.xAxis(xAxis());
-    this.yAxis(yAxis());
     this.chart(chart(this));
     this.legend(legend(this));
   })
@@ -134,9 +130,13 @@ var chart = require('../view').extend()
   })
 
   .prop('widget')
+  .prop('xAxis')
+  .prop('yAxis')
 
   .init(function(widget) {
     this.widget(widget);
+    this.xAxis(xAxis());
+    this.yAxis(yAxis());
   })
 
   .enter(function(el) {
@@ -226,12 +226,12 @@ var chart = require('../view').extend()
     metric.exit()
       .remove();
 
-    this.widget().xAxis()(svg.select('.x.axis'), {
+    this.xAxis()(svg.select('.x.axis'), {
       fx: fx,
       dims: dims
     });
 
-    this.widget().yAxis()(svg.select('.y.axis'), {
+    this.yAxis()(svg.select('.y.axis'), {
       fy: fy,
       dims: dims
     });
