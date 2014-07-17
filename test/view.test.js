@@ -28,10 +28,10 @@ describe("sapphire.view", function() {
     it("should call its parent's draw", function() {
       var thing = sapphire.view
         .extend()
-        .draw(function(el) {
+        .draw(function(el, text) {
           el.append('div')
             .attr('class', 'thing')
-            .text('foo');
+            .text([text, 'foo'].join(' '));
         });
 
       var subthing = thing.extend()
@@ -42,9 +42,22 @@ describe("sapphire.view", function() {
             .text('bar');
         });
 
-      subthing().draw(el);
-      expect(el.select('.thing').text()).to.equal('foo');
+      subthing().draw(el, 'sir');
+      expect(el.select('.thing').text()).to.equal('sir foo');
       expect(el.select('.subthing').text()).to.equal('bar');
+    });
+
+    it("should be allowed to accept additional arguments", function() {
+      var thing = sapphire.view
+        .extend()
+        .draw(function(el, text) {
+          el.append('div')
+            .attr('class', 'thing')
+            .text([text, 'foo'].join(' '));
+        });
+
+      thing().draw(el, 'sir');
+      expect(el.select('.thing').text()).to.equal('sir foo');
     });
   });
 
@@ -94,10 +107,10 @@ describe("sapphire.view", function() {
     it("should call its parent's enter", function() {
       var thing = sapphire.view
         .extend()
-        .enter(function(el) {
+        .enter(function(el, text) {
           el.append('div')
             .attr('class', 'thing')
-            .text('foo');
+            .text([text, 'foo'].join(' '));
         });
 
       var subthing = thing.extend()
@@ -108,8 +121,8 @@ describe("sapphire.view", function() {
             .text('bar');
         });
 
-      subthing().draw(el);
-      expect(el.select('.thing').text()).to.equal('foo');
+      subthing().draw(el, 'sir');
+      expect(el.select('.thing').text()).to.equal('sir foo');
       expect(el.select('.subthing').text()).to.equal('bar');
     });
 
@@ -126,6 +139,19 @@ describe("sapphire.view", function() {
         });
 
       thing().draw(el);
+    });
+
+    it("should be allowed to accept additional arguments", function() {
+      var thing = sapphire.view
+        .extend()
+        .enter(function(el, text) {
+          el.append('div')
+            .attr('class', 'thing')
+            .text([text, 'foo'].join(' '));
+        });
+
+      thing().draw(el, 'sir');
+      expect(el.select('.thing').text()).to.equal('sir foo');
     });
   });
 });
