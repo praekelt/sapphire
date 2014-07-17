@@ -439,8 +439,10 @@ describe("sapphire.widgets.lines", function() {
     expect(dot.style('fill')).to.equal(colors(1));
   });
 
-  it("should draw a chart time axis", function() {
-    var lines = sapphire.widgets.lines()
+  it("should draw a chart x axis", function() {
+    var lines = sapphire.widgets.lines();
+
+    lines.chart().xAxis()
       .ticks(3)
       .tickFormat(d3.time.format('%b'));
 
@@ -471,7 +473,7 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    var axis = el.selectAll('.chart .axis');
+    var axis = el.selectAll('.chart .x.axis');
     expect(axis.size()).to.equal(1);
     expect(axis.text()).to.equal(['Mar', 'Apr', 'May'].join(''));
 
@@ -500,9 +502,78 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    axis = el.selectAll('.chart .axis');
+    axis = el.selectAll('.chart .x.axis');
     expect(axis.size()).to.equal(1);
     expect(axis.text()).to.equal(['Jun', 'Jul', 'Aug'].join(''));
+  });
+
+  it("should draw a chart y axis", function() {
+    var lines = sapphire.widgets.lines();
+
+    lines.chart().yAxis()
+      .ticks(3)
+      .tickFormat(d3.format('s'));
+
+    expect(el.html()).to.be.empty;
+
+    datum.metrics[0].values = [{
+      x: +(new Date(2014, 2)),
+      y: 234000
+    }, {
+      x: +(new Date(2014, 3)),
+      y: 789000
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 456000
+    }];
+
+    datum.metrics[1].values = [{
+      x: +(new Date(2014, 2)),
+      y: 834000
+    }, {
+      x: +(new Date(2014, 3)),
+      y: 656000
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 489000
+    }];
+
+
+    el.datum(datum)
+      .call(lines);
+
+    var axis = el.selectAll('.chart .y.axis');
+    expect(axis.size()).to.equal(1);
+    expect(axis.text()).to.equal(['400k', '600k', '800k'].join(''));
+
+    datum.metrics[0].values = [{
+      x: +(new Date(2014, 5)),
+      y: 2340000
+    }, {
+      x: +(new Date(2014, 6)),
+      y: 4560000
+    }, {
+      x: +(new Date(2014, 7)),
+      y: 7890000
+    }];
+
+    datum.metrics[1].values = [{
+      x: +(new Date(2014, 5)),
+      y: 8340000
+    }, {
+      x: +(new Date(2014, 6)),
+      y: 6560000
+    }, {
+      x: +(new Date(2014, 7)),
+      y: 4890000
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    axis = el.selectAll('.chart .y.axis');
+    expect(axis.size()).to.equal(1);
+    expect(axis.text()).to.equal(['4M', '6M', '8M'].join(''));
   });
 
   it("should draw its legend", function() {
