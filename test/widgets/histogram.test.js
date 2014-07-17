@@ -158,6 +158,65 @@ describe("sapphire.widgets.histogram", function() {
     }
 	});
 
+	it("should colour its bars", function() {
+    var histogram = sapphire.widgets.histogram()
+      .width(400)
+			.height(150)
+			.barPadding(8)
+			.margin({
+				top: 4,
+				left: 4,
+				bottom: 4,
+				right: 4 
+			});
+
+    expect(el.html()).to.be.empty;
+
+    datum.title = 'Total Bar';
+
+    datum.values = [{
+      x: 0,
+      y: 234
+    }, {
+      x: 5,
+      y: 456
+    }, {
+      x: 10,
+      y: 789
+    }];
+
+    el.datum(datum)
+      .call(histogram);
+
+    var color = histogram.colors()('Total Bar');
+    expect(el.selectAll('.bar').size()).to.equal(3);
+		expect(el.select('.bar:nth-child(1) rect').style('fill')).to.equal(color);
+		expect(el.select('.bar:nth-child(2) rect').style('fill')).to.equal(color);
+		expect(el.select('.bar:nth-child(3) rect').style('fill')).to.equal(color);
+
+    datum.title = 'Total Baz';
+
+    datum.values = [{
+      x: 15,
+      y: 1234
+    }, {
+      x: 20,
+      y: 1456
+    }, {
+      x: 25,
+      y: 1789
+    }];
+
+    el.datum(datum)
+      .call(histogram);
+
+    color = histogram.colors()('Total Baz');
+    expect(el.selectAll('.bar').size()).to.equal(3);
+		expect(el.select('.bar:nth-child(1) rect').style('fill')).to.equal(color);
+		expect(el.select('.bar:nth-child(2) rect').style('fill')).to.equal(color);
+		expect(el.select('.bar:nth-child(3) rect').style('fill')).to.equal(color);
+  });
+
   it("should allow its bars to have variable widths", function() {
     var fx = d3.scale.linear();
 

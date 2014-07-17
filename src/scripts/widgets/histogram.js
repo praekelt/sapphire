@@ -48,6 +48,12 @@ module.exports = require('./widget').extend()
   .set(d3.functor)
   .default(null)
 
+  .prop('colors')
+
+  .init(function() {
+    this.colors(this.colors() || d3.scale.category10());
+  })
+
   .meth(function normalize(el) {
     var self = this;
     var node = el.node();
@@ -154,6 +160,7 @@ module.exports = require('./widget').extend()
       });
 
     bar.select('rect')
+      .style('fill', this.colors()(el.datum().title))
       .attr('width', function(d) {
         return (fx(d.x + d.dx) - fx(d.x)) - (self.barPadding() / 2);
       })
