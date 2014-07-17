@@ -1,4 +1,5 @@
 var utils = require('../utils');
+var view = require('../view');
 
 
 module.exports = require('./widget').extend()
@@ -39,12 +40,6 @@ module.exports = require('./widget').extend()
   .prop('valueFormat')
   .default(d3.format(',2s'))
 
-  .prop('tickFormat')
-  .default(null)
-
-  .prop('ticks')
-  .default(7)
-
   .prop('colors')
   .default(d3.scale.category10())
 
@@ -53,8 +48,12 @@ module.exports = require('./widget').extend()
 
   .prop('chart')
   .prop('legend')
+  .prop('xAxis')
+  .prop('yAxis')
 
   .init(function() {
+    this.xAxis(xAxis());
+    this.yAxis(yAxis());
     this.chart(chart(this));
     this.legend(legend(this));
   })
@@ -128,10 +127,10 @@ var chart = require('../view').extend()
 
   .prop('margin')
   .default({
-    top: 4,
-    left: 25,
-    right: 25,
-    bottom: 25
+    top: 10,
+    left: 35,
+    right: 15,
+    bottom: 20
   })
 
   .prop('widget')
@@ -145,10 +144,13 @@ var chart = require('../view').extend()
       .append('g');
 
     svg.append('g')
-      .attr('class', 'lines');
+      .attr('class', 'x axis');
 
     svg.append('g')
-      .attr('class', 'axis');
+      .attr('class', 'y axis');
+
+    svg.append('g')
+      .attr('class', 'lines');
   })
 
   .draw(function(el) {
@@ -172,11 +174,6 @@ var chart = require('../view').extend()
     var fy = d3.scale.linear()
       .domain(d3.extent(allValues, function(d) { return d.y; }))
       .range([dims.innerHeight, 0]);
-
-    var axis = d3.svg.axis()
-      .scale(fx)
-      .ticks(this.widget().ticks())
-      .tickFormat(this.widget().tickFormat());
 
     var line = d3.svg.line()
       .x(function(d) { return fx(d.x); })
@@ -229,10 +226,15 @@ var chart = require('../view').extend()
     metric.exit()
       .remove();
 
-    svg
-      .select('.axis')
-      .attr('transform', utils.translate(0, dims.innerHeight))
-      .call(axis);
+    this.widget().xAxis()(svg.select('.x.axis'), {
+      fx: fx,
+      dims: dims
+    });
+
+    this.widget().yAxis()(svg.select('.y.axis'), {
+      fy: fy,
+      dims: dims
+    });
   });
 
 
@@ -286,4 +288,65 @@ var legend = require('../view').extend()
 
     metric.exit()
       .remove();
+  });
+
+
+var xAxis = view.extend()
+  .prop('widget')
+
+  .prop('tickFormat')
+  .default(null)
+
+  .prop('ticks')
+  .default(8)
+
+  .init(function(widget) {
+    this.widget(widget);
+  })
+
+  .enter(function(el) {
+    el.attr('class', 'x axis');
+  })
+
+  .draw(function(el, params) {
+    axis = d3.svg.axis()
+      .scale(params.fx)
+      .tickPadding(8)
+      .ticks(this.ticks())
+      .tickFormat(this.tickFormat())
+      .tickSize(-params.dims.innerHeight);
+
+    el
+      .attr('transform', utils.translate(0, params.dims.innerHeight))
+      .call(axis);
+  });
+
+
+var yAxis = view.extend()
+  .prop('widget')
+
+  .prop('tickFormat')
+  .default(d3.format('.2s'))
+
+  .prop('ticks')
+  .default(5)
+
+  .init(function(widget) {
+    this.widget(widget);
+  })
+
+  .enter(function(el) {
+    el.attr('class', 'y axis');
+  })
+
+  .draw(function(el, params) {
+    var axis = d3.svg.axis()
+      .orient('left')
+      .scale(params.fy)
+      .tickPadding(8)
+      .ticks(this.ticks())
+      .tickFormat(this.tickFormat())
+      .tickSize(-params.dims.innerWidth);
+    
+    el.call(axis);
   });
