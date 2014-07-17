@@ -10,10 +10,10 @@ module.exports = require('./widget').extend()
   .default(4)
 
   .prop('rowspan')
-  .default(1)
+  .default(2)
 
   .prop('height')
-  .default(150)
+  .default(200)
 
   .prop('barPadding')
   .default(5)
@@ -77,8 +77,7 @@ module.exports = require('./widget').extend()
 
       return {
         values: values,
-        title: self.title().call(node, d, i),
-        height: self.height().call(node, d, i)
+        title: self.title().call(node, d, i)
       };
     });
 
@@ -116,7 +115,7 @@ module.exports = require('./widget').extend()
     var self = this;
     this.normalize(el);
 
-    el.style('height', function(d) { return d.height + 'px'; });
+    el.style('height', el.style('min-height'));
 
     el.select('.widget .title')
       .text(function(d) { return d.title; });
