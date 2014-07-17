@@ -1,7 +1,7 @@
 @import "../vars";
 
 
-.widget() {
+.widget {
   > .title {
     padding: 6px 0;
 
@@ -9,5 +9,24 @@
     color: @bg-color;
 
     text-align: center;
+  }
+
+  .axis {
+    @color: lighten(@fg-color, 16%);
+
+    line, path {
+      fill: none;
+      shape-rendering: crispEdges;
+      stroke: @color;
+      stroke-width: 1px;
+    }
+
+    .tick {
+      text {
+        fill: @color;
+        stroke: none;
+        font-size: 12px;
+      }
+    }
   }
 }
