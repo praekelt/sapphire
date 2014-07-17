@@ -45,18 +45,17 @@ module.exports = require('./widget').extend()
   .prop('ticks')
   .default(7)
 
-  .prop('colors')
-  .default(d3.scale.category10())
-
   .prop('none')
   .default(0)
 
+  .prop('colors')
   .prop('chart')
   .prop('legend')
 
   .init(function() {
     this.chart(chart(this));
     this.legend(legend(this));
+    this.colors(this.colors() || d3.scale.category10());
   })
 
   .enter(function(el) {
@@ -75,28 +74,20 @@ module.exports = require('./widget').extend()
       .attr('class', 'legend');
   })
 
-  .draw(function(el) {
+  .meth(function normalize(el) {
     var self = this;
     var node = el.node();
-    var colors = this.colors();
 
-    el.select('.widget .title')
-      .text(function(d, i) {
-        return self.title().call(node, d, i);
-      });
+    el.datum(function(d, i) {
+      var title = self.title().call(node, d, i);
 
-    var values = el.select('.values')
-      .datum(function(d, i) {
-        return self.metrics()
+      return {
+        title: title,
+        metrics: self.metrics()
           .call(node, d, i)
-          .map(metric);
-      });
-
-    values.select('.chart')
-      .call(this.chart());
-
-    values.select('.legend')
-      .call(this.legend());
+          .map(metric)
+      };
+    });
 
     function metric(d, i) {
       var key = self.key()
@@ -105,7 +96,7 @@ module.exports = require('./widget').extend()
 
       return {
         key: key,
-        color: colors(i),
+        color: self.colors()(key),
         title: self.metricTitle().call(node, d, i),
         values: self.values()
           .call(node, d, i)
@@ -119,6 +110,22 @@ module.exports = require('./widget').extend()
         y: self.y().call(node, d, i)
       };
     }
+  })
+
+  .draw(function(el) {
+    this.normalize(el);
+
+    el.select('.widget .title')
+      .text(function(d) { return d.title; });
+
+    var values = el.select('.values')
+      .datum(function(d, i) { return d.metrics; });
+
+    values.select('.chart')
+      .call(this.chart());
+
+    values.select('.legend')
+      .call(this.legend());
   });
 
 

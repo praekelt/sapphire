@@ -376,6 +376,36 @@ utils.date = function(t) {
   return new Date(t);
 };
 
+
+utils.box = strain()
+  .prop('width')
+  .default(0)
+
+  .prop('height')
+  .default(0)
+
+  .prop('margin')
+  .default({
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0
+  })
+
+  .meth(function calc() {
+    var d = {};
+    d.margin = this.margin();
+    d.width = this.width();
+    d.height = this.height();
+    d.innerWidth = d.width - d.margin.left - d.margin.right;
+    d.innerHeight = d.height - d.margin.top - d.margin.bottom;
+    return d;
+  })
+
+  .invoke(function() {
+    return this.calc();
+  });
+
 },{}],5:[function(_dereq_,module,exports){
 module.exports = strain()
   .static(function draw(fn) {
@@ -626,26 +656,29 @@ var sparkline = _dereq_('../view').extend()
       return;
     }
 
-    var margin = this.margin();
-    var width = parseInt(el.style('width'));
+    var dims = utils.box()
+      .margin(this.margin())
+      .width(parseInt(el.style('width')))
+      .height(this.height())
+      .calc();
 
     var fx = d3.scale.linear()
       .domain(d3.extent(el.datum(), function(d) { return d.x; }))
-      .range([0, width - (margin.left + margin.right)]);
+      .range([0, dims.innerWidth]);
 
     var fy = d3.scale.linear()
       .domain(d3.extent(el.datum(), function(d) { return d.y; }))
-      .range([this.height() - (margin.top + margin.bottom), 0]);
+      .range([dims.innerHeight, 0]);
 
     var line = d3.svg.line()
       .x(function(d) { return fx(d.x); })
       .y(function(d) { return fy(d.y); });
 
     var svg = el.select('svg')
-      .attr('width', width)
-      .attr('height', this.height())
+      .attr('width', dims.width)
+      .attr('height', dims.height)
       .select('g')
-        .attr('transform', utils.translate(margin.left, margin.top));
+        .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
 
     svg.select('.rest.path')
       .attr('d', line);
@@ -823,9 +856,11 @@ var chart = _dereq_('../view').extend()
   })
 
   .draw(function(el) {
-    var margin = this.margin();
-    var width = parseInt(el.style('width'));
-    var innerHeight = this.height() - (margin.top + margin.bottom);
+    var dims = utils.box()
+      .margin(this.margin())
+      .width(parseInt(el.style('width')))
+      .height(this.height())
+      .calc();
 
     var allValues = el
       .datum()
@@ -836,11 +871,11 @@ var chart = _dereq_('../view').extend()
 
     var fx = d3.time.scale()
       .domain(d3.extent(allValues, function(d) { return d.x; }))
-      .range([0, width - (margin.left + margin.right)]);
+      .range([0, dims.innerWidth]);
 
     var fy = d3.scale.linear()
       .domain(d3.extent(allValues, function(d) { return d.y; }))
-      .range([innerHeight, 0]);
+      .range([dims.innerHeight, 0]);
 
     var axis = d3.svg.axis()
       .scale(fx)
@@ -852,10 +887,10 @@ var chart = _dereq_('../view').extend()
       .y(function(d) { return fy(d.y); });
 
     var svg = el.select('svg')
-      .attr('width', width)
-      .attr('height', this.height())
+      .attr('width', dims.width)
+      .attr('height', dims.height)
       .select('g')
-        .attr('transform', utils.translate(margin.left, margin.top));
+        .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
 
     var metric = svg.select('.lines').selectAll('.metric')
       .data(function(d) { return d; },
@@ -900,7 +935,7 @@ var chart = _dereq_('../view').extend()
 
     svg
       .select('.axis')
-      .attr('transform', utils.translate(0, innerHeight))
+      .attr('transform', utils.translate(0, dims.innerHeight))
       .call(axis);
   });
 
