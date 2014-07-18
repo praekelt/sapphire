@@ -311,30 +311,52 @@ displaying each metric's title, colour and last ``y`` value.
       .valueFormat(d3.format('.2s'));
 
 
-.. function:: lines.tickFormat([fn])
+.. function:: lines.xFormat([fn])
 
   Property for the formatting function to use when displaying the tick values
   on the line chart's ``x`` axis. Defaults to ``null``.
 
   :func:`sapphire.widgets.lines` uses d3.time.scale_ to generate its time
-  scale, so when :func:`lines.tickFormat` is ``null``, the built-in d3 tick
+  scale, so when :func:`lines.xFormat` is ``null``, the built-in d3 tick
   formatter is used.
 
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .tickFormat(d3.format('.2s'));
+      .xFormat(d3.time.format('%Y-%m-%d'));
 
 
-.. function:: lines.ticks([v])
+.. function:: lines.xTicks([v])
 
   Property for the number of ticks to use for the time axis of the chart. This
-  is given directly to d3.time.scale_. Defaults to ``7``.
+  is given directly to d3.time.scale_. Defaults to ``8``.
 
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .ticks(7);
+      .xTicks(10);
+
+
+.. function:: lines.yFormat([fn])
+
+  Property for the formatting function to use when displaying the tick values
+  on the line chart's ``y`` axis. Defaults to ``d3.format('.2s')``.
+
+  .. code-block:: javascript
+
+    var lines = sapphire.widgets.lines()
+      .yFormat(d3.format('s'));
+
+
+.. function:: lines.yTicks([v])
+
+  Property for the number of ticks to use for the time axis of the chart. This
+  is given directly to d3.time.scale_. Defaults to ``5``.
+
+  .. code-block:: javascript
+
+    var lines = sapphire.widgets.lines()
+      .yTicks(10);
 
 
 .. function:: lines.colors([fn])
