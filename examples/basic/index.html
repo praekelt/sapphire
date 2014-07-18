@@ -49,7 +49,7 @@ dashboard.types().get('last')
   .values(function(d) { return metrics.get(d.metric).values; });
 
 
-dashboard.types().get('histogram')
+dashboard.types().get('bars')
   .title(function(d) { return metrics.get(d.metric).name; })
   .values(function(d) { return metrics.get(d.metric).values; })
   .x(function(d) { return +d3.time.second(d.x); });
@@ -110,13 +110,13 @@ var el = d3.select('body').append('div')
       col: 6,
       metric: 'Quux'
     }, {
-      type: 'histogram',
+      type: 'bars',
       col: 0,
       row: 8,
       colspan: 5,
       metric: 'Foo'
     }, {
-      type: 'histogram',
+      type: 'bars',
       col: 5,
       row: 8,
       colspan: 5,

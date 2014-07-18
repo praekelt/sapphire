@@ -1,4 +1,4 @@
-describe("sapphire.widgets.histogram", function() {
+describe("sapphire.widgets.bars", function() {
   var el;
   var datum;
 
@@ -30,20 +30,20 @@ describe("sapphire.widgets.histogram", function() {
   });
 
   it("should show its title", function() {
-    var histogram = sapphire.widgets.histogram();
+    var bars = sapphire.widgets.bars();
     expect(el.html()).to.be.empty;
 
     datum.title = 'Total Bar';
 
     el.datum(datum)
-      .call(histogram);
+      .call(bars);
 
     expect(el.select('.title').text()).to.equal('Total Bar');
 
     datum.title = 'Total Baz';
 
     el.datum(datum)
-      .call(histogram);
+      .call(bars);
 
     expect(el.select('.title').text()).to.equal('Total Baz');
   });
@@ -52,7 +52,7 @@ describe("sapphire.widgets.histogram", function() {
     var fx = d3.scale.linear();
     var fy = d3.scale.linear();
 
-    var histogram = sapphire.widgets.histogram()
+    var bars = sapphire.widgets.bars()
       .width(400)
       .height(150)
       .barPadding(4)
@@ -77,14 +77,14 @@ describe("sapphire.widgets.histogram", function() {
     }];
 
     el.datum(datum)
-      .call(histogram);
+      .call(bars);
 
     expect(el.selectAll('.bar').size()).to.equal(3);
 
     var dims = sapphire.utils.box()
       .width(parseInt(el.select('.chart').style('width')))
       .height(parseInt(el.select('.chart').style('height')))
-      .margin(histogram.margin())
+      .margin(bars.margin())
       .calc();
 
     var dx = (10 - 0) / 3;
@@ -122,7 +122,7 @@ describe("sapphire.widgets.histogram", function() {
     }];
 
     el.datum(datum)
-      .call(histogram);
+      .call(bars);
 
     expect(el.selectAll('.bar').size()).to.equal(3);
 
@@ -146,7 +146,7 @@ describe("sapphire.widgets.histogram", function() {
     expect(bar.select('rect').attr('height')).to.be.closeTo(height(1789), 0.01);
 
     function width() {
-      return (fx(dx) - fx(0)) - (histogram.barPadding());
+      return (fx(dx) - fx(0)) - (bars.barPadding());
     }
 
     function height(y) {
@@ -159,7 +159,7 @@ describe("sapphire.widgets.histogram", function() {
   });
 
   it("should colour its bars", function() {
-    var histogram = sapphire.widgets.histogram()
+    var bars = sapphire.widgets.bars()
       .width(400)
       .height(150)
       .barPadding(4)
@@ -186,9 +186,9 @@ describe("sapphire.widgets.histogram", function() {
     }];
 
     el.datum(datum)
-      .call(histogram);
+      .call(bars);
 
-    var color = histogram.colors()('Total Bar');
+    var color = bars.colors()('Total Bar');
     expect(el.selectAll('.bar').size()).to.equal(3);
     expect(el.select('.bar:nth-child(1) rect').style('fill')).to.equal(color);
     expect(el.select('.bar:nth-child(2) rect').style('fill')).to.equal(color);
@@ -208,9 +208,9 @@ describe("sapphire.widgets.histogram", function() {
     }];
 
     el.datum(datum)
-      .call(histogram);
+      .call(bars);
 
-    color = histogram.colors()('Total Baz');
+    color = bars.colors()('Total Baz');
     expect(el.selectAll('.bar').size()).to.equal(3);
     expect(el.select('.bar:nth-child(1) rect').style('fill')).to.equal(color);
     expect(el.select('.bar:nth-child(2) rect').style('fill')).to.equal(color);
@@ -220,7 +220,7 @@ describe("sapphire.widgets.histogram", function() {
   it("should allow its bars to have variable widths", function() {
     var fx = d3.scale.linear();
 
-    var histogram = sapphire.widgets.histogram()
+    var bars = sapphire.widgets.bars()
       .width(400)
       .barPadding(4)
       .margin({
@@ -248,14 +248,14 @@ describe("sapphire.widgets.histogram", function() {
     }];
 
     el.datum(datum)
-      .call(histogram);
+      .call(bars);
 
     expect(el.selectAll('.bar').size()).to.equal(3);
 
     var dims = sapphire.utils.box()
       .width(parseInt(el.select('.chart').style('width')))
       .height(parseInt(el.select('.chart').style('height')))
-      .margin(histogram.margin())
+      .margin(bars.margin())
       .calc();
 
     fx.domain([0, 10 + 6])
@@ -285,7 +285,7 @@ describe("sapphire.widgets.histogram", function() {
     }];
 
     el.datum(datum)
-      .call(histogram);
+      .call(bars);
 
     expect(el.selectAll('.bar').size()).to.equal(3);
 
@@ -301,12 +301,12 @@ describe("sapphire.widgets.histogram", function() {
     expect(bar.select('rect').attr('width')).to.be.closeTo(width(25, 12), 0.01);
 
     function width(x, dx) {
-      return (fx(x + dx) - fx(x)) - (histogram.barPadding());
+      return (fx(x + dx) - fx(x)) - (bars.barPadding());
     }
   });
 
   it("should clamp its bar widths at 1", function() {
-    var histogram = sapphire.widgets.histogram()
+    var bars = sapphire.widgets.bars()
       .dx(function(d) { return d.dx; });
 
     datum.values = [{
@@ -320,14 +320,14 @@ describe("sapphire.widgets.histogram", function() {
     }];
 
     el.datum(datum)
-      .call(histogram);
+      .call(bars);
 
     var bar = el.select('.bar');
     expect(+bar.select('rect').attr('width')).to.equal(1);
   });
 
   it("should show its x axis", function() {
-    var histogram = sapphire.widgets.histogram()
+    var bars = sapphire.widgets.bars()
       .xTicks(3)
       .xFormat(d3.time.format('%b'));
 
@@ -345,7 +345,7 @@ describe("sapphire.widgets.histogram", function() {
     }];
 
     el.datum(datum)
-      .call(histogram);
+      .call(bars);
 
     var axis = el.selectAll('.chart .x.axis');
     expect(axis.size()).to.equal(1);
@@ -363,7 +363,7 @@ describe("sapphire.widgets.histogram", function() {
     }];
 
     el.datum(datum)
-      .call(histogram);
+      .call(bars);
 
     axis = el.selectAll('.chart .x.axis');
     expect(axis.size()).to.equal(1);
@@ -371,7 +371,7 @@ describe("sapphire.widgets.histogram", function() {
   });
 
   it("should show its y axis", function() {
-    var histogram = sapphire.widgets.histogram()
+    var bars = sapphire.widgets.bars()
       .yTicks(3)
       .yFormat(d3.format('s'));
 
@@ -389,7 +389,7 @@ describe("sapphire.widgets.histogram", function() {
     }];
 
     el.datum(datum)
-      .call(histogram);
+      .call(bars);
 
     var axis = el.selectAll('.chart .y.axis');
     expect(axis.size()).to.equal(1);
@@ -407,7 +407,7 @@ describe("sapphire.widgets.histogram", function() {
     }];
 
     el.datum(datum)
-      .call(histogram);
+      .call(bars);
 
     axis = el.selectAll('.chart .y.axis');
     expect(axis.size()).to.equal(1);
