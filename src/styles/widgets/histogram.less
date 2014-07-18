@@ -1,0 +1,29 @@
+@import "./widget";
+
+
+.histogram.widget {
+  > .title {
+    .widget .title();
+  }
+
+  .chart {
+    padding: 8px;
+  }
+
+  .x.axis {
+    .widget .axis();
+  }
+
+  .y.axis {
+    .widget .axis();
+
+    line {
+      stroke-width: 1px;
+      stroke: fade(@bg-color, 50%);
+    }
+    
+    path {
+      stroke: none;
+    }
+  }
+}
