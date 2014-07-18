@@ -79,12 +79,17 @@ var el = d3.select('body').append('div')
         'Quux'
       ]
     }, {
-      type: 'histogram',
+      type: 'lines',
       col: 0,
       row: 4,
       colspan: 6,
-      metric: 'Foo'
-    },{
+      title: 'Corge, Grault and Garply',
+      metrics: [
+        'Corge',
+        'Grault',
+        'Garply',
+      ]
+    }, {
       type: 'last',
       row: 0,
       col: 6,
@@ -104,6 +109,18 @@ var el = d3.select('body').append('div')
       row: 6,
       col: 6,
       metric: 'Quux'
+    }, {
+      type: 'histogram',
+      col: 0,
+      row: 8,
+      colspan: 5,
+      metric: 'Foo'
+    }, {
+      type: 'histogram',
+      col: 5,
+      row: 8,
+      colspan: 5,
+      metric: 'Bar'
     }]
   });
 
