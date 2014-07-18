@@ -97,7 +97,7 @@ module.exports = require('./widget').extend()
   })
 
   .enter(function(el) {
-    el.attr('class', 'histogram widget');
+    el.attr('class', 'bars widget');
 
     el.append('div')
       .attr('class', 'title');
