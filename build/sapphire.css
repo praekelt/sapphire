@@ -23,7 +23,6 @@
   fill: none;
   shape-rendering: crispEdges;
   stroke: #636363;
-  stroke-width: 1px;
 }
 .sapphire .widget .axis .tick text {
   fill: #636363;
@@ -48,7 +47,6 @@
   fill: none;
   shape-rendering: crispEdges;
   stroke: #636363;
-  stroke-width: 1px;
 }
 .sapphire .lines.widget .axis .tick text {
   fill: #636363;
@@ -145,4 +143,42 @@
 }
 .sapphire .last.widget .values .sparkline .diff.path {
   stroke-width: 4.5px;
+}
+.sapphire .histogram.widget > .title {
+  padding: 6px 0;
+  background: #3a3a3a;
+  color: #f2f2f2;
+  text-align: center;
+}
+.sapphire .histogram.widget .chart {
+  padding: 8px;
+}
+.sapphire .histogram.widget .x.axis line,
+.sapphire .histogram.widget .x.axis path {
+  fill: none;
+  shape-rendering: crispEdges;
+  stroke: #636363;
+}
+.sapphire .histogram.widget .x.axis .tick text {
+  fill: #636363;
+  stroke: none;
+  font-size: 12px;
+}
+.sapphire .histogram.widget .y.axis line,
+.sapphire .histogram.widget .y.axis path {
+  fill: none;
+  shape-rendering: crispEdges;
+  stroke: #636363;
+}
+.sapphire .histogram.widget .y.axis .tick text {
+  fill: #636363;
+  stroke: none;
+  font-size: 12px;
+}
+.sapphire .histogram.widget .y.axis line {
+  stroke-width: 1px;
+  stroke: rgba(242, 242, 242, 0.5);
+}
+.sapphire .histogram.widget .y.axis path {
+  stroke: none;
 }
