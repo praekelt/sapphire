@@ -49,6 +49,12 @@ dashboard.types().get('last')
   .values(function(d) { return metrics.get(d.metric).values; });
 
 
+dashboard.types().get('histogram')
+  .title(function(d) { return metrics.get(d.metric).name; })
+  .values(function(d) { return metrics.get(d.metric).values; })
+  .x(function(d) { return +d3.time.second(d.x); });
+
+
 dashboard.types().get('lines')
   .key(function(d) { return d; })
   .metricTitle(function(d) { return metrics.get(d).name; })
@@ -73,17 +79,12 @@ var el = d3.select('body').append('div')
         'Quux'
       ]
     }, {
-      type: 'lines',
+      type: 'histogram',
       col: 0,
       row: 4,
       colspan: 6,
-      title: 'Corge, Grault and Garply',
-      metrics: [
-        'Corge',
-        'Grault',
-        'Garply',
-      ]
-    }, {
+      metric: 'Foo'
+    },{
       type: 'last',
       row: 0,
       col: 6,
