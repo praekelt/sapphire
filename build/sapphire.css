@@ -144,41 +144,41 @@
 .sapphire .last.widget .values .sparkline .diff.path {
   stroke-width: 4.5px;
 }
-.sapphire .histogram.widget > .title {
+.sapphire .bars.widget > .title {
   padding: 6px 0;
   background: #3a3a3a;
   color: #f2f2f2;
   text-align: center;
 }
-.sapphire .histogram.widget .chart {
+.sapphire .bars.widget .chart {
   padding: 8px;
 }
-.sapphire .histogram.widget .x.axis line,
-.sapphire .histogram.widget .x.axis path {
+.sapphire .bars.widget .x.axis line,
+.sapphire .bars.widget .x.axis path {
   fill: none;
   shape-rendering: crispEdges;
   stroke: #636363;
 }
-.sapphire .histogram.widget .x.axis .tick text {
+.sapphire .bars.widget .x.axis .tick text {
   fill: #636363;
   stroke: none;
   font-size: 12px;
 }
-.sapphire .histogram.widget .y.axis line,
-.sapphire .histogram.widget .y.axis path {
+.sapphire .bars.widget .y.axis line,
+.sapphire .bars.widget .y.axis path {
   fill: none;
   shape-rendering: crispEdges;
   stroke: #636363;
 }
-.sapphire .histogram.widget .y.axis .tick text {
+.sapphire .bars.widget .y.axis .tick text {
   fill: #636363;
   stroke: none;
   font-size: 12px;
 }
-.sapphire .histogram.widget .y.axis line {
+.sapphire .bars.widget .y.axis line {
   stroke-width: 1px;
   stroke: rgba(242, 242, 242, 0.5);
 }
-.sapphire .histogram.widget .y.axis path {
+.sapphire .bars.widget .y.axis path {
   stroke: none;
 }

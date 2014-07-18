@@ -548,7 +548,7 @@ module.exports = _dereq_('./widget').extend()
   })
 
   .enter(function(el) {
-    el.attr('class', 'histogram widget');
+    el.attr('class', 'bars widget');
 
     el.append('div')
       .attr('class', 'title');
@@ -660,9 +660,9 @@ module.exports = _dereq_('./widget').extend()
 exports.widget = _dereq_('./widget');
 exports.lines = _dereq_('./lines');
 exports.last = _dereq_('./last');
-exports.histogram = _dereq_('./histogram');
+exports.bars = _dereq_('./bars');
 
-},{"./histogram":6,"./last":8,"./lines":9,"./widget":10}],8:[function(_dereq_,module,exports){
+},{"./bars":6,"./last":8,"./lines":9,"./widget":10}],8:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils');
 
 
