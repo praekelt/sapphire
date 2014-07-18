@@ -362,7 +362,8 @@ displaying each metric's title, colour and last ``y`` value.
 .. function:: lines.colors([fn])
 
   Property for the colour function to use to calculate each metric's colour
-  from its index. Defaults to ``d3.scale.category10()``.
+  from the values returned by :func:`lines.keys`. Defaults to
+  ``d3.scale.category10()``.
 
   .. code-block:: javascript
 
