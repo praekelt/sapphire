@@ -1,5 +1,4 @@
 var utils = require('../utils');
-var view = require('../view');
 
 
 module.exports = require('./widget').extend()
@@ -46,15 +45,22 @@ module.exports = require('./widget').extend()
   .set(d3.functor)
   .default(null)
 
-  .prop('colors')
+  .prop('xFormat')
+  .default(null)
 
-  .prop('xAxis')
-  .prop('yAxis')
+  .prop('xTicks')
+  .default(8)
+
+  .prop('yFormat')
+  .default(d3.format('.2s'))
+
+  .prop('yTicks')
+  .default(5)
+
+  .prop('colors')
 
   .init(function() {
     this.colors(d3.scale.category10());
-    this.xAxis(xAxis());
-    this.yAxis(yAxis());
   })
 
   .meth(function normalize(el) {
@@ -178,72 +184,23 @@ module.exports = require('./widget').extend()
     bar.exit()
       .remove();
 
-    this.xAxis()(svg.select('.x.axis'), {
-      fx: fx,
-      dims: dims
-    });
-
-    this.yAxis()(svg.select('.y.axis'), {
-      fy: fy,
-      dims: dims
-    });
-  });
-
-
-var xAxis = view.extend()
-  .prop('widget')
-
-  .prop('tickFormat')
-  .default(null)
-
-  .prop('ticks')
-  .default(8)
-
-  .init(function(widget) {
-    this.widget(widget);
-  })
-
-  .enter(function(el) {
-    el.attr('class', 'x axis');
-  })
-
-  .draw(function(el, params) {
-    axis = d3.svg.axis()
-      .scale(params.fx)
-      .ticks(this.ticks())
-      .tickFormat(this.tickFormat());
-
-    el
-      .attr('transform', utils.translate(0, params.dims.innerHeight))
-      .call(axis);
-  });
-
-
-var yAxis = view.extend()
-  .prop('widget')
-
-  .prop('tickFormat')
-  .default(d3.format('.2s'))
-
-  .prop('ticks')
-  .default(5)
-
-  .init(function(widget) {
-    this.widget(widget);
-  })
-
-  .enter(function(el) {
-    el.attr('class', 'y axis');
-  })
-
-  .draw(function(el, params) {
     var axis = d3.svg.axis()
+      .scale(fx)
+      .ticks(this.xTicks())
+      .tickFormat(this.xFormat());
+
+    svg.select('.x.axis')
+      .attr('transform', utils.translate(0, dims.innerHeight))
+      .call(axis);
+
+    axis = d3.svg.axis()
       .orient('left')
-      .scale(params.fy)
+      .scale(fy)
       .tickPadding(8)
-      .tickSize(-params.dims.innerWidth)
-      .ticks(this.ticks())
-      .tickFormat(this.tickFormat());
+      .tickSize(-dims.innerWidth)
+      .ticks(this.yTicks())
+      .tickFormat(this.yFormat());
     
-    el.call(axis);
+    svg.select('.y.axis')
+      .call(axis);
   });

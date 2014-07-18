@@ -271,8 +271,8 @@ describe("sapphire.widgets.last", function() {
   it("should display a sparkline", function() {
     var last = sapphire.widgets.last();
 
-    last.sparkline()
-      .limit(2);
+    last
+      .sparklineLimit(2);
 
     last
       .width(200)
@@ -351,10 +351,8 @@ describe("sapphire.widgets.last", function() {
   });
 
   it("should not display a sparkline under the configured limit", function() {
-    var last = sapphire.widgets.last();
-
-    last.sparkline()
-      .limit(2);
+    var last = sapphire.widgets.last()
+      .sparklineLimit(2);
 
     expect(el.html()).to.be.empty;
 
@@ -388,20 +386,18 @@ describe("sapphire.widgets.last", function() {
   });
 
   it("should floor its sparkline's limit at 2", function() {
-    var sparkline = sapphire.widgets.last().sparkline();
-    expect(sparkline.limit(-1).limit()).to.equal(2);
-    expect(sparkline.limit(0).limit()).to.equal(2);
-    expect(sparkline.limit(1).limit()).to.equal(2);
-    expect(sparkline.limit(2).limit()).to.equal(2);
-    expect(sparkline.limit(3).limit()).to.equal(3);
-    expect(sparkline.limit(4).limit()).to.equal(4);
+    var last = sapphire.widgets.last();
+    expect(last.sparklineLimit(-1).sparklineLimit()).to.equal(2);
+    expect(last.sparklineLimit(0).sparklineLimit()).to.equal(2);
+    expect(last.sparklineLimit(1).sparklineLimit()).to.equal(2);
+    expect(last.sparklineLimit(2).sparklineLimit()).to.equal(2);
+    expect(last.sparklineLimit(3).sparklineLimit()).to.equal(3);
+    expect(last.sparklineLimit(4).sparklineLimit()).to.equal(4);
   });
 
   it("should not display a summary under the configured limit", function() {
-    var last = sapphire.widgets.last();
-
-    last.summary()
-      .limit(2);
+    var last = sapphire.widgets.last()
+      .summaryLimit(2);
 
     expect(el.html()).to.be.empty;
 
@@ -435,20 +431,18 @@ describe("sapphire.widgets.last", function() {
   });
 
   it("should floor its summary's limit at 2", function() {
-    var summary = sapphire.widgets.last().summary();
-    expect(summary.limit(-1).limit()).to.equal(2);
-    expect(summary.limit(0).limit()).to.equal(2);
-    expect(summary.limit(1).limit()).to.equal(2);
-    expect(summary.limit(2).limit()).to.equal(2);
-    expect(summary.limit(3).limit()).to.equal(3);
-    expect(summary.limit(4).limit()).to.equal(4);
+    var last = sapphire.widgets.last();
+    expect(last.summaryLimit(-1).summaryLimit()).to.equal(2);
+    expect(last.summaryLimit(0).summaryLimit()).to.equal(2);
+    expect(last.summaryLimit(1).summaryLimit()).to.equal(2);
+    expect(last.summaryLimit(2).summaryLimit()).to.equal(2);
+    expect(last.summaryLimit(3).summaryLimit()).to.equal(3);
+    expect(last.summaryLimit(4).summaryLimit()).to.equal(4);
   });
 
   it("should display a diff line", function() {
-    var last = sapphire.widgets.last();
-
-    last.sparkline()
-      .limit(2);
+    var last = sapphire.widgets.last()
+      .sparklineLimit(2);
 
     last
       .width(200)
@@ -527,10 +521,8 @@ describe("sapphire.widgets.last", function() {
   });
 
   it("should display a dot for the last value", function() {
-    var last = sapphire.widgets.last();
-
-    last.sparkline()
-      .limit(2);
+    var last = sapphire.widgets.last()
+      .sparklineLimit(2);
 
     last
       .width(200)

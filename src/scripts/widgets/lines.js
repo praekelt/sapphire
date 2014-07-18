@@ -1,5 +1,4 @@
 var utils = require('../utils');
-var view = require('../view');
 
 
 module.exports = require('./widget').extend()
@@ -36,6 +35,18 @@ module.exports = require('./widget').extend()
   .prop('y')
   .set(d3.functor)
   .default(function(d) { return d.y; })
+
+  .prop('xFormat')
+  .default(null)
+
+  .prop('xTicks')
+  .default(8)
+
+  .prop('yFormat')
+  .default(d3.format('.2s'))
+
+  .prop('yTicks')
+  .default(5)
 
   .prop('valueFormat')
   .default(d3.format(',2s'))
@@ -137,13 +148,9 @@ var chart = require('../view').extend()
   })
 
   .prop('widget')
-  .prop('xAxis')
-  .prop('yAxis')
 
   .init(function(widget) {
     this.widget(widget);
-    this.xAxis(xAxis());
-    this.yAxis(yAxis());
   })
 
   .enter(function(el) {
@@ -233,15 +240,27 @@ var chart = require('../view').extend()
     metric.exit()
       .remove();
 
-    this.xAxis()(svg.select('.x.axis'), {
-      fx: fx,
-      dims: dims
-    });
+    var axis = d3.svg.axis()
+      .scale(fx)
+      .tickPadding(8)
+      .ticks(this.widget().xTicks())
+      .tickFormat(this.widget().xFormat())
+      .tickSize(-dims.innerHeight);
 
-    this.yAxis()(svg.select('.y.axis'), {
-      fy: fy,
-      dims: dims
-    });
+    svg.select('.x.axis')
+      .attr('transform', utils.translate(0, dims.innerHeight))
+      .call(axis);
+
+    axis = d3.svg.axis()
+      .orient('left')
+      .scale(fy)
+      .tickPadding(8)
+      .ticks(this.widget().yTicks())
+      .tickFormat(this.widget().yFormat())
+      .tickSize(-dims.innerWidth);
+    
+    svg.select('.y.axis')
+      .call(axis);
   });
 
 
@@ -295,53 +314,4 @@ var legend = require('../view').extend()
 
     metric.exit()
       .remove();
-  });
-
-
-var xAxis = view.extend()
-  .prop('tickFormat')
-  .default(null)
-
-  .prop('ticks')
-  .default(8)
-
-  .enter(function(el) {
-    el.attr('class', 'x axis');
-  })
-
-  .draw(function(el, params) {
-    axis = d3.svg.axis()
-      .scale(params.fx)
-      .tickPadding(8)
-      .ticks(this.ticks())
-      .tickFormat(this.tickFormat())
-      .tickSize(-params.dims.innerHeight);
-
-    el
-      .attr('transform', utils.translate(0, params.dims.innerHeight))
-      .call(axis);
-  });
-
-
-var yAxis = view.extend()
-  .prop('tickFormat')
-  .default(d3.format('.2s'))
-
-  .prop('ticks')
-  .default(5)
-
-  .enter(function(el) {
-    el.attr('class', 'y axis');
-  })
-
-  .draw(function(el, params) {
-    var axis = d3.svg.axis()
-      .orient('left')
-      .scale(params.fy)
-      .tickPadding(8)
-      .ticks(this.ticks())
-      .tickFormat(this.tickFormat())
-      .tickSize(-params.dims.innerWidth);
-    
-    el.call(axis);
   });

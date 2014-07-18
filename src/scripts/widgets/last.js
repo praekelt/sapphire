@@ -36,6 +36,14 @@ module.exports = require('./widget').extend()
   .prop('none')
   .default(0)
 
+  .prop('summaryLimit')
+  .default(2)
+  .set(function(v) { return Math.max(utils.ensure(v, 2), 2); })
+
+  .prop('sparklineLimit')
+  .default(15)
+  .set(function(v) { return Math.max(utils.ensure(v, 2), 2); })
+
   .prop('sparkline')
   .prop('summary')
 
@@ -116,10 +124,6 @@ module.exports = require('./widget').extend()
 var summary = require('../view').extend()
   .prop('widget')
 
-  .prop('limit')
-  .default(2)
-  .set(function(v) { return Math.max(utils.ensure(v, 2), 2); })
-
   .init(function(widget) {
     this.widget(widget);
   })
@@ -135,7 +139,7 @@ var summary = require('../view').extend()
   .draw(function(el) {
     var widget = this.widget();
 
-    if (el.datum().length < this.limit()) {
+    if (el.datum().length < this.widget().summaryLimit()) {
       el.style('height', 0);
       return;
     }
@@ -174,10 +178,6 @@ var sparkline = require('../view').extend()
     bottom: 4,
     right: 4 
   })
-  
-  .prop('limit')
-  .default(15)
-  .set(function(v) { return Math.max(utils.ensure(v, 2), 2); })
 
   .init(function(widget) {
     this.widget(widget);
@@ -195,7 +195,7 @@ var sparkline = require('../view').extend()
   })
 
   .draw(function(el) {
-    if (el.datum().length < this.limit()) {
+    if (el.datum().length < this.widget().sparklineLimit()) {
       el.style('height', 0);
       return;
     }
