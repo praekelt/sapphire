@@ -442,9 +442,9 @@ describe("sapphire.widgets.lines", function() {
   it("should draw a chart x axis", function() {
     var lines = sapphire.widgets.lines();
 
-    lines.chart().xAxis()
-      .ticks(3)
-      .tickFormat(d3.time.format('%b'));
+    lines
+      .xTicks(3)
+      .xFormat(d3.time.format('%b'));
 
     expect(el.html()).to.be.empty;
 
@@ -510,9 +510,9 @@ describe("sapphire.widgets.lines", function() {
   it("should draw a chart y axis", function() {
     var lines = sapphire.widgets.lines();
 
-    lines.chart().yAxis()
-      .ticks(3)
-      .tickFormat(d3.format('s'));
+    lines
+      .yTicks(3)
+      .yFormat(d3.format('s'));
 
     expect(el.html()).to.be.empty;
 
