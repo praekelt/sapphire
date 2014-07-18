@@ -55,7 +55,7 @@ describe("sapphire.widgets.histogram", function() {
     var histogram = sapphire.widgets.histogram()
       .width(400)
       .height(150)
-      .barPadding(8)
+      .barPadding(4)
       .margin({
         top: 4,
         left: 4,
@@ -146,7 +146,7 @@ describe("sapphire.widgets.histogram", function() {
     expect(bar.select('rect').attr('height')).to.be.closeTo(height(1789), 0.01);
 
     function width() {
-      return (fx(dx) - fx(0)) - (histogram.barPadding() / 2);
+      return (fx(dx) - fx(0)) - (histogram.barPadding());
     }
 
     function height(y) {
@@ -162,7 +162,7 @@ describe("sapphire.widgets.histogram", function() {
     var histogram = sapphire.widgets.histogram()
       .width(400)
       .height(150)
-      .barPadding(8)
+      .barPadding(4)
       .margin({
         top: 4,
         left: 4,
@@ -222,7 +222,7 @@ describe("sapphire.widgets.histogram", function() {
 
     var histogram = sapphire.widgets.histogram()
       .width(400)
-      .barPadding(8)
+      .barPadding(4)
       .margin({
         top: 4,
         left: 4,
@@ -301,7 +301,7 @@ describe("sapphire.widgets.histogram", function() {
     expect(bar.select('rect').attr('width')).to.be.closeTo(width(25, 12), 0.01);
 
     function width(x, dx) {
-      return (fx(x + dx) - fx(x)) - (histogram.barPadding() / 2);
+      return (fx(x + dx) - fx(x)) - (histogram.barPadding());
     }
   });
 

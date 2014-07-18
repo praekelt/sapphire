@@ -16,7 +16,7 @@ module.exports = require('./widget').extend()
   .default(200)
 
   .prop('barPadding')
-  .default(5)
+  .default(2.5)
 
   .prop('margin')
   .default({
@@ -168,7 +168,7 @@ module.exports = require('./widget').extend()
       .style('fill', this.colors()(el.datum().title))
       .attr('width', function(d) {
         var width = fx(d.x + d.dx) - fx(d.x);
-        width -= self.barPadding() / 2;
+        width -= self.barPadding();
         return Math.max(width, 1);
       })
       .attr('height', function(d) {
