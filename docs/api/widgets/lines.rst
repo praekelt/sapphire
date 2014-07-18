@@ -328,7 +328,7 @@ displaying each metric's title, colour and last ``y`` value.
 
 .. function:: lines.xTicks([v])
 
-  Property for the number of ticks to use for the time axis of the chart. This
+  Property for the number of ticks to use for the x axis of the chart. This
   is given directly to d3.time.scale_. Defaults to ``8``.
 
   .. code-block:: javascript
@@ -350,7 +350,7 @@ displaying each metric's title, colour and last ``y`` value.
 
 .. function:: lines.yTicks([v])
 
-  Property for the number of ticks to use for the time axis of the chart. This
+  Property for the number of ticks to use for the y axis of the chart. This
   is given directly to d3.time.scale_. Defaults to ``5``.
 
   .. code-block:: javascript
