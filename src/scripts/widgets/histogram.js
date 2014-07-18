@@ -167,7 +167,9 @@ module.exports = require('./widget').extend()
     bar.select('rect')
       .style('fill', this.colors()(el.datum().title))
       .attr('width', function(d) {
-        return (fx(d.x + d.dx) - fx(d.x)) - (self.barPadding() / 2);
+        var width = fx(d.x + d.dx) - fx(d.x);
+        width -= self.barPadding() / 2;
+        return Math.max(width, 1);
       })
       .attr('height', function(d) {
         return dims.innerHeight - fy(d.y); 

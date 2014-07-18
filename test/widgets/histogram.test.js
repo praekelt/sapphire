@@ -305,6 +305,27 @@ describe("sapphire.widgets.histogram", function() {
     }
   });
 
+  it("should clamp its bar widths at 1", function() {
+    var histogram = sapphire.widgets.histogram()
+      .dx(function(d) { return d.dx; });
+
+    datum.values = [{
+      x: 0,
+      y: 234,
+      dx: 0.01
+    }, {
+      x: 0,
+      y: 334,
+      dx: 9000
+    }];
+
+    el.datum(datum)
+      .call(histogram);
+
+    var bar = el.select('.bar');
+    expect(+bar.select('rect').attr('width')).to.equal(1);
+  });
+
   it("should show its x axis", function() {
     var histogram = sapphire.widgets.histogram();
 
