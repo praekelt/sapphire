@@ -327,11 +327,9 @@ describe("sapphire.widgets.histogram", function() {
   });
 
   it("should show its x axis", function() {
-    var histogram = sapphire.widgets.histogram();
-
-    histogram.xAxis()
-      .ticks(3)
-      .tickFormat(d3.time.format('%b'));
+    var histogram = sapphire.widgets.histogram()
+      .xTicks(3)
+      .xFormat(d3.time.format('%b'));
 
     expect(el.html()).to.be.empty;
 
@@ -373,11 +371,9 @@ describe("sapphire.widgets.histogram", function() {
   });
 
   it("should show its y axis", function() {
-    var histogram = sapphire.widgets.histogram();
-
-    histogram.yAxis()
-      .ticks(3)
-      .tickFormat(d3.format('s'));
+    var histogram = sapphire.widgets.histogram()
+      .yTicks(3)
+      .yFormat(d3.format('s'));
 
     expect(el.html()).to.be.empty;
 
