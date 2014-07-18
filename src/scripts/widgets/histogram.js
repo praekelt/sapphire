@@ -22,7 +22,7 @@ module.exports = require('./widget').extend()
     top: 10,
     left: 35,
     right: 15,
-    bottom: 20
+    bottom: 45
   })
 
   .prop('title')
