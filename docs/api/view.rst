@@ -45,6 +45,7 @@ and ``.prop()`` are also available on view components.
 
 
 .. function:: view(el)
+
   Draws the view by applying it to the given selection. ``el`` can be a
   d3 selection, or any argument accepted by d3.select_.
 
