@@ -42,34 +42,22 @@ module.exports = require('./widget').extend()
     var node = el.node();
 
     el.datum(function(d, i) {
-      var title = self.title().call(node, d, i);
-
       return {
-        title: title,
-        metrics: self.metrics()
-          .call(node, d, i)
-          .map(metric)
+        title: self.title().call(node, d, i),
       };
     });
-
-    function metric(d, i) {
-      var key = self.key()
-        .call(node, d, i)
-        .toString();
-
-      return {
-        key: key,
-        color: self.colors()(key),
-        title: self.metricTitle().call(node, d, i),
-        value: self.value().call(node, d, i)
-      };
-    }
   })
 
   .enter(function(el) {
     el.attr('class', 'pie widget');
+
+    el.append('div')
+      .attr('class', 'title');
   })
 
   .draw(function(el) {
     this.normalize(el);
+
+    el.select('.widget .title')
+      .text(function(d) { return d.title; });
   });
