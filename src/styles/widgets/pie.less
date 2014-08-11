@@ -1,0 +1,17 @@
+@import "./widget";
+
+
+.pie.widget {
+  > .title {
+    .widget .title();
+  }
+
+  .chart {
+    .slice {
+      path {
+        stroke: fade(@bg-color, 50%);
+        stroke-width: 4px;
+      }
+    }
+  }
+}
