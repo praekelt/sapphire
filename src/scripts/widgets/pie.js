@@ -86,9 +86,7 @@ module.exports = require('./widget').extend()
       .attr('class', 'title');
 
     el.append('div')
-      .attr('class', 'chart')
-        .append('svg')
-        .append('g');
+      .attr('class', 'chart');
   })
 
   .draw(function(el) {
@@ -98,24 +96,40 @@ module.exports = require('./widget').extend()
     el.select('.widget .title')
       .text(function(d) { return d.title; });
 
-    var chart = el.select('.chart');
+    el.select('.chart')
+      .call(chart(this));
+  });
 
+
+var chart = require('../view').extend()
+  .prop('widget')
+
+  .init(function(widget) {
+    this.widget(widget);
+  })
+
+  .enter(function(el) {
+    el.append('svg')
+      .append('g');
+  })
+
+  .draw(function(el) {
     var dims = utils.box()
-      .margin(this.margin())
-      .width(parseInt(chart.style('width')))
-      .height(parseInt(chart.style('height')))
+      .margin(this.widget().margin())
+      .width(parseInt(el.style('width')))
+      .height(parseInt(el.style('height')))
       .calc();
 
     var radius = Math.min(dims.innerWidth, dims.innerHeight) / 2;
 
-    var svg = chart.select('svg')
+    var svg = el.select('svg')
       .attr('width', dims.width)
       .attr('height', dims.height)
       .select('g')
         .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
 
     var arc = d3.svg.arc()
-      .innerRadius(this.innerRadius()(radius))
+      .innerRadius(this.widget().innerRadius()(radius))
       .outerRadius(radius);
 
     var layout = d3.layout.pie()
