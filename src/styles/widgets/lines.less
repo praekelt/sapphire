@@ -35,31 +35,11 @@
 
   .legend {
     font-size: 15px;
-    padding: 2px 34px;
     
     .table {
-      border-collapse: collapse;
-      width: 100%;
+      .widget .table();
 
       .metric {
-        td {
-          background: fade(@fg-color, 7%);
-        }
-
-        &:nth-child(2n) {
-          td {
-            background: fade(@fg-color, 2.5%);
-          }
-
-          .value {
-            background: fade(@fg-color, 7%);
-          }
-        }
-
-        td {
-          padding: 4px 12px;
-        }
-
         .swatch {
           padding: 0;
           width: 12px;
@@ -71,7 +51,6 @@
 
         .value {
           text-align: right;
-          background: fade(@fg-color, 2.5%);
         }
       }
     }
