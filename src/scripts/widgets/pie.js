@@ -85,9 +85,7 @@ module.exports = require('./widget').extend()
     }
 
     var sum = d3.sum(el.datum().metrics, function(d) { return d.value; });
-    el.datum().metrics.forEach(function(d) {
-        return d.percent = d.value / sum;
-    });
+    el.datum().metrics.forEach(function(d) { d.percent = d.value / sum; });
   })
 
   .enter(function(el) {
@@ -214,10 +212,10 @@ var legend = require('../view').extend()
       .text(function(d) { return d.title; });
 
     metric.select('.percent')
-      .text(function(d) { return percentFormat(d.percent) });
+      .text(function(d) { return percentFormat(d.percent); });
 
     metric.select('.value')
-      .text(function(d) { return valueFormat(d.value) });
+      .text(function(d) { return valueFormat(d.value); });
 
     metric.exit()
       .remove();
