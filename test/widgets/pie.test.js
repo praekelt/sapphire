@@ -1,4 +1,4 @@
-describe("sapphire.widgets.pie", function() {
+describe.only("sapphire.widgets.pie", function() {
   var el;
   var datum;
   
@@ -86,12 +86,12 @@ describe("sapphire.widgets.pie", function() {
 
     expect(el.html()).to.be.empty;
 
-    el.datum(datum)
-      .call(pie);
-
     datum.metrics[0].key = 'foo';
     datum.metrics[1].key = 'bar';
     datum.metrics[2].key = 'baz';
+
+    el.datum(datum)
+      .call(pie);
 
     var slice = el.selectAll('.slice');
     expect(slice.size()).to.equal(3);
@@ -133,9 +133,6 @@ describe("sapphire.widgets.pie", function() {
 
     expect(el.html()).to.be.empty;
 
-    el.datum(datum)
-      .call(pie);
-
     datum.metrics[0].key = 'foo';
     datum.metrics[1].key = 'bar';
     datum.metrics[2].key = 'baz';
@@ -143,6 +140,9 @@ describe("sapphire.widgets.pie", function() {
     datum.metrics[0].value = 4000000;
     datum.metrics[1].value = 2000000;
     datum.metrics[2].value = 3000000;
+
+    el.datum(datum)
+      .call(pie);
 
     arc.data(datum.metrics);
     expect(d('foo')).to.equal(arc('foo'));
@@ -174,27 +174,18 @@ describe("sapphire.widgets.pie", function() {
 
   it("should colour its slices according to their keys", function() {
     var pie = sapphire.widgets.pie()
-      .width(300)
-      .height(400)
-      .margin({
-        top: 20,
-        left: 20,
-        right: 20,
-        bottom: 20
-      })
-      .innerRadius(15)
       .key(function(d) { return d.key; });
 
     var colors = pie.colors();
 
     expect(el.html()).to.be.empty;
 
-    el.datum(datum)
-      .call(pie);
-
     datum.metrics[0].key = 'foo';
     datum.metrics[1].key = 'bar';
     datum.metrics[2].key = 'baz';
+
+    el.datum(datum)
+      .call(pie);
 
     expect(fill('foo')).to.equal(colors('foo'));
     expect(fill('bar')).to.equal(colors('bar'));
@@ -215,6 +206,199 @@ describe("sapphire.widgets.pie", function() {
       return el.selectAll('.slice path')
         .filter(function(d) { return d.data.key === key; })
         .style('fill');
+    }
+  });
+
+  it("should display its metrics in a legend", function() {
+    var pie = sapphire.widgets.pie()
+      .key(function(d) { return d.key; });
+
+    expect(el.html()).to.be.empty;
+
+    datum.metrics[0].key = 'foo';
+    datum.metrics[1].key = 'bar';
+    datum.metrics[2].key = 'baz';
+
+    el.datum(datum)
+      .call(pie);
+
+    expect(el.selectAll('.legend .metric').size()).to.equal(3);
+
+    datum.metrics[0].key = 'foo';
+    datum.metrics[1].key = 'ham';
+    datum.metrics[2].key = 'baz';
+
+    el.datum(datum)
+      .call(pie);
+
+    expect(el.selectAll('.legend .metric').size()).to.equal(3);
+  });
+
+  it("should colour its legend swatches according to their metric keys", function() {
+    var pie = sapphire.widgets.pie()
+      .key(function(d) { return d.key; });
+
+    var colors = pie.colors();
+
+    datum.metrics[0].key = 'foo';
+    datum.metrics[1].key = 'bar';
+    datum.metrics[2].key = 'baz';
+
+    el.datum(datum)
+      .call(pie);
+
+    expect(bg('foo')).to.equal(colors('foo'));
+    expect(bg('bar')).to.equal(colors('bar'));
+    expect(bg('baz')).to.equal(colors('baz'));
+
+    datum.metrics[0].key = 'foo';
+    datum.metrics[1].key = 'ham';
+    datum.metrics[2].key = 'baz';
+
+    el.datum(datum)
+      .call(pie);
+
+    expect(bg('foo')).to.equal(colors('foo'));
+    expect(bg('ham')).to.equal(colors('ham'));
+    expect(bg('baz')).to.equal(colors('baz'));
+
+    function bg(key) {
+      var v = el.selectAll('.legend .metric .swatch')
+        .filter(function(d) { return d.key === key; })
+        .style('background-color');
+
+      return d3.rgb(v).toString();
+    }
+  });
+
+  it("should display its metric titles in a legend", function() {
+    var pie = sapphire.widgets.pie()
+      .key(function(d) { return d.key; });
+
+    datum.metrics[0].key = 'foo';
+    datum.metrics[1].key = 'bar';
+    datum.metrics[2].key = 'baz';
+
+    datum.metrics[0].title = 'Foo';
+    datum.metrics[1].title = 'Bar';
+    datum.metrics[2].title = 'Baz';
+
+    el.datum(datum)
+      .call(pie);
+
+    expect(title('foo')).to.equal('Foo');
+    expect(title('bar')).to.equal('Bar');
+    expect(title('baz')).to.equal('Baz');
+
+    datum.metrics[0].key = 'foo';
+    datum.metrics[1].key = 'ham';
+    datum.metrics[2].key = 'baz';
+
+    datum.metrics[0].title = 'Foo';
+    datum.metrics[1].title = 'Ham';
+    datum.metrics[2].title = 'Baz';
+
+    el.datum(datum)
+      .call(pie);
+
+    expect(title('foo')).to.equal('Foo');
+    expect(title('ham')).to.equal('Ham');
+    expect(title('baz')).to.equal('Baz');
+
+    function title(key) {
+      return el.selectAll('.legend .metric .title')
+        .filter(function(d) { return d.key === key; })
+        .text();
+    }
+  });
+
+  it("should display its metric percentages in a legend", function() {
+    var format = d3.format('.2%');
+
+    var pie = sapphire.widgets.pie()
+      .percentFormat(format)
+      .key(function(d) { return d.key; });
+
+    datum.metrics[0].key = 'foo';
+    datum.metrics[1].key = 'bar';
+    datum.metrics[2].key = 'baz';
+
+    var sum = 0;
+    sum += datum.metrics[0].value = 4000000;
+    sum += datum.metrics[1].value = 2000000;
+    sum += datum.metrics[2].value = 3000000;
+
+    el.datum(datum)
+      .call(pie);
+
+    expect(percent('foo')).to.equal(format(4000000 / sum));
+    expect(percent('bar')).to.equal(format(2000000 / sum));
+    expect(percent('baz')).to.equal(format(3000000 / sum));
+
+    datum.metrics[0].key = 'foo';
+    datum.metrics[1].key = 'ham';
+    datum.metrics[2].key = 'baz';
+
+    sum = 0;
+    sum += datum.metrics[0].value = 5000000;
+    sum += datum.metrics[1].value = 6000000;
+    sum += datum.metrics[2].value = 7000000;
+
+    el.datum(datum)
+      .call(pie);
+
+    expect(percent('foo')).to.equal(format(5000000 / sum));
+    expect(percent('ham')).to.equal(format(6000000 / sum));
+    expect(percent('baz')).to.equal(format(7000000 / sum));
+
+    function percent(key) {
+      return el.selectAll('.legend .metric .percent')
+        .filter(function(d) { return d.key === key; })
+        .text();
+    }
+  });
+
+  it("should display its metric values in a legend", function() {
+    var format = d3.format(',4s');
+
+    var pie = sapphire.widgets.pie()
+      .valueFormat(format)
+      .key(function(d) { return d.key; });
+
+    datum.metrics[0].key = 'foo';
+    datum.metrics[1].key = 'bar';
+    datum.metrics[2].key = 'baz';
+
+    datum.metrics[0].value = 4000000;
+    datum.metrics[1].value = 2000000;
+    datum.metrics[2].value = 3000000;
+
+    el.datum(datum)
+      .call(pie);
+
+    expect(value('foo')).to.equal(format(4000000));
+    expect(value('bar')).to.equal(format(2000000));
+    expect(value('baz')).to.equal(format(3000000));
+
+    datum.metrics[0].key = 'foo';
+    datum.metrics[1].key = 'ham';
+    datum.metrics[2].key = 'baz';
+
+    datum.metrics[0].value = 5000000;
+    datum.metrics[1].value = 6000000;
+    datum.metrics[2].value = 7000000;
+
+    el.datum(datum)
+      .call(pie);
+
+    expect(value('foo')).to.equal(format(5000000));
+    expect(value('ham')).to.equal(format(6000000));
+    expect(value('baz')).to.equal(format(7000000));
+
+    function value(key) {
+      return el.selectAll('.legend .metric .value')
+        .filter(function(d) { return d.key === key; })
+        .text();
     }
   });
 });

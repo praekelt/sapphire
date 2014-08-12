@@ -48,6 +48,12 @@ module.exports = require('./widget').extend()
   .set(d3.functor)
   .default(function(r) { return 0.35 * r; })
 
+  .prop('valueFormat')
+  .default(d3.format(',2s'))
+
+  .prop('percentFormat')
+  .default(d3.format('.0%'))
+
   .init(function() {
     this.colors(d3.scale.category10());
   })
@@ -77,6 +83,11 @@ module.exports = require('./widget').extend()
         value: self.value().call(node, d, i)
       };
     }
+
+    var sum = d3.sum(el.datum().metrics, function(d) { return d.value; });
+    el.datum().metrics.forEach(function(d) {
+        return d.percent = d.value / sum;
+    });
   })
 
   .enter(function(el) {
@@ -87,16 +98,22 @@ module.exports = require('./widget').extend()
 
     el.append('div')
       .attr('class', 'chart');
+
+    el.append('div')
+      .attr('class', 'legend');
   })
 
   .draw(function(el) {
     this.normalize(el);
-    el.style('height', el.style('min-height'));
 
     el.select('.widget .title')
       .text(function(d) { return d.title; });
 
+    el.select('.legend')
+      .call(legend(this));
+
     el.select('.chart')
+      .style('height', el.style('min-height'))
       .call(chart(this));
   });
 
@@ -151,5 +168,57 @@ var chart = require('../view').extend()
       .style('fill', function(d) { return d.data.color; });
 
     slice.exit()
+      .remove();
+  });
+
+
+var legend = require('../view').extend()
+  .prop('widget')
+
+  .init(function(widget) {
+    this.widget(widget);
+  })
+
+  .enter(function(el) {
+    el.append('table')
+      .attr('class', 'table');
+  })
+
+  .draw(function(el) {
+    var valueFormat = this.widget().valueFormat();
+    var percentFormat = this.widget().percentFormat();
+
+    var metric = el.select('.table').selectAll('.metric')
+      .data(function(d) { return d.metrics; },
+            function(d) { return d.key; });
+
+    var enterMetric = metric.enter().append('tr')
+      .attr('class', 'metric');
+
+    enterMetric.append('td')
+      .attr('class', 'swatch');
+
+    enterMetric.append('td')
+      .attr('class', 'title');
+
+    enterMetric.append('td')
+      .attr('class', 'percent');
+
+    enterMetric.append('td')
+      .attr('class', 'value');
+
+    metric.select('.swatch')
+      .style('background', function(d) { return d.color; });
+
+    metric.select('.title')
+      .text(function(d) { return d.title; });
+
+    metric.select('.percent')
+      .text(function(d) { return percentFormat(d.percent) });
+
+    metric.select('.value')
+      .text(function(d) { return valueFormat(d.value) });
+
+    metric.exit()
       .remove();
   });
