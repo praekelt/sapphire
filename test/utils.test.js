@@ -116,4 +116,22 @@ describe("sapphire.utils", function() {
       expect(box().innerHeight).to.equal(195);
     });
   });
+
+  describe(".px", function() {
+    it("should wrap number accessors to return pixel values", function() {
+      expect(sapphire.utils.px(123)()).to.equal('123px');
+      expect(sapphire.utils.px(function() { return 123; })()).to.equal('123px');
+    });
+
+    it("should maintain the arguments passed to the accessor", function(done) {
+      var ctx = {};
+
+      sapphire.utils.px(function(d, i) {
+        expect(this).to.equal(ctx);
+        expect(d).to.equal(1);
+        expect(i).to.equal(2);
+        done();
+      }).call(ctx, 1, 2);
+    });
+  });
 });

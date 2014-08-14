@@ -144,8 +144,8 @@ module.exports = require('./widget').extend()
       .calc();
 
     chart
-      .style('width', dims.width + 'px')
-      .style('height', dims.height + 'px');
+      .style('width', utils.px(dims.width))
+      .style('height', utils.px(dims.height));
 
     fx.range([0, dims.innerWidth]);
     fy.range([dims.innerHeight, 0]);
