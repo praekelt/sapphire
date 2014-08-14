@@ -1,3 +1,6 @@
+var utils = require('../utils');
+
+
 module.exports = require('../view').extend()
   .prop('standalone')
   .default(true)
@@ -20,10 +23,6 @@ module.exports = require('../view').extend()
     if (!this.standalone()) { return; }
     var self = this;
 
-    el.style('width', function(d, i) {
-        return self.width().call(this, d, i) + 'px';
-      })
-      .style('min-height', function(d, i) {
-        return self.height().call(this, d, i) + 'px';
-      });
+    el.style('width', utils.px(this.width()))
+      .style('min-height', utils.px(this.height()));
   });

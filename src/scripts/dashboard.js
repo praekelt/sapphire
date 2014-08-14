@@ -87,7 +87,7 @@ module.exports = require('./view').extend()
       .colspan(function(d) { return d.colspan; })
       .rowspan(function(d) { return d.rowspan; });
     
-    el.style('width', (grid.scale() * grid.numcols()) + 'px');
+    el.style('width', utils.px(grid.scale() * grid.numcols()));
 
     var widgets = el.select('.widgets')
       .datum(widgetData);
@@ -100,12 +100,12 @@ module.exports = require('./view').extend()
 
     widget
       .classed('widget', true)
-      .style('width', function(d) {
-        return grid.spanLength(d.colspan) + 'px';
-      })
-      .style('min-height', function(d) {
-        return grid.spanLength(d.rowspan) + 'px';
-      })
+      .style('width', utils.px(function(d) {
+        return grid.spanLength(d.colspan);
+      }))
+      .style('min-height', utils.px(function(d) {
+        return grid.spanLength(d.rowspan);
+      }))
       .each(function(d) {
         var widgetEl = d3.select(this)
           .datum(d.data)
@@ -121,10 +121,10 @@ module.exports = require('./view').extend()
     var gridEls = grid(widgets.datum());
 
     widget
-      .style('left', function(d, i) { return gridEls[i].x + 'px'; })
-      .style('top', function(d, i) { return gridEls[i].y + 'px'; })
-      .style('width', function(d, i) { return gridEls[i].width + 'px'; })
-      .style('height', function(d, i) { return gridEls[i].height + 'px'; });
+      .style('left', utils.px(function(d, i) { return gridEls[i].x; }))
+      .style('top', utils.px(function(d, i) { return gridEls[i].y; }))
+      .style('width', utils.px(function(d, i) { return gridEls[i].width; }))
+      .style('height', utils.px(function(d, i) { return gridEls[i].height; }))
 
     widget.exit().remove();
 
