@@ -41,6 +41,15 @@ utils.date = function(t) {
 };
 
 
+utils.px = function(fn) {
+  fn = d3.functor(fn);
+
+  return function(d, i) {
+    return fn.call(this, d, i) + 'px';
+  };
+};
+
+
 utils.box = strain()
   .prop('width')
   .default(0)
