@@ -141,7 +141,9 @@ var chart = require('../view').extend()
       .attr('width', dims.width)
       .attr('height', dims.height)
       .select('g')
-        .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
+        .attr('transform', utils.translate(
+          (dims.width / 2) - radius,
+          (dims.height / 2) - radius));
 
     var arc = d3.svg.arc()
       .innerRadius(this.widget().innerRadius()(radius))

@@ -10,16 +10,21 @@ describe("sapphire.widgets.pie", function() {
     .prop('height')
     .prop('innerRadius')
     .prop('data')
-    .invoke(function(key) {
+
+    .meth(function radius() {
       var dims = sapphire.utils.box()
         .margin(this.margin())
         .width(this.width())
         .height(this.height())
         .calc();
 
+      return Math.min(dims.innerWidth, dims.innerHeight) / 2;
+    })
+
+    .invoke(function(key) {
       var arc = d3.svg.arc()
         .innerRadius(this.innerRadius())
-        .outerRadius(Math.min(dims.innerWidth, dims.innerHeight) / 2);
+        .outerRadius(this.radius());
 
       var layout = d3.layout.pie()
         .value(function(d) { return d.value; });
@@ -78,6 +83,66 @@ describe("sapphire.widgets.pie", function() {
     title = el.selectAll('.widget > .title');
     expect(title.size()).to.equal(1);
     expect(title.text()).to.equal(datum.title);
+  });
+
+  it("should center its chart", function() {
+    var pie = sapphire.widgets.pie()
+      .width(300)
+      .height(400)
+      .margin({
+        top: 20,
+        left: 20,
+        right: 20,
+        bottom: 20
+      });
+
+    var arc = helpers.arc()
+      .width(300)
+      .height(400)
+      .margin({
+        top: 20,
+        left: 20,
+        right: 20,
+        bottom: 20
+      });
+
+    el.datum(datum)
+      .call(pie);
+
+    var translate = sapphire.utils.translate(
+      (300 / 2) - arc.radius(),
+      (400 / 2) - arc.radius());
+
+    expect(el.select('svg g').attr('transform')).to.equal(translate);
+
+    pie
+      .width(100)
+      .height(200)
+      .margin({
+        top: 10,
+        left: 10,
+        right: 10,
+        bottom: 10
+      });
+
+    arc
+      .width(100)
+      .height(200)
+      .margin({
+        top: 10,
+        left: 10,
+        right: 10,
+        bottom: 10
+      });
+
+    el.datum(datum)
+      .call(pie);
+
+    translate = sapphire.utils.translate(
+      (100 / 2) - arc.radius(),
+      (200 / 2) - arc.radius());
+
+    expect(el.select('svg g').attr('transform')).to.equal(translate);
   });
 
   it("should show its slices", function() {
