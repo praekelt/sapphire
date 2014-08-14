@@ -100,7 +100,7 @@ module.exports = _dereq_('./view').extend()
       .colspan(function(d) { return d.colspan; })
       .rowspan(function(d) { return d.rowspan; });
     
-    el.style('width', (grid.scale() * grid.numcols()) + 'px');
+    el.style('width', utils.px(grid.scale() * grid.numcols()));
 
     var widgets = el.select('.widgets')
       .datum(widgetData);
@@ -113,12 +113,12 @@ module.exports = _dereq_('./view').extend()
 
     widget
       .classed('widget', true)
-      .style('width', function(d) {
-        return grid.spanLength(d.colspan) + 'px';
-      })
-      .style('min-height', function(d) {
-        return grid.spanLength(d.rowspan) + 'px';
-      })
+      .style('width', utils.px(function(d) {
+        return grid.spanLength(d.colspan);
+      }))
+      .style('min-height', utils.px(function(d) {
+        return grid.spanLength(d.rowspan);
+      }))
       .each(function(d) {
         var widgetEl = d3.select(this)
           .datum(d.data)
@@ -134,10 +134,10 @@ module.exports = _dereq_('./view').extend()
     var gridEls = grid(widgets.datum());
 
     widget
-      .style('left', function(d, i) { return gridEls[i].x + 'px'; })
-      .style('top', function(d, i) { return gridEls[i].y + 'px'; })
-      .style('width', function(d, i) { return gridEls[i].width + 'px'; })
-      .style('height', function(d, i) { return gridEls[i].height + 'px'; });
+      .style('left', utils.px(function(d, i) { return gridEls[i].x; }))
+      .style('top', utils.px(function(d, i) { return gridEls[i].y; }))
+      .style('width', utils.px(function(d, i) { return gridEls[i].width; }))
+      .style('height', utils.px(function(d, i) { return gridEls[i].height; }));
 
     widget.exit().remove();
 
@@ -377,6 +377,15 @@ utils.date = function(t) {
 };
 
 
+utils.px = function(fn) {
+  fn = d3.functor(fn);
+
+  return function(d, i) {
+    return fn.call(this, d, i) + 'px';
+  };
+};
+
+
 utils.box = strain()
   .prop('width')
   .default(0)
@@ -595,8 +604,8 @@ module.exports = _dereq_('./widget').extend()
       .calc();
 
     chart
-      .style('width', dims.width + 'px')
-      .style('height', dims.height + 'px');
+      .style('width', utils.px(dims.width))
+      .style('height', utils.px(dims.height));
 
     fx.range([0, dims.innerWidth]);
     fy.range([dims.innerHeight, 0]);
@@ -1457,6 +1466,9 @@ var legend = _dereq_('../view').extend()
   });
 
 },{"../utils":4,"../view":5,"./widget":11}],11:[function(_dereq_,module,exports){
+var utils = _dereq_('../utils');
+
+
 module.exports = _dereq_('../view').extend()
   .prop('standalone')
   .default(true)
@@ -1477,17 +1489,12 @@ module.exports = _dereq_('../view').extend()
 
   .draw(function(el) {
     if (!this.standalone()) { return; }
-    var self = this;
 
-    el.style('width', function(d, i) {
-        return self.width().call(this, d, i) + 'px';
-      })
-      .style('min-height', function(d, i) {
-        return self.height().call(this, d, i) + 'px';
-      });
+    el.style('width', utils.px(this.width()))
+      .style('min-height', utils.px(this.height()));
   });
 
-},{"../view":5}]},{},[3])
+},{"../utils":4,"../view":5}]},{},[3])
 (3)
 });
 }));
