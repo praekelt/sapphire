@@ -1,4 +1,4 @@
-describe.only("sapphire.widgets.pie", function() {
+describe("sapphire.widgets.pie", function() {
   var el;
   var datum;
   
