@@ -124,7 +124,7 @@ module.exports = require('./view').extend()
       .style('left', utils.px(function(d, i) { return gridEls[i].x; }))
       .style('top', utils.px(function(d, i) { return gridEls[i].y; }))
       .style('width', utils.px(function(d, i) { return gridEls[i].width; }))
-      .style('height', utils.px(function(d, i) { return gridEls[i].height; }))
+      .style('height', utils.px(function(d, i) { return gridEls[i].height; }));
 
     widget.exit().remove();
 

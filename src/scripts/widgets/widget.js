@@ -21,7 +21,6 @@ module.exports = require('../view').extend()
 
   .draw(function(el) {
     if (!this.standalone()) { return; }
-    var self = this;
 
     el.style('width', utils.px(this.width()))
       .style('min-height', utils.px(this.height()));
