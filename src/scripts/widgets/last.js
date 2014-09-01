@@ -24,7 +24,7 @@ module.exports = require('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.y; })
 
-  .prop('valueFormat')
+  .prop('yFormat')
   .default(d3.format(',2s'))
 
   .prop('diffFormat')
@@ -111,7 +111,7 @@ module.exports = require('./widget').extend()
           ? self.none()
           : d.y;
       })
-      .text(this.valueFormat());
+      .text(this.yFormat());
 
     values.select('.sparkline')
       .call(this.sparkline());

@@ -427,7 +427,7 @@ describe("sapphire.widgets.pie", function() {
     var format = d3.format(',4s');
 
     var pie = sapphire.widgets.pie()
-      .valueFormat(format)
+      .yFormat(format)
       .key(function(d) { return d.key; });
 
     datum.metrics[0].key = 'foo';

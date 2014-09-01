@@ -147,7 +147,7 @@ value preceding it.
       .call(last);
 
 
-.. function:: last.valueFormat([fn])
+.. function:: last.yFormat([fn])
 
   Property for the formatting function to use when displaying the last ``y`` value.
   Defaults to ``d3.format(',2s')``.
@@ -155,7 +155,7 @@ value preceding it.
   .. code-block:: javascript
 
     var last = sapphire.widgets.last()
-      .valueFormat(d3.format('.2s'));
+      .yFormat(d3.format('.2s'));
 
 
 .. function:: last.diffFormat([fn])
