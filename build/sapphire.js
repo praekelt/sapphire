@@ -84,9 +84,48 @@ module.exports = _dereq_('./view').extend()
         .attr('class', 'widgets');
   })
 
-  .draw(function(el) {
+  .meth(function normalize(el) {
     var self = this;
     var node = el.node();
+
+    el.datum(function(d, i) {
+      return {
+        title: self.title()
+          .call(node, d, i),
+        widgets: self.widgets()
+          .call(node, d, i)
+          .map(widgetDatum)
+      };
+    });
+
+    function widgetDatum(d, i) {
+      var typename = self.type().call(node, d, i);
+      var type = self.types().get(typename);
+
+      if (!type) {
+        throw new Error("Unrecognised dashboard widget type '" + typename + "'");
+      }
+
+      var colspan = self.colspan().call(node, d, i);
+      colspan = utils.ensure(colspan, type.colspan());
+      var rowspan = self.rowspan().call(node, d, i);
+      rowspan = utils.ensure(rowspan, type.colspan());
+
+      return {
+        data: d,
+        type: type,
+        colspan: colspan,
+        rowspan: rowspan,
+        key: self.key().call(node, d, i),
+        col: self.col().call(node, d, i),
+        row: self.row().call(node, d, i)
+      };
+    }
+  })
+
+  .draw(function(el) {
+    this.normalize(el);
+    var widgetData = el.datum().widgets;
 
     this.types()
       .forEach(function(name, type) { type.standalone(false); });
@@ -102,11 +141,8 @@ module.exports = _dereq_('./view').extend()
     
     el.style('width', utils.px(grid.scale() * grid.numcols()));
 
-    var widgets = el.select('.widgets')
-      .datum(widgetData);
-
-    var widget = widgets.selectAll('.widget')
-      .data(function(d) { return d; }, widgetKey);
+    var widget = el.select('.widgets').selectAll('.widget')
+      .data(widgetData, widgetKey);
 
     widget.enter().append('div')
       .attr('data-key', widgetKey);
@@ -131,7 +167,7 @@ module.exports = _dereq_('./view').extend()
         d.rowspan = Math.max(d.rowspan, grid.lengthSpan(height));
       });
 
-    var gridEls = grid(widgets.datum());
+    var gridEls = grid(widgetData);
 
     widget
       .style('left', utils.px(function(d, i) { return gridEls[i].x; }))
@@ -140,33 +176,6 @@ module.exports = _dereq_('./view').extend()
       .style('height', utils.px(function(d, i) { return gridEls[i].height; }));
 
     widget.exit().remove();
-
-    function widgetData(d, i) {
-      return self.widgets()
-        .call(node, d, i)
-        .map(widgetDatum);
-    }
-
-    function widgetDatum(d, i) {
-      var typename = self.type().call(node, d, i);
-      var type = self.types().get(typename);
-
-      if (!type) {
-        throw new Error("Unrecognised dashboard widget type '" + typename + "'");
-      }
-
-      var result = {};
-      result.data = d;
-      result.type = type;
-      result.key = self.key().call(node, d, i);
-      result.col = self.col().call(node, d, i);
-      result.row = self.row().call(node, d, i);
-      result.colspan = self.colspan().call(node, d, i);
-      result.colspan = utils.ensure(result.colspan, type.colspan());
-      result.rowspan = self.rowspan().call(node, d, i);
-      result.rowspan = utils.ensure(result.rowspan, type.rowspan());
-      return result;
-    }
 
     function widgetKey(d) {
       return d.key;
