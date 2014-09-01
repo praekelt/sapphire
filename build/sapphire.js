@@ -708,13 +708,13 @@ module.exports = _dereq_('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.y; })
 
-  .prop('valueFormat')
+  .prop('yFormat')
   .default(d3.format(',2s'))
 
   .prop('diffFormat')
   .default(d3.format('+,2s'))
 
-  .prop('timeFormat')
+  .prop('xFormat')
   .default(d3.time.format('%-d %b %-H:%M'))
 
   .prop('none')
@@ -795,7 +795,7 @@ module.exports = _dereq_('./widget').extend()
           ? self.none()
           : d.y;
       })
-      .text(this.valueFormat());
+      .text(this.yFormat());
 
     values.select('.sparkline')
       .call(this.sparkline());
@@ -841,7 +841,7 @@ var summary = _dereq_('../view').extend()
 
         return [d[0].x, d[1].x]
           .map(utils.date)
-          .map(widget.timeFormat());
+          .map(widget.xFormat());
       })
       .text(function(d) {
         return [' from', d[0], 'to', d[1]].join(' ');
@@ -980,7 +980,7 @@ module.exports = _dereq_('./widget').extend()
   .prop('yTicks')
   .default(5)
 
-  .prop('valueFormat')
+  .prop('yFormat')
   .default(d3.format(',2s'))
 
   .prop('none')
@@ -1210,7 +1210,7 @@ var legend = _dereq_('../view').extend()
 
   .draw(function(el) {
     var none = this.widget().none();
-    var valueFormat = this.widget().valueFormat();
+    var yFormat = this.widget().yFormat();
 
     var metric = el.select('.table').selectAll('.metric')
       .data(function(d) { return d; },
@@ -1240,8 +1240,8 @@ var legend = _dereq_('../view').extend()
         d = d.values[d.values.length - 1];
 
         return d
-          ? valueFormat(d.y)
-          : valueFormat(none);
+          ? yFormat(d.y)
+          : yFormat(none);
       });
 
     metric.exit()
@@ -1299,7 +1299,7 @@ module.exports = _dereq_('./widget').extend()
   .set(d3.functor)
   .default(function(r) { return 0.35 * r; })
 
-  .prop('valueFormat')
+  .prop('yFormat')
   .default(d3.format(',2s'))
 
   .prop('percentFormat')
@@ -1436,7 +1436,7 @@ var legend = _dereq_('../view').extend()
   })
 
   .draw(function(el) {
-    var valueFormat = this.widget().valueFormat();
+    var yFormat = this.widget().yFormat();
     var percentFormat = this.widget().percentFormat();
 
     var metric = el.select('.table').selectAll('.metric')
@@ -1468,7 +1468,7 @@ var legend = _dereq_('../view').extend()
       .text(function(d) { return percentFormat(d.percent); });
 
     metric.select('.value')
-      .text(function(d) { return valueFormat(d.value); });
+      .text(function(d) { return yFormat(d.value); });
 
     metric.exit()
       .remove();
