@@ -170,7 +170,7 @@ value preceding it.
       .diffFormat(d3.format('.2s'));
 
 
-.. function:: last.timeFormat([fn])
+.. function:: last.xFormat([fn])
 
   Property for the formatting function to use when displaying the last ``x``
   value and the ``x`` value preceding it. Defaults to
@@ -179,7 +179,7 @@ value preceding it.
   .. code-block:: javascript
 
     var last = sapphire.widgets.last()
-      .timeFormat(d3.time.format('%-d %b %-H:%M'));
+      .xFormat(d3.time.format('%-d %b %-H:%M'));
 
 
 .. function:: last.none([v])
