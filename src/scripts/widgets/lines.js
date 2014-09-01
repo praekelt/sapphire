@@ -48,7 +48,7 @@ module.exports = require('./widget').extend()
   .prop('yTicks')
   .default(5)
 
-  .prop('valueFormat')
+  .prop('yFormat')
   .default(d3.format(',2s'))
 
   .prop('none')
@@ -278,7 +278,7 @@ var legend = require('../view').extend()
 
   .draw(function(el) {
     var none = this.widget().none();
-    var valueFormat = this.widget().valueFormat();
+    var yFormat = this.widget().yFormat();
 
     var metric = el.select('.table').selectAll('.metric')
       .data(function(d) { return d; },
@@ -308,8 +308,8 @@ var legend = require('../view').extend()
         d = d.values[d.values.length - 1];
 
         return d
-          ? valueFormat(d.y)
-          : valueFormat(none);
+          ? yFormat(d.y)
+          : yFormat(none);
       });
 
     metric.exit()

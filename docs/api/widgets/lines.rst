@@ -300,7 +300,7 @@ displaying each metric's title, colour and last ``y`` value.
       .call(lines);
 
 
-.. function:: lines.valueFormat([fn])
+.. function:: lines.yFormat([fn])
 
   Property for the formatting function to use when displaying the last ``y``
   value. Defaults to ``d3.format(',2s')``.
@@ -308,7 +308,7 @@ displaying each metric's title, colour and last ``y`` value.
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .valueFormat(d3.format('.2s'));
+      .yFormat(d3.format('.2s'));
 
 
 .. function:: lines.xFormat([fn])
