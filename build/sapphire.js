@@ -437,7 +437,12 @@ module.exports = strain()
   .enter(function() {})
 
   .meth(function draw(el) {
+    var datum;
     el = sapphire.utils.ensureEl(el);
+
+    if (el.node()) {
+      datum = el.datum();
+    }
 
     if (el.node() && !el.node().hasChildNodes()) {
       this.enter.apply(this, arguments);
@@ -448,7 +453,11 @@ module.exports = strain()
       parent._draw_.apply(this, arguments);
     }
 
-    return this._draw_.apply(this, arguments);
+    this._draw_.apply(this, arguments);
+
+    if (typeof datum != 'undefined') {
+      el.datum(datum);
+    }
   })
 
   .meth(function enter(el) {
