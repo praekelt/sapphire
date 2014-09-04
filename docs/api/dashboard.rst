@@ -19,6 +19,7 @@ Component for drawing a dashboard of widgets laid out in a grid.
 
     d3.select('#dashboard')
       .datum({
+        title: 'A Small Dashboard',
         widgets: [{
           title: 'A last widget',
           type: 'last',
@@ -93,10 +94,12 @@ Component for drawing a dashboard of widgets laid out in a grid.
     var dashboard = sapphire.dashboard()
       .type(function(d) { return d.typename; });
 
-    dashboard.types().set('dummy', sapphire.view.extend()
-      .draw(function() {
-        this.el().text(function(d) { return d.text; });
-      }));
+    var dummy = sapphire.widgets.widget.extend()
+      .draw(function(el) {
+        el.text(function(d) { return d.text; });
+      });
+
+    dashboard.types().set('dummy', dummy());
 
     d3.select('#dashboard')
       .datum({
@@ -139,8 +142,10 @@ Component for drawing a dashboard of widgets laid out in a grid.
   .. code-block:: javascript
 
     var dashboard = sapphire.dashboard();
+    var dummy = sapphire.widgets.widget.extend();
+
     dashboard.types().get('last');
-    dashboard.types().set('dummy', sapphire.view.extend().new());
+    dashboard.types().set('dummy', dummy());
 
 
 .. function:: dashboard.col([accessor])

@@ -25,7 +25,7 @@ Or as a function that, given the current datum (``d``), index (``i``) and elemen
     .title(function(d, i) { return d.title; });
 
 
-Unless otherwise specified, the element used as the ``this`` context corresponds to the the DOM node(s) in the selection that the component was called on:
+Unless otherwise specified, the element used as the ``this`` context corresponds to the DOM node(s) in the selection that the component was called on:
 
 
 .. code-block:: javascript
@@ -58,6 +58,7 @@ using :func:`dashboard.types`.
 
   d3.select('#dashboard')
     .datum(({
+      title: 'A Small Dashboard',
       widgets: [{
         type: 'last',
         title: 'Configured last',
@@ -79,8 +80,8 @@ using :func:`dashboard.types`.
   var dashboard = sapphire.dashboard();
 
   var dummy = sapphire.widgets.widget.extend()
-    .draw(function() {
-      this.el().text(function(d) { return d.text; });
+    .draw(function(el) {
+      el.text(function(d) { return d.text; });
     }))
 
   dashboard.types().set('dummy', dummy());
