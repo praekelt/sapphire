@@ -109,7 +109,7 @@ module.exports = _dereq_('./view').extend()
       var colspan = self.colspan().call(node, d, i);
       colspan = utils.ensure(colspan, type.colspan());
       var rowspan = self.rowspan().call(node, d, i);
-      rowspan = utils.ensure(rowspan, type.colspan());
+      rowspan = utils.ensure(rowspan, type.rowspan());
 
       return {
         data: d,
