@@ -2,6 +2,12 @@ describe("sapphire.dashboard", function() {
   var el;
   var datum;
 
+  function key(k) {
+    return function() {
+      return sapphire.utils.meta(this).key === k;
+    };
+  }
+
   var dummy = sapphire.widgets.widget.extend()
     .prop('text')
     .set(d3.functor)
@@ -69,10 +75,11 @@ describe("sapphire.dashboard", function() {
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.selectAll('.widget').size()).to.equal(3);
-    expect(el.select('.widget[data-key=a]').text()).to.equal('foo');
-    expect(el.select('.widget[data-key=b]').text()).to.equal('bar');
-    expect(el.select('.widget[data-key=c]').text()).to.equal('baz');
+    var widget = el.selectAll('.widget');
+    expect(widget.size()).to.equal(3);
+    expect(widget.filter(key('a')).text()).to.equal('foo');
+    expect(widget.filter(key('b')).text()).to.equal('bar');
+    expect(widget.filter(key('c')).text()).to.equal('baz');
 
     datum.widgets = [{
       key: 'a',
@@ -87,9 +94,10 @@ describe("sapphire.dashboard", function() {
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.selectAll('.widget').size()).to.equal(2);
-    expect(el.select('.widget[data-key=a]').text()).to.equal('ham');
-    expect(el.select('.widget[data-key=d]').text()).to.equal('quux');
+    widget = el.selectAll('.widget');
+    expect(widget.size()).to.equal(2);
+    expect(widget.filter(key('a')).text()).to.equal('ham');
+    expect(widget.filter(key('d')).text()).to.equal('quux');
   });
 
   it("should use each widget type's colspan as a fallback colspan", function() {
@@ -113,7 +121,7 @@ describe("sapphire.dashboard", function() {
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.select('.widget[data-key="0"]').style('width')).to.equal('380px');
+    expect(el.select('.widget').style('width')).to.equal('380px');
   });
 
   it("should use each widget type's rowspan as a fallback rowspan", function() {
@@ -136,7 +144,7 @@ describe("sapphire.dashboard", function() {
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.select('.widget[data-key="0"]').style('height')).to.equal('380px');
+    expect(el.select('.widget').style('height')).to.equal('380px');
   });
 
   it("should use each widget's colspan as the minimum width", function() {
@@ -164,14 +172,14 @@ describe("sapphire.dashboard", function() {
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.select('.widget[data-key="0"]').style('width')).to.equal('380px');
+    expect(el.select('.widget').style('width')).to.equal('380px');
 
     datum.widgets[0].width = 50;
 
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.select('.widget[data-key="0"]').style('width')).to.equal('180px');
+    expect(el.select('.widget').style('width')).to.equal('180px');
   });
 
   it("should use each widget's rowspan as the minimum height", function() {
@@ -199,14 +207,14 @@ describe("sapphire.dashboard", function() {
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.select('.widget[data-key="0"]').style('height')).to.equal('380px');
+    expect(el.select('.widget').style('height')).to.equal('380px');
 
     datum.widgets[0].height = 50;
 
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.select('.widget[data-key="0"]').style('height')).to.equal('180px');
+    expect(el.select('.widget').style('height')).to.equal('180px');
   });
 
   it("should position its widgets in a grid", function() {
@@ -239,15 +247,16 @@ describe("sapphire.dashboard", function() {
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.select('.widget[data-key=a]').style('left')).to.equal('10px');
-    expect(el.select('.widget[data-key=a]').style('top')).to.equal('610px');
-    expect(el.select('.widget[data-key=a]').style('width')).to.equal('180px');
-    expect(el.select('.widget[data-key=a]').style('height')).to.equal('280px');
+    var widget = el.selectAll('.widget');
+    expect(widget.filter(key('a')).style('left')).to.equal('10px');
+    expect(widget.filter(key('a')).style('top')).to.equal('610px');
+    expect(widget.filter(key('a')).style('width')).to.equal('180px');
+    expect(widget.filter(key('a')).style('height')).to.equal('280px');
 
-    expect(el.select('.widget[data-key=b]').style('left')).to.equal('10px');
-    expect(el.select('.widget[data-key=b]').style('top')).to.equal('1210px');
-    expect(el.select('.widget[data-key=b]').style('width')).to.equal('280px');
-    expect(el.select('.widget[data-key=b]').style('height')).to.equal('180px');
+    expect(widget.filter(key('b')).style('left')).to.equal('10px');
+    expect(widget.filter(key('b')).style('top')).to.equal('1210px');
+    expect(widget.filter(key('b')).style('width')).to.equal('280px');
+    expect(widget.filter(key('b')).style('height')).to.equal('180px');
 
     datum.widgets = [{
       key: 'a',
@@ -278,20 +287,21 @@ describe("sapphire.dashboard", function() {
     el.datum(datum)
       .call(dashboard);
 
-    expect(el.select('.widget[data-key=a]').style('left')).to.equal('210px');
-    expect(el.select('.widget[data-key=a]').style('top')).to.equal('910px');
-    expect(el.select('.widget[data-key=a]').style('width')).to.equal('180px');
-    expect(el.select('.widget[data-key=a]').style('height')).to.equal('280px');
+    widget = el.selectAll('.widget');
+    expect(widget.filter(key('a')).style('left')).to.equal('210px');
+    expect(widget.filter(key('a')).style('top')).to.equal('910px');
+    expect(widget.filter(key('a')).style('width')).to.equal('180px');
+    expect(widget.filter(key('a')).style('height')).to.equal('280px');
 
-    expect(el.select('.widget[data-key=b]').style('left')).to.equal('10px');
-    expect(el.select('.widget[data-key=b]').style('top')).to.equal('510px');
-    expect(el.select('.widget[data-key=b]').style('width')).to.equal('380px');
-    expect(el.select('.widget[data-key=b]').style('height')).to.equal('180px');
+    expect(widget.filter(key('b')).style('left')).to.equal('10px');
+    expect(widget.filter(key('b')).style('top')).to.equal('510px');
+    expect(widget.filter(key('b')).style('width')).to.equal('380px');
+    expect(widget.filter(key('b')).style('height')).to.equal('180px');
 
-    expect(el.select('.widget[data-key=c]').style('left')).to.equal('10px');
-    expect(el.select('.widget[data-key=c]').style('top')).to.equal('1410px');
-    expect(el.select('.widget[data-key=c]').style('width')).to.equal('180px');
-    expect(el.select('.widget[data-key=c]').style('height')).to.equal('380px');
+    expect(widget.filter(key('c')).style('left')).to.equal('10px');
+    expect(widget.filter(key('c')).style('top')).to.equal('1410px');
+    expect(widget.filter(key('c')).style('width')).to.equal('180px');
+    expect(widget.filter(key('c')).style('height')).to.equal('380px');
   });
 
   it("should set its widgets dimensions before drawing them", function(done) {

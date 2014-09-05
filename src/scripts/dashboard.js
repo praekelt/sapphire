@@ -129,10 +129,10 @@ module.exports = require('./view').extend()
     el.style('width', utils.px(grid.scale() * grid.numcols()));
 
     var widget = el.select('.widgets').selectAll('.widget')
-      .data(widgetData, widgetKey);
+      .data(widgetData, function(d) { return d.key; });
 
-    widget.enter().append('div')
-      .attr('data-key', widgetKey);
+    widget.enter().append('div');
+    utils.meta(widget, function(d) { return d; });
 
     widget
       .classed('widget', true)
@@ -163,8 +163,4 @@ module.exports = require('./view').extend()
       .style('height', utils.px(function(d, i) { return gridEls[i].height; }));
 
     widget.exit().remove();
-
-    function widgetKey(d) {
-      return d.key;
-    }
   });
