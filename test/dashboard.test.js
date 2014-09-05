@@ -14,7 +14,9 @@ describe("sapphire.dashboard", function() {
     .default(function(d) { return d.text; })
 
     .draw(function(el) {
-      el.text(this.text());
+      el.text(this.text())
+        .style('width', sapphire.utils.px(this.width()))
+        .style('height', sapphire.utils.px(this.height()));
     });
 
   beforeEach(function() {
@@ -103,7 +105,11 @@ describe("sapphire.dashboard", function() {
   it("should use each widget type's colspan as a fallback colspan", function() {
     var dummy = sapphire.widgets.widget.extend()
       .prop('colspan')
-      .default(4);
+      .default(4)
+
+      .draw(function(el) {
+        el.style('width', sapphire.utils.px(this.width()));
+      });
 
     var dashboard = sapphire.dashboard()
       .numcols(4)
@@ -127,7 +133,11 @@ describe("sapphire.dashboard", function() {
   it("should use each widget type's rowspan as a fallback rowspan", function() {
     var dummy = sapphire.widgets.widget.extend()
       .prop('rowspan')
-      .default(4);
+      .default(4)
+
+      .draw(function(el) {
+        el.style('height', sapphire.utils.px(this.height()));
+      });
 
     var dashboard = sapphire.dashboard()
       .padding(10);
@@ -145,76 +155,6 @@ describe("sapphire.dashboard", function() {
       .call(dashboard);
 
     expect(el.select('.widget').style('height')).to.equal('380px');
-  });
-
-  it("should use each widget's colspan as the minimum width", function() {
-    var dummy = sapphire.widgets.widget.extend()
-      .draw(function(el) {
-          el.style('width', function(d) { return d.width + 'px'; });
-      });
-
-    var dashboard = sapphire.dashboard()
-      .numcols(4)
-      .padding(10)
-      .scale(100);
-
-    dashboard.types().set('dummy', dummy());
-
-    datum.widgets = [{
-      type: 'dummy',
-      text: 'foo',
-      col: 3,
-      row: 6,
-      colspan: 2,
-      width: 350
-    }];
-
-    el.datum(datum)
-      .call(dashboard);
-
-    expect(el.select('.widget').style('width')).to.equal('380px');
-
-    datum.widgets[0].width = 50;
-
-    el.datum(datum)
-      .call(dashboard);
-
-    expect(el.select('.widget').style('width')).to.equal('180px');
-  });
-
-  it("should use each widget's rowspan as the minimum height", function() {
-    var dummy = sapphire.widgets.widget.extend()
-      .draw(function(el) {
-          el.style('height',  function(d) { return d.height + 'px'; });
-      });
-
-    var dashboard = sapphire.dashboard()
-      .numcols(4)
-      .padding(10)
-      .scale(100);
-
-    dashboard.types().set('dummy', dummy());
-
-    datum.widgets = [{
-      type: 'dummy',
-      text: 'foo',
-      col: 3,
-      row: 6,
-      rowspan: 2,
-      height: 350
-    }];
-
-    el.datum(datum)
-      .call(dashboard);
-
-    expect(el.select('.widget').style('height')).to.equal('380px');
-
-    datum.widgets[0].height = 50;
-
-    el.datum(datum)
-      .call(dashboard);
-
-    expect(el.select('.widget').style('height')).to.equal('180px');
   });
 
   it("should position its widgets in a grid", function() {
@@ -302,31 +242,6 @@ describe("sapphire.dashboard", function() {
     expect(widget.filter(key('c')).style('top')).to.equal('1410px');
     expect(widget.filter(key('c')).style('width')).to.equal('180px');
     expect(widget.filter(key('c')).style('height')).to.equal('380px');
-  });
-
-  it("should set its widgets dimensions before drawing them", function(done) {
-    var dummy = sapphire.widgets.widget.extend()
-      .draw(function(el) {
-        expect(el.style('width')).to.equal('180px');
-        expect(el.style('height')).to.equal('280px');
-        done();
-      });
-
-    var dashboard = sapphire.dashboard()
-      .padding(10);
-
-    dashboard.types().set('dummy', dummy());
-
-    datum.widgets = [{
-      key: 'a',
-      type: 'dummy',
-      text: 'foo',
-      colspan: 2,
-      rowspan: 3
-    }];
-
-    el.datum(datum)
-      .call(dashboard);
   });
 
   it("should throw an error for unrecognised widget types", function() {

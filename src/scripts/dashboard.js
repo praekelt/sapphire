@@ -115,7 +115,10 @@ module.exports = require('./view').extend()
     var widgetData = el.datum().widgets;
 
     this.types()
-      .forEach(function(name, type) { type.standalone(false); });
+      .forEach(function(name, type) {
+        type.width(widgetWidth);
+        type.height(widgetHeight);
+      });
 
     var grid = layout()
       .scale(this.scale())
@@ -136,12 +139,6 @@ module.exports = require('./view').extend()
 
     widget
       .classed('widget', true)
-      .style('width', utils.px(function(d) {
-        return grid.spanLength(d.colspan);
-      }))
-      .style('min-height', utils.px(function(d) {
-        return grid.spanLength(d.rowspan);
-      }))
       .each(function(d) {
         var widgetEl = d3.select(this)
           .datum(d.data)
@@ -158,9 +155,15 @@ module.exports = require('./view').extend()
 
     widget
       .style('left', utils.px(function(d, i) { return gridEls[i].x; }))
-      .style('top', utils.px(function(d, i) { return gridEls[i].y; }))
-      .style('width', utils.px(function(d, i) { return gridEls[i].width; }))
-      .style('height', utils.px(function(d, i) { return gridEls[i].height; }));
+      .style('top', utils.px(function(d, i) { return gridEls[i].y; }));
 
     widget.exit().remove();
+
+    function widgetWidth() {
+      return grid.spanLength(utils.meta(this).colspan);
+    }
+
+    function widgetHeight() {
+      return grid.spanLength(utils.meta(this).rowspan);
+    }
   });

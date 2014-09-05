@@ -1,27 +1,14 @@
-var utils = require('../utils');
-
-
 module.exports = require('../view').extend()
-  .prop('standalone')
-  .default(true)
-
   .prop('colspan')
-  .default(1)
+  .default(0)
 
   .prop('rowspan')
-  .default(1)
+  .default(0)
 
   .prop('width')
   .set(d3.functor)
-  .default(100)
+  .default(0)
 
   .prop('height')
   .set(d3.functor)
-  .default(100)
-
-  .draw(function(el) {
-    if (!this.standalone()) { return; }
-
-    el.style('width', utils.px(this.width()))
-      .style('min-height', utils.px(this.height()));
-  });
+  .default(0);
