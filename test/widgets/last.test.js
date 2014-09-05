@@ -67,6 +67,14 @@ describe("sapphire.widgets.last", function() {
       return line(data);
     });
 
+  it("should set its width", function() {
+    var last = sapphire.widgets.last()
+      .width(800);
+
+    last(el.datum(datum));
+    expect(el.style('width')).to.equal('800px');
+  });
+
   it("should show the last value", function() {
     var last = sapphire.widgets.last();
     expect(el.html()).to.be.empty;
