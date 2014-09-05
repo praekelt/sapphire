@@ -91,7 +91,9 @@ module.exports = require('./widget').extend()
       return {
         x: self.x().call(node, d, i),
         y: self.y().call(node, d, i),
-        dx: self.dx().call(node, d, i)
+        dx: self.dx().call(node, d, i),
+        width: self.width().call(node, d, i),
+        height: self.height().call(node, d, i)
       };
     }
   })
@@ -121,7 +123,8 @@ module.exports = require('./widget').extend()
     var self = this;
     this.normalize(el);
 
-    el.style('height', el.style('min-height'));
+    el.style('width', utils.px(this.width()))
+      .style('height', utils.px(this.height()));
 
     el.select('.widget .title')
       .text(function(d) { return d.title; });
