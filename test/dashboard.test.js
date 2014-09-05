@@ -244,6 +244,46 @@ describe("sapphire.dashboard", function() {
     expect(widget.filter(key('c')).style('height')).to.equal('380px');
   });
 
+  it("should respect its widgets' dimensions when positioning them", function() {
+    var dummy = sapphire.widgets.widget.extend()
+      .draw(function(el) {
+        el.style('width', '100px')
+          .style('height', '200px');
+      });
+
+    var dashboard = sapphire.dashboard()
+      .numcols(4)
+      .padding(10)
+      .scale(100)
+      .key(function(d) { return d.key; });
+
+    dashboard.types().set('dummy', dummy());
+
+    datum.widgets = [{
+      key: 'a',
+      type: 'dummy',
+      colspan: 1,
+      rowspan: 1
+    }, {
+      key: 'b',
+      type: 'dummy',
+      colspan: 1,
+      rowspan: 1
+    }, {
+      key: 'c',
+      type: 'dummy',
+      colspan: 1,
+      rowspan: 1
+    }];
+
+    el.datum(datum)
+      .call(dashboard);
+
+    var widget = el.selectAll('.widget');
+    expect(widget.filter(key('b')).style('left')).to.equal('210px');
+    expect(widget.filter(key('c')).style('top')).to.equal('310px');
+  });
+
   it("should throw an error for unrecognised widget types", function() {
     var dashboard = sapphire.dashboard();
     dashboard.types().set('dummy', dummy());
