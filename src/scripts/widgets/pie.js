@@ -8,12 +8,6 @@ module.exports = require('./widget').extend()
   .prop('colspan')
   .default(4)
 
-  .prop('rowspan')
-  .default(4)
-
-  .prop('height')
-  .default(200)
-
   .prop('colors')
 
   .prop('title')
@@ -104,6 +98,8 @@ module.exports = require('./widget').extend()
   .draw(function(el) {
     this.normalize(el);
 
+    el.style('width', utils.px(this.width()));
+
     el.select('.widget .title')
       .text(function(d) { return d.title; });
 
@@ -111,7 +107,6 @@ module.exports = require('./widget').extend()
       .call(legend(this));
 
     el.select('.chart')
-      .style('height', el.style('min-height'))
       .call(chart(this));
   });
 
@@ -129,10 +124,12 @@ var chart = require('../view').extend()
   })
 
   .draw(function(el) {
+    var width = parseInt(el.style('width'));
+
     var dims = utils.box()
       .margin(this.widget().margin())
-      .width(parseInt(el.style('width')))
-      .height(parseInt(el.style('height')))
+      .width(width)
+      .height(width)
       .calc();
 
     var radius = Math.min(dims.innerWidth, dims.innerHeight) / 2;

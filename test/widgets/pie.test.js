@@ -7,7 +7,6 @@ describe("sapphire.widgets.pie", function() {
   helpers.arc = strain()
     .prop('margin')
     .prop('width')
-    .prop('height')
     .prop('innerRadius')
     .prop('data')
 
@@ -15,7 +14,7 @@ describe("sapphire.widgets.pie", function() {
       var dims = sapphire.utils.box()
         .margin(this.margin())
         .width(this.width())
-        .height(this.height())
+        .height(this.width())
         .calc();
 
       return Math.min(dims.innerWidth, dims.innerHeight) / 2;
@@ -61,6 +60,14 @@ describe("sapphire.widgets.pie", function() {
   afterEach(function() {
     el.remove();
   });
+  
+  it("should set its width", function() {
+    var pie = sapphire.widgets.pie()
+      .width(800);
+
+    pie(el.datum(datum));
+    expect(el.style('width')).to.equal('800px');
+  });
 
   it("should show its title", function() {
     var pie = sapphire.widgets.pie();
@@ -88,9 +95,8 @@ describe("sapphire.widgets.pie", function() {
   it("should center its chart", function() {
     var pie = sapphire.widgets.pie()
       .width(300)
-      .height(400)
       .margin({
-        top: 20,
+        top: 40,
         left: 20,
         right: 20,
         bottom: 20
@@ -98,9 +104,8 @@ describe("sapphire.widgets.pie", function() {
 
     var arc = helpers.arc()
       .width(300)
-      .height(400)
       .margin({
-        top: 20,
+        top: 40,
         left: 20,
         right: 20,
         bottom: 20
@@ -109,15 +114,12 @@ describe("sapphire.widgets.pie", function() {
     el.datum(datum)
       .call(pie);
 
-    var translate = sapphire.utils.translate(
-      (300 / 2) - arc.radius(),
-      (400 / 2) - arc.radius());
-
+    var center = (300 / 2) - arc.radius();
+    var translate = sapphire.utils.translate(center, center);
     expect(el.select('svg g').attr('transform')).to.equal(translate);
 
     pie
       .width(100)
-      .height(200)
       .margin({
         top: 10,
         left: 10,
@@ -127,7 +129,6 @@ describe("sapphire.widgets.pie", function() {
 
     arc
       .width(100)
-      .height(200)
       .margin({
         top: 10,
         left: 10,
@@ -138,10 +139,8 @@ describe("sapphire.widgets.pie", function() {
     el.datum(datum)
       .call(pie);
 
-    translate = sapphire.utils.translate(
-      (100 / 2) - arc.radius(),
-      (200 / 2) - arc.radius());
-
+    center = (100 / 2) - arc.radius();
+    translate = sapphire.utils.translate(center, center);
     expect(el.select('svg g').attr('transform')).to.equal(translate);
   });
 
@@ -175,7 +174,6 @@ describe("sapphire.widgets.pie", function() {
   it("should size its slices according to their values", function() {
     var pie = sapphire.widgets.pie()
       .width(300)
-      .height(400)
       .margin({
         top: 20,
         left: 20,
@@ -193,7 +191,6 @@ describe("sapphire.widgets.pie", function() {
         bottom: 20
       })
       .width(300)
-      .height(400)
       .innerRadius(15);
 
     expect(el.html()).to.be.empty;
