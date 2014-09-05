@@ -107,13 +107,36 @@ describe("sapphire.dashboard", function() {
       type: 'dummy',
       text: 'foo',
       col: 3,
-      row: 6,
+      row: 6
     }];
 
     el.datum(datum)
       .call(dashboard);
 
     expect(el.select('.widget[data-key="0"]').style('width')).to.equal('380px');
+  });
+
+  it("should use each widget type's rowspan as a fallback rowspan", function() {
+    var dummy = sapphire.widgets.widget.extend()
+      .prop('rowspan')
+      .default(4);
+
+    var dashboard = sapphire.dashboard()
+      .padding(10);
+
+    dashboard.types().set('dummy', dummy());
+
+    datum.widgets = [{
+      type: 'dummy',
+      text: 'foo',
+      col: 3,
+      row: 6
+    }];
+
+    el.datum(datum)
+      .call(dashboard);
+
+    expect(el.select('.widget[data-key="0"]').style('height')).to.equal('380px');
   });
 
   it("should use each widget's colspan as the minimum width", function() {
