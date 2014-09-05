@@ -102,6 +102,14 @@ describe("sapphire.widgets.lines", function() {
       return line(data);
     });
 
+  it("should set its width", function() {
+    var lines = sapphire.widgets.lines()
+      .width(800);
+
+    lines(el.datum(datum));
+    expect(el.style('width')).to.equal('800px');
+  });
+
   it("should show its title", function() {
     var lines = sapphire.widgets.lines();
     expect(el.html()).to.be.empty;
