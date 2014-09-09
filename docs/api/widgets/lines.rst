@@ -406,4 +406,4 @@ displaying each metric's title, colour and last ``y`` value.
 
 
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements
-.. _d3.time.scale https://github.com/mbostock/d3/wiki/Time-Scales#scale
+.. _d3.time.scale: https://github.com/mbostock/d3/wiki/Time-Scales#scale

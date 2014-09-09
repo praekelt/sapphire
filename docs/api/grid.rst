@@ -1,7 +1,7 @@
 ``sapphire.grid``
 =================
 
-The layout used by :ref:`sapphire.dashboard` to position widgets.
+The layout used by :ref:`sapphire_dashboard` to position widgets.
 
 .. function:: sapphire.grid()
 
@@ -19,10 +19,10 @@ The layout used by :ref:`sapphire.dashboard` to position widgets.
     - ``col``: The column index for where the item starts
     - ``rowspan``: The number of rows that the item spans
     - ``colspan``: The number of columns that the item spans
-    - ``x``: The *x* position of the item in the grid calculated using ``col`` and
-     :func:`grid.scale`
-    - ``y``: The *y* position of the item in the grid calculated using ``row`` and
-     :func:`grid.scale`
+    - ``x``: The *x* position of the item in the grid calculated using
+      ``col`` and :func:`grid.scale`
+    - ``y``: The *y* position of the item in the grid calculated using
+      ``row`` and :func:`grid.scale`
     - ``width``: The width of the item in the grid calculated using
       ``colspan``, :func:`grid.scale` and :func:`grid.padding`
     - ``height``: The height of the item in the grid calculated using
