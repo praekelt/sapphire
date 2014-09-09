@@ -29,6 +29,16 @@ describe("sapphire.widgets.bars", function() {
     el.remove();
   });
 
+  it("should set its dimensions", function() {
+    var bars = sapphire.widgets.bars()
+      .width(200)
+      .height(300);
+
+    bars(el.datum(datum));
+    expect(el.style('width')).to.equal('200px');
+    expect(el.style('height')).to.equal('300px');
+  });
+
   it("should show its title", function() {
     var bars = sapphire.widgets.bars();
     expect(el.html()).to.be.empty;

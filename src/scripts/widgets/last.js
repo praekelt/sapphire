@@ -75,6 +75,8 @@ module.exports = require('./widget').extend()
     var self = this;
     var node = el.node();
 
+    el.style('width', utils.px(this.width()));
+
     el.select('.title')
       .text(function(d, i) {
         return self.title().call(node, d, i);

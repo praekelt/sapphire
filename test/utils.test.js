@@ -1,4 +1,12 @@
 describe("sapphire.utils", function() {
+  var el;
+
+  beforeEach(function() {
+    el = d3.select('body')
+      .append('div')
+      .attr('class', 'tmp');
+  });
+
   describe(".access", function() {
     it("should access the property if possible", function() {
       expect(sapphire.utils.access({foo: 3}, 'foo')).to.equal(3);
@@ -132,6 +140,20 @@ describe("sapphire.utils", function() {
         expect(i).to.equal(2);
         done();
       }).call(ctx, 1, 2);
+    });
+  });
+
+  describe(".meta", function() {
+    it("should support metadata getting or setting using a selection", function() {
+      var d = {};
+      sapphire.utils.meta(el, d);
+      expect(sapphire.utils.meta(el)).to.equal(d);
+    });
+
+    it("should support metadata getting or setting using a selector", function() {
+      var d = {};
+      sapphire.utils.meta('.tmp', d);
+      expect(sapphire.utils.meta('.tmp')).to.equal(d);
     });
   });
 });

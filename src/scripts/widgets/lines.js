@@ -121,6 +121,8 @@ module.exports = require('./widget').extend()
   .draw(function(el) {
     this.normalize(el);
 
+    el.style('width', utils.px(this.width()));
+
     el.select('.widget .title')
       .text(function(d) { return d.title; });
 
