@@ -39,9 +39,23 @@ displaying each metric's title, colour, value and percentage.
     var pie = sapphire.widgets.pie();
 
     d3.select('#pie')
-      .datum({
-      })
-      .call(pie);
+    .datum({
+      title: 'Corge, Grault and Garply',
+      metrics: [{
+        key: 'Corge',
+        title: 'Corge',
+        value: 89251
+      }, {
+        key: 'Grault',
+        title: 'Grault',
+        value: 21479
+      }, {
+        key: 'Garply',
+        title: 'Garply',
+        value: 76432
+      }]
+    })
+    .call(pie);
 
 
 .. function:: pie.title([accessor])
