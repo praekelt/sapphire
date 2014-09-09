@@ -195,9 +195,8 @@ value preceding it.
 
 .. function:: last.width([v])
 
-  Property for the :ref:`accessor <accessors>` to use to access the widget's
-  width. Used if the widget is standalone (see :func:`last.standalone`).
-  Defaults to ``400``.
+  Property for the :ref:`accessor <accessors>` to use to access the
+  widget's width. Used if the widget is standalone.  Defaults to ``400``.
 
   .. code-block:: javascript
 
@@ -208,25 +207,12 @@ value preceding it.
 .. function:: last.colspan([v])
 
   Property for the widget's default column span in a dashboard. Used if the
-  widget is not standalone (see :func:`last.standalone` and
-  :func:`dashboard.colspan`). Defaults to ``4``.
+  widget is not standalone (see :func:`dashboard.colspan`). Defaults to ``4``.
 
   .. code-block:: javascript
 
     var last = sapphire.widgets.last()
       .colspan(4);
-
-
-.. function:: last.standalone([v])
-
-  Property for setting whether this is a standalone widget, or a widget
-  contained inside a dashboard. Automatically set to ``false`` when used with
-  :func:`sapphire.dashboard`. Defaults to ``true``.
-
-  .. code-block:: javascript
-
-    var last = sapphire.widgets.last()
-      .standalone(true);
 
 
 .. function:: last.sparklineLimit([v])
