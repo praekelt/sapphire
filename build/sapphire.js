@@ -128,7 +128,10 @@ module.exports = _dereq_('./view').extend()
     var widgetData = el.datum().widgets;
 
     this.types()
-      .forEach(function(name, type) { type.standalone(false); });
+      .forEach(function(name, type) {
+        type.width(widgetWidth);
+        type.height(widgetHeight);
+      });
 
     var grid = layout()
       .scale(this.scale())
@@ -142,19 +145,13 @@ module.exports = _dereq_('./view').extend()
     el.style('width', utils.px(grid.scale() * grid.numcols()));
 
     var widget = el.select('.widgets').selectAll('.widget')
-      .data(widgetData, widgetKey);
+      .data(widgetData, function(d) { return d.key; });
 
-    widget.enter().append('div')
-      .attr('data-key', widgetKey);
+    widget.enter().append('div');
+    utils.meta(widget, function(d) { return d; });
 
     widget
       .classed('widget', true)
-      .style('width', utils.px(function(d) {
-        return grid.spanLength(d.colspan);
-      }))
-      .style('min-height', utils.px(function(d) {
-        return grid.spanLength(d.rowspan);
-      }))
       .each(function(d) {
         var widgetEl = d3.select(this)
           .datum(d.data)
@@ -171,14 +168,16 @@ module.exports = _dereq_('./view').extend()
 
     widget
       .style('left', utils.px(function(d, i) { return gridEls[i].x; }))
-      .style('top', utils.px(function(d, i) { return gridEls[i].y; }))
-      .style('width', utils.px(function(d, i) { return gridEls[i].width; }))
-      .style('height', utils.px(function(d, i) { return gridEls[i].height; }));
+      .style('top', utils.px(function(d, i) { return gridEls[i].y; }));
 
     widget.exit().remove();
 
-    function widgetKey(d) {
-      return d.key;
+    function widgetWidth() {
+      return grid.spanLength(utils.meta(this).colspan);
+    }
+
+    function widgetHeight() {
+      return grid.spanLength(utils.meta(this).rowspan);
     }
   });
 
@@ -395,6 +394,15 @@ utils.px = function(fn) {
 };
 
 
+utils.meta = function(el, fn) {
+  el = utils.ensureEl(el);
+
+  return arguments.length > 1
+    ? el.property('__sapphire_meta__', fn)
+    : el.property('__sapphire_meta__');
+};
+
+
 utils.box = strain()
   .prop('width')
   .default(0)
@@ -569,7 +577,9 @@ module.exports = _dereq_('./widget').extend()
       return {
         x: self.x().call(node, d, i),
         y: self.y().call(node, d, i),
-        dx: self.dx().call(node, d, i)
+        dx: self.dx().call(node, d, i),
+        width: self.width().call(node, d, i),
+        height: self.height().call(node, d, i)
       };
     }
   })
@@ -599,7 +609,8 @@ module.exports = _dereq_('./widget').extend()
     var self = this;
     this.normalize(el);
 
-    el.style('height', el.style('min-height'));
+    el.style('width', utils.px(this.width()))
+      .style('height', utils.px(this.height()));
 
     el.select('.widget .title')
       .text(function(d) { return d.title; });
@@ -767,6 +778,8 @@ module.exports = _dereq_('./widget').extend()
   .draw(function(el) {
     var self = this;
     var node = el.node();
+
+    el.style('width', utils.px(this.width()));
 
     el.select('.title')
       .text(function(d, i) {
@@ -1062,6 +1075,8 @@ module.exports = _dereq_('./widget').extend()
   .draw(function(el) {
     this.normalize(el);
 
+    el.style('width', utils.px(this.width()));
+
     el.select('.widget .title')
       .text(function(d) { return d.title; });
 
@@ -1268,12 +1283,6 @@ module.exports = _dereq_('./widget').extend()
   .prop('colspan')
   .default(4)
 
-  .prop('rowspan')
-  .default(4)
-
-  .prop('height')
-  .default(200)
-
   .prop('colors')
 
   .prop('title')
@@ -1364,6 +1373,8 @@ module.exports = _dereq_('./widget').extend()
   .draw(function(el) {
     this.normalize(el);
 
+    el.style('width', utils.px(this.width()));
+
     el.select('.widget .title')
       .text(function(d) { return d.title; });
 
@@ -1371,7 +1382,6 @@ module.exports = _dereq_('./widget').extend()
       .call(legend(this));
 
     el.select('.chart')
-      .style('height', el.style('min-height'))
       .call(chart(this));
   });
 
@@ -1389,10 +1399,12 @@ var chart = _dereq_('../view').extend()
   })
 
   .draw(function(el) {
+    var width = parseInt(el.style('width'));
+
     var dims = utils.box()
       .margin(this.widget().margin())
-      .width(parseInt(el.style('width')))
-      .height(parseInt(el.style('height')))
+      .width(width)
+      .height(width)
       .calc();
 
     var radius = Math.min(dims.innerWidth, dims.innerHeight) / 2;
@@ -1484,35 +1496,22 @@ var legend = _dereq_('../view').extend()
   });
 
 },{"../utils":4,"../view":5,"./widget":11}],11:[function(_dereq_,module,exports){
-var utils = _dereq_('../utils');
-
-
 module.exports = _dereq_('../view').extend()
-  .prop('standalone')
-  .default(true)
-
   .prop('colspan')
-  .default(1)
+  .default(0)
 
   .prop('rowspan')
-  .default(1)
+  .default(0)
 
   .prop('width')
   .set(d3.functor)
-  .default(100)
+  .default(0)
 
   .prop('height')
   .set(d3.functor)
-  .default(100)
+  .default(0);
 
-  .draw(function(el) {
-    if (!this.standalone()) { return; }
-
-    el.style('width', utils.px(this.width()))
-      .style('min-height', utils.px(this.height()));
-  });
-
-},{"../utils":4,"../view":5}]},{},[3])
+},{"../view":5}]},{},[3])
 (3)
 });
 }));
