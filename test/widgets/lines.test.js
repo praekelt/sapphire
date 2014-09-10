@@ -452,7 +452,7 @@ describe("sapphire.widgets.lines", function() {
 
     lines
       .xTicks(3)
-      .xFormat(d3.time.format('%b'));
+      .xTickFormat(d3.time.format('%b'));
 
     expect(el.html()).to.be.empty;
 
@@ -520,7 +520,7 @@ describe("sapphire.widgets.lines", function() {
 
     lines
       .yTicks(3)
-      .yFormat(d3.format('s'));
+      .yTickFormat(d3.format('s'));
 
     expect(el.html()).to.be.empty;
 
