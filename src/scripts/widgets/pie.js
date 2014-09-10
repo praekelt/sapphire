@@ -42,7 +42,7 @@ module.exports = require('./widget').extend()
   .set(d3.functor)
   .default(function(r) { return 0.35 * r; })
 
-  .prop('yFormat')
+  .prop('valueFormat')
   .default(d3.format(',2s'))
 
   .prop('percentFormat')
@@ -182,7 +182,7 @@ var legend = require('../view').extend()
   })
 
   .draw(function(el) {
-    var yFormat = this.widget().yFormat();
+    var valueFormat = this.widget().valueFormat();
     var percentFormat = this.widget().percentFormat();
 
     var metric = el.select('.table').selectAll('.metric')
@@ -214,7 +214,7 @@ var legend = require('../view').extend()
       .text(function(d) { return percentFormat(d.percent); });
 
     metric.select('.value')
-      .text(function(d) { return yFormat(d.value); });
+      .text(function(d) { return valueFormat(d.value); });
 
     metric.exit()
       .remove();

@@ -403,5 +403,25 @@ sapphire.docData = {
         "y": 83213
       }
     ]
-  }
+  },
+  "pie": {
+    "title": "Corge, Grault and Garply",
+    "metrics": [
+      {
+      "key": "Corge",
+      "title": "Corge",
+      "value": 89251
+      },
+      {
+        "key": "Grault",
+        "title": "Grault",
+        "value": 21479
+      },
+      {
+        "key": "Garply",
+        "title": "Garply",
+        "value": 76432
+      }
+    ]
+  } 
 };
