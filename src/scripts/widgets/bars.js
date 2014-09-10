@@ -141,8 +141,8 @@ module.exports = require('./widget').extend()
       .domain([0, d3.max(chart.datum(), function(d) { return d.y; })]);
 
     var dims = utils.box()
-      .width(parseInt(chart.style('width')))
-      .height(parseInt(chart.style('height')))
+      .width(utils.innerWidth(chart))
+      .height(utils.innerHeight(chart))
       .margin(this.margin())
       .calc();
 
@@ -157,7 +157,9 @@ module.exports = require('./widget').extend()
       .attr('width', dims.width)
       .attr('height', dims.height)
       .select('g')
-        .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
+        .attr('transform', utils.translate(
+          dims.margin.left,
+          dims.margin.top));
 
     var bar = svg.select('.bars')
       .selectAll('.bar')
