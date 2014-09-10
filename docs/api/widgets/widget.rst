@@ -25,9 +25,8 @@ as `view.extend` and :func:`view.draw` are also available on widget types.
 
 .. function:: widget.width([v])
 
-  Property for the :ref:`accessor <accessors>` to use to access the widget's
-  width. Used if the widget is standalone (see :func:`widget.standalone`).
-  Defaults to ``100``.
+  Property for the :ref:`accessor <accessors>` to use to access the
+  widget's width. Used if the widget is standalone. Defaults to ``100``.
 
   .. code-block:: javascript
 
@@ -38,8 +37,8 @@ as `view.extend` and :func:`view.draw` are also available on widget types.
 .. function:: widget.colspan([v])
 
   Property for the widget's default column span in a dashboard. Used if the
-  widget is not standalone (see :func:`widget.standalone` and
-  :func:`dashboard.colspan`). Defaults to ``1``.
+  widget is not standalone (see :func:`dashboard.colspan`).
+  Defaults to ``1``.
 
   Note that widgets may exceed this width, depending on the behaviour of the
   widget type.
@@ -52,8 +51,8 @@ as `view.extend` and :func:`view.draw` are also available on widget types.
 
 .. function:: widget.height([v])
 
-  Property for the :ref:`accessor <accessors>` the widget's height. Used if the
-  widget is standalone (see :func:`widget.standalone`). Defaults to ``100``.
+  Property for the :ref:`accessor <accessors>` the widget's height. Used
+  if the widget is standalone.  Defaults to ``100``.
 
   Note that widgets may exceed this height, depending on the behaviour of the
   widget type. For example, :func:`sapphire.widgets.lines` has a dynamic height
@@ -67,26 +66,14 @@ as `view.extend` and :func:`view.draw` are also available on widget types.
 
 .. function:: widget.rowspan([v])
 
-  Property for the widget's default row span in a dashboard. Used if the widget
-  is not standalone (see :func:`widget.standalone` and
-  :func:`dashboard.rowspan`). Defaults to ``1``.
+  Property for the widget's default row span in a dashboard. Used if the
+  widget is not standalone (see :func:`dashboard.rowspan`).
+  Defaults to ``1``.
 
   .. code-block:: javascript
 
     var widget = sapphire.widget()
       .rowspan(1);
-
-
-.. function:: widget.standalone([v])
-
-  Property for setting whether this is a standalone widget, or a widget
-  contained inside a dashboard. Automatically set to ``false`` when used with
-  :func:`sapphire.dashboard`. Defaults to ``true``.
-
-  .. code-block:: javascript
-
-    var widget = sapphire.widget()
-      .standalone(true);
 
 
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements
