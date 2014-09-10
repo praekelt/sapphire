@@ -172,7 +172,7 @@ var chart = require('../view').extend()
   .draw(function(el) {
     var dims = utils.box()
       .margin(this.margin())
-      .width(parseInt(el.style('width')))
+      .width(utils.innerWidth(el))
       .height(this.height())
       .calc();
 

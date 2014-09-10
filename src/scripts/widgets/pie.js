@@ -124,7 +124,7 @@ var chart = require('../view').extend()
   })
 
   .draw(function(el) {
-    var width = parseInt(el.style('width'));
+    var width = utils.innerWidth(el);
 
     var dims = utils.box()
       .margin(this.widget().margin())
