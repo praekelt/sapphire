@@ -87,3 +87,23 @@ utils.box = strain()
   .invoke(function() {
     return this.calc();
   });
+
+
+utils.innerWidth = function(el) {
+  return utils.measure(el, 'width')
+       - utils.measure(el, 'padding-left')
+       - utils.measure(el, 'padding-right');
+};
+
+
+utils.innerHeight = function(el) {
+  return utils.measure(el, 'height')
+       - utils.measure(el, 'padding-top')
+       - utils.measure(el, 'padding-bottom');
+};
+
+
+utils.measure = function(el, name) {
+  el = utils.ensureEl(el);
+  return parseInt(el.style(name));
+};
