@@ -1,3 +1,5 @@
+.. _sapphire_dashboard:
+
 ``sapphire.dashboard``
 ======================
 

@@ -384,9 +384,8 @@ displaying each metric's title, colour and last ``y`` value.
 
 .. function:: lines.width([v])
 
-  Property for the :ref:`accessor <accessors>` to use to access the widget's
-  width. Used if the widget is standalone (see :func:`lines.standalone`).
-  Defaults to ``400``.
+  Property for the :ref:`accessor <accessors>` to use to access the
+  widget's width. Used if the widget is standalone.  Defaults to ``400``.
 
   .. code-block:: javascript
 
@@ -396,9 +395,9 @@ displaying each metric's title, colour and last ``y`` value.
 
 .. function:: lines.colspan([v])
 
-  Property for the widget's default column span in a dashboard. Used if the
-  widget is not standalone (see :func:`lines.standalone` and
-  :func:`dashboard.colspan`). Defaults to ``4``.
+  Property for the widget's default column span in a dashboard. Used if
+  the widget is not standalone (see :func:`dashboard.colspan`).
+  Defaults to ``4``.
 
   .. code-block:: javascript
 
@@ -406,17 +405,5 @@ displaying each metric's title, colour and last ``y`` value.
       .colspan(4);
 
 
-.. function:: lines.standalone([v])
-
-  Property for setting whether this is a standalone widget, or a widget
-  contained inside a dashboard. Automatically set to ``false`` when used with
-  :func:`sapphire.dashboard`. Defaults to ``true``.
-
-  .. code-block:: javascript
-
-    var lines = sapphire.widgets.lines()
-      .standalone(true);
-
-
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements
-.. _d3.time.scale https://github.com/mbostock/d3/wiki/Time-Scales#scale
+.. _d3.time.scale: https://github.com/mbostock/d3/wiki/Time-Scales#scale

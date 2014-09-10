@@ -237,9 +237,8 @@ each bar corresponds to a time interval.
 
 .. function:: bars.width([v])
 
-  Property for the :ref:`accessor <accessors>` to use to access the widget's
-  width. Used if the widget is standalone (see :func:`bars.standalone`).
-  Defaults to ``400``.
+  Property for the :ref:`accessor <accessors>` to use to access the
+  widget's width. Used if the widget is standalone.  Defaults to ``400``.
 
   .. code-block:: javascript
 
@@ -249,9 +248,9 @@ each bar corresponds to a time interval.
 
 .. function:: bars.colspan([v])
 
-  Property for the widget's default column span in a dashboard. Used if the
-  widget is not standalone (see :func:`bars.standalone` and
-  :func:`dashboard.colspan`). Defaults to ``4``.
+  Property for the widget's default column span in a dashboard. Used if
+  the widget is not standalone (see and :func:`dashboard.colspan`).
+  Defaults to ``4``.
 
   .. code-block:: javascript
 
@@ -261,9 +260,8 @@ each bar corresponds to a time interval.
 
 .. function:: bars.height([v])
 
-  Property for the :ref:`accessor <accessors>` to use to access the widget's
-  height. Used if the widget is standalone (see :func:`bars.standalone`).
-  Defaults to ``200``.
+  Property for the :ref:`accessor <accessors>` to use to access the
+  widget's height. Used if the widget is standalone.  Defaults to ``200``.
 
   .. code-block:: javascript
 
@@ -274,8 +272,7 @@ each bar corresponds to a time interval.
 .. function:: bars.rowspan([v])
 
   Property for the widget's default row span in a dashboard. Used if the
-  widget is not standalone (see :func:`bars.standalone` and
-  :func:`dashboard.rowspan`). Defaults to ``2``.
+  widget is not standalone (:func:`dashboard.rowspan`). Defaults to ``2``.
 
   .. code-block:: javascript
 
@@ -283,17 +280,5 @@ each bar corresponds to a time interval.
       .rowspan(2);
 
 
-.. function:: bars.standalone([v])
-
-  Property for setting whether this is a standalone widget, or a widget
-  contained inside a dashboard. Automatically set to ``false`` when used with
-  :func:`sapphire.dashboard`. Defaults to ``true``.
-
-  .. code-block:: javascript
-
-    var bars = sapphire.widgets.bars()
-      .standalone(true);
-
-
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements
-.. _d3.time.scale https://github.com/mbostock/d3/wiki/Time-Scales#scale
+.. _d3.time.scale: https://github.com/mbostock/d3/wiki/Time-Scales#scale

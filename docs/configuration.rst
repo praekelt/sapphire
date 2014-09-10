@@ -29,6 +29,7 @@ Unless otherwise specified, the element used as the ``this`` context corresponds
 
 
 .. code-block:: javascript
+
   var el = d3.select('#dashboard');
 
   var dashboard = sapphire.dashboard()
