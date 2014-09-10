@@ -302,8 +302,8 @@ displaying each metric's title, colour and last ``y`` value.
 
 .. function:: lines.yFormat([fn])
 
-  Property for the formatting function to use when displaying the last ``y``
-  value. Defaults to ``d3.format(',2s')``.
+  Property for the formatting function to use when displaying the last
+  ``y`` value. Defaults to ``d3.format(',2s')``.
 
   .. code-block:: javascript
 
@@ -311,10 +311,10 @@ displaying each metric's title, colour and last ``y`` value.
       .yFormat(d3.format('.2s'));
 
 
-.. function:: lines.xFormat([fn])
+.. function:: lines.xTickFormat([fn])
 
-  Property for the formatting function to use when displaying the tick values
-  on the line chart's ``x`` axis. Defaults to ``null``.
+  Property for the formatting function to use when displaying the tick
+  values on the line chart's ``x`` axis. Defaults to ``null``.
 
   :func:`sapphire.widgets.lines` uses d3.time.scale_ to generate its time
   scale, so when :func:`lines.xFormat` is ``null``, the built-in d3 tick
@@ -337,10 +337,10 @@ displaying each metric's title, colour and last ``y`` value.
       .xTicks(10);
 
 
-.. function:: lines.yFormat([fn])
+.. function:: lines.yTickFormat([fn])
 
-  Property for the formatting function to use when displaying the tick values
-  on the line chart's ``y`` axis. Defaults to ``d3.format('.2s')``.
+  Property for the formatting function to use when displaying the tick
+  values on the line chart's ``y`` axis. Defaults to ``d3.format('.2s')``.
 
   .. code-block:: javascript
 

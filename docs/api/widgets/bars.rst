@@ -175,10 +175,10 @@ each bar corresponds to a time interval.
       .call(bars);
 
 
-.. function:: bars.xFormat([fn])
+.. function:: bars.xTickFormat([fn])
 
-  Property for the formatting function to use when displaying the tick values
-  on the line chart's ``x`` axis. Defaults to ``null``.
+  Property for the formatting function to use when displaying the tick
+  values on the line chart's ``x`` axis. Defaults to ``null``.
 
   :func:`sapphire.widgets.bars` uses d3.time.scale_ to generate its time
   scale, so when :func:`bars.xFormat` is ``null``, the built-in d3 tick
@@ -201,10 +201,10 @@ each bar corresponds to a time interval.
       .xTicks(10);
 
 
-.. function:: bars.yFormat([fn])
+.. function:: bars.yTickFormat([fn])
 
-  Property for the formatting function to use when displaying the tick values
-  on the line chart's ``y`` axis. Defaults to ``d3.format('.2s')``.
+  Property for the formatting function to use when displaying the tick
+  values on the line chart's ``y`` axis. Defaults to ``d3.format('.2s')``.
 
   .. code-block:: javascript
 

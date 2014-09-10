@@ -36,20 +36,20 @@ module.exports = require('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.y; })
 
-  .prop('xFormat')
+  .prop('xTickFormat')
   .default(null)
 
   .prop('xTicks')
   .default(8)
 
   .prop('yFormat')
-  .default(d3.format('.2s'))
+  .default(d3.format(',2s'))
 
   .prop('yTicks')
   .default(5)
 
-  .prop('yFormat')
-  .default(d3.format(',2s'))
+  .prop('yTickFormat')
+  .default(d3.format('.2s'))
 
   .prop('none')
   .default(0)
@@ -246,7 +246,7 @@ var chart = require('../view').extend()
       .scale(fx)
       .tickPadding(8)
       .ticks(this.widget().xTicks())
-      .tickFormat(this.widget().xFormat())
+      .tickFormat(this.widget().xTickFormat())
       .tickSize(-dims.innerHeight);
 
     svg.select('.x.axis')
@@ -258,7 +258,7 @@ var chart = require('../view').extend()
       .scale(fy)
       .tickPadding(8)
       .ticks(this.widget().yTicks())
-      .tickFormat(this.widget().yFormat())
+      .tickFormat(this.widget().yTickFormat())
       .tickSize(-dims.innerWidth);
     
     svg.select('.y.axis')
