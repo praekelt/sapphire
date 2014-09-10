@@ -20,7 +20,7 @@ module.exports = require('./widget').extend()
   .prop('margin')
   .default({
     top: 10,
-    left: 35,
+    left: 38,
     right: 15,
     bottom: 45
   })
