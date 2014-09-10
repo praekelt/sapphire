@@ -45,13 +45,13 @@ module.exports = require('./widget').extend()
   .set(d3.functor)
   .default(null)
 
-  .prop('xFormat')
+  .prop('xTickFormat')
   .default(null)
 
   .prop('xTicks')
   .default(8)
 
-  .prop('yFormat')
+  .prop('yTickFormat')
   .default(d3.format('.2s'))
 
   .prop('yTicks')
@@ -190,7 +190,7 @@ module.exports = require('./widget').extend()
     var axis = d3.svg.axis()
       .scale(fx)
       .ticks(this.xTicks())
-      .tickFormat(this.xFormat());
+      .tickFormat(this.xTickFormat());
 
     svg.select('.x.axis')
       .attr('transform', utils.translate(0, dims.innerHeight))
@@ -202,7 +202,7 @@ module.exports = require('./widget').extend()
       .tickPadding(8)
       .tickSize(-dims.innerWidth)
       .ticks(this.yTicks())
-      .tickFormat(this.yFormat());
+      .tickFormat(this.yTickFormat());
     
     svg.select('.y.axis')
       .call(axis);

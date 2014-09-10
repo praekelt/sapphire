@@ -339,7 +339,7 @@ describe("sapphire.widgets.bars", function() {
   it("should show its x axis", function() {
     var bars = sapphire.widgets.bars()
       .xTicks(3)
-      .xFormat(d3.time.format('%b'));
+      .xTickFormat(d3.time.format('%b'));
 
     expect(el.html()).to.be.empty;
 
@@ -383,7 +383,7 @@ describe("sapphire.widgets.bars", function() {
   it("should show its y axis", function() {
     var bars = sapphire.widgets.bars()
       .yTicks(3)
-      .yFormat(d3.format('s'));
+      .yTickFormat(d3.format('s'));
 
     expect(el.html()).to.be.empty;
 
