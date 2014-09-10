@@ -531,13 +531,13 @@ module.exports = _dereq_('./widget').extend()
   .set(d3.functor)
   .default(null)
 
-  .prop('xFormat')
+  .prop('xTickFormat')
   .default(null)
 
   .prop('xTicks')
   .default(8)
 
-  .prop('yFormat')
+  .prop('yTickFormat')
   .default(d3.format('.2s'))
 
   .prop('yTicks')
@@ -676,7 +676,7 @@ module.exports = _dereq_('./widget').extend()
     var axis = d3.svg.axis()
       .scale(fx)
       .ticks(this.xTicks())
-      .tickFormat(this.xFormat());
+      .tickFormat(this.xTickFormat());
 
     svg.select('.x.axis')
       .attr('transform', utils.translate(0, dims.innerHeight))
@@ -688,7 +688,7 @@ module.exports = _dereq_('./widget').extend()
       .tickPadding(8)
       .tickSize(-dims.innerWidth)
       .ticks(this.yTicks())
-      .tickFormat(this.yFormat());
+      .tickFormat(this.yTickFormat());
     
     svg.select('.y.axis')
       .call(axis);
@@ -990,20 +990,20 @@ module.exports = _dereq_('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.y; })
 
-  .prop('xFormat')
+  .prop('xTickFormat')
   .default(null)
 
   .prop('xTicks')
   .default(8)
 
   .prop('yFormat')
-  .default(d3.format('.2s'))
+  .default(d3.format(',2s'))
 
   .prop('yTicks')
   .default(5)
 
-  .prop('yFormat')
-  .default(d3.format(',2s'))
+  .prop('yTickFormat')
+  .default(d3.format('.2s'))
 
   .prop('none')
   .default(0)
@@ -1200,7 +1200,7 @@ var chart = _dereq_('../view').extend()
       .scale(fx)
       .tickPadding(8)
       .ticks(this.widget().xTicks())
-      .tickFormat(this.widget().xFormat())
+      .tickFormat(this.widget().xTickFormat())
       .tickSize(-dims.innerHeight);
 
     svg.select('.x.axis')
@@ -1212,7 +1212,7 @@ var chart = _dereq_('../view').extend()
       .scale(fy)
       .tickPadding(8)
       .ticks(this.widget().yTicks())
-      .tickFormat(this.widget().yFormat())
+      .tickFormat(this.widget().yTickFormat())
       .tickSize(-dims.innerWidth);
     
     svg.select('.y.axis')
