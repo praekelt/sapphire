@@ -156,4 +156,31 @@ describe("sapphire.utils", function() {
       expect(sapphire.utils.meta('.tmp')).to.equal(d);
     });
   });
+
+  describe(".measure", function() {
+    it("should return the requested measurement", function() {
+      el.style('width', '200px');
+      expect(sapphire.utils.measure(el, 'width')).to.equal(200);
+    });
+  });
+
+  describe(".innerWidth", function() {
+    it("should calculate the element's padless width", function() {
+      el.style('width', '200px')
+        .style('padding-left', '3px')
+        .style('padding-right', '5px');
+
+      expect(sapphire.utils.innerWidth(el)).to.equal(192);
+    });
+  });
+
+  describe(".innerHeight", function() {
+    it("should calculate the element's padless height", function() {
+      el.style('height', '200px')
+        .style('padding-top', '3px')
+        .style('padding-bottom', '5px');
+
+      expect(sapphire.utils.innerHeight(el)).to.equal(192);
+    });
+  });
 });

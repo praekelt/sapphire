@@ -204,7 +204,7 @@ var sparkline = require('../view').extend()
 
     var dims = utils.box()
       .margin(this.margin())
-      .width(parseInt(el.style('width')))
+      .width(utils.innerWidth(el))
       .height(this.height())
       .calc();
 
