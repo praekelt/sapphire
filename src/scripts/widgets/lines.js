@@ -80,7 +80,7 @@ module.exports = require('./widget').extend()
       .attr('class', 'legend');
   })
 
-  .meth(function normalize(el) {
+  .meth('normalize', function(el) {
     var self = this;
     var node = el.node();
 

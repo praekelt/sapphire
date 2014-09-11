@@ -74,7 +74,7 @@ utils.box = strain()
     bottom: 0
   })
 
-  .meth(function calc() {
+  .meth('calc', function() {
     var d = {};
     d.margin = this.margin();
     d.width = this.width();

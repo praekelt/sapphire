@@ -68,23 +68,23 @@ var grid = module.exports = strain()
     return data;
   })
 
-  .meth(function indexOffset(index) {
+  .meth('indexOffset', function(index) {
     return (index * this.scale()) + this.padding();
   })
 
-  .meth(function spanLength(span) {
+  .meth('spanLength', function(span) {
     return (span * this.scale()) - (this.padding() * 2);
   })
 
-  .meth(function offsetIndex(offset) {
+  .meth('offsetIndex', function(offset) {
     return Math.ceil((offset - this.padding()) / this.scale());
   })
 
-  .meth(function lengthSpan(len) {
+  .meth('lengthSpan', function(len) {
     return Math.ceil((len + (this.padding() * 2)) / this.scale());
   })
 
-  .static(function box(d) {
+  .static('box', function(d) {
     return {
       x1: d.col,
       x2: d.col + d.colspan - 1,
@@ -93,7 +93,7 @@ var grid = module.exports = strain()
     };
   })
 
-  .static(function uncollide(a) {
+  .static('uncollide', function(a) {
     var boxA = grid.box(a);
     
     return function(node, x1, y1, x2, y2) {
@@ -112,7 +112,7 @@ var grid = module.exports = strain()
     };
   })
 
-  .static(function intersection(a, b) {
+  .static('intersection', function(a, b) {
     return ((a.x1 <= b.x1 && b.x1 <= a.x2) && (a.y1 <= b.y1 && b.y1 <= a.y2))
         || ((b.x1 <= a.x1 && a.x1 <= b.x2) && (b.y1 <= a.y1 && a.y1 <= b.y2))
         || ((a.x1 <= b.x2 && b.x2 <= a.x2) && (a.y1 <= b.y1 && b.y1 <= a.y2))

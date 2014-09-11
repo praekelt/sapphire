@@ -71,7 +71,7 @@ module.exports = require('./view').extend()
         .attr('class', 'widgets');
   })
 
-  .meth(function normalize(el) {
+  .meth('normalize', function(el) {
     var self = this;
     var node = el.node();
 

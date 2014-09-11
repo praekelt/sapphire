@@ -10,7 +10,7 @@ describe("sapphire.widgets.pie", function() {
     .prop('innerRadius')
     .prop('data')
 
-    .meth(function radius() {
+    .meth('radius', function() {
       var dims = sapphire.utils.box()
         .margin(this.margin())
         .width(this.width())

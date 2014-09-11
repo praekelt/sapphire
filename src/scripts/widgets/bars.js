@@ -63,7 +63,7 @@ module.exports = require('./widget').extend()
     this.colors(d3.scale.category10());
   })
 
-  .meth(function normalize(el) {
+  .meth('normalize', function(el) {
     var self = this;
     var node = el.node();
 

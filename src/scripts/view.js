@@ -1,15 +1,15 @@
 module.exports = strain()
-  .static(function draw(fn) {
+  .static('draw', function(fn) {
     this.meth('_draw_', fn);
   })
   .draw(function() {})
 
-  .static(function enter(fn) {
+  .static('enter', function(fn) {
     this.meth('_enter_', fn);
   })
   .enter(function() {})
 
-  .meth(function draw(el) {
+  .meth('draw', function(el) {
     var datum;
     el = sapphire.utils.ensureEl(el);
 
@@ -33,7 +33,7 @@ module.exports = strain()
     }
   })
 
-  .meth(function enter(el) {
+  .meth('enter', function(el) {
     el = sapphire.utils.ensureEl(el);
 
     var parent = this._type_._super_.prototype;
