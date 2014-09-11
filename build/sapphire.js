@@ -432,6 +432,26 @@ utils.box = strain()
     return this.calc();
   });
 
+
+utils.innerWidth = function(el) {
+  return utils.measure(el, 'width')
+       - utils.measure(el, 'padding-left')
+       - utils.measure(el, 'padding-right');
+};
+
+
+utils.innerHeight = function(el) {
+  return utils.measure(el, 'height')
+       - utils.measure(el, 'padding-top')
+       - utils.measure(el, 'padding-bottom');
+};
+
+
+utils.measure = function(el, name) {
+  el = utils.ensureEl(el);
+  return parseInt(el.style(name));
+};
+
 },{}],5:[function(_dereq_,module,exports){
 module.exports = strain()
   .static(function draw(fn) {
@@ -506,7 +526,7 @@ module.exports = _dereq_('./widget').extend()
   .prop('margin')
   .default({
     top: 10,
-    left: 35,
+    left: 38,
     right: 15,
     bottom: 45
   })
@@ -627,8 +647,8 @@ module.exports = _dereq_('./widget').extend()
       .domain([0, d3.max(chart.datum(), function(d) { return d.y; })]);
 
     var dims = utils.box()
-      .width(parseInt(chart.style('width')))
-      .height(parseInt(chart.style('height')))
+      .width(utils.innerWidth(chart))
+      .height(utils.innerHeight(chart))
       .margin(this.margin())
       .calc();
 
@@ -643,7 +663,9 @@ module.exports = _dereq_('./widget').extend()
       .attr('width', dims.width)
       .attr('height', dims.height)
       .select('g')
-        .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
+        .attr('transform', utils.translate(
+          dims.margin.left,
+          dims.margin.top));
 
     var bar = svg.select('.bars')
       .selectAll('.bar')
@@ -908,7 +930,7 @@ var sparkline = _dereq_('../view').extend()
 
     var dims = utils.box()
       .margin(this.margin())
-      .width(parseInt(el.style('width')))
+      .width(utils.innerWidth(el))
       .height(this.height())
       .calc();
 
@@ -1126,7 +1148,7 @@ var chart = _dereq_('../view').extend()
   .draw(function(el) {
     var dims = utils.box()
       .margin(this.margin())
-      .width(parseInt(el.style('width')))
+      .width(utils.innerWidth(el))
       .height(this.height())
       .calc();
 
@@ -1399,7 +1421,7 @@ var chart = _dereq_('../view').extend()
   })
 
   .draw(function(el) {
-    var width = parseInt(el.style('width'));
+    var width = utils.innerWidth(el);
 
     var dims = utils.box()
       .margin(this.widget().margin())
