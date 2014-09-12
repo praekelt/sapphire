@@ -52,6 +52,10 @@
 .sapphire .widget .table tr td:nth-child(2n + 1) {
   background: rgba(58, 58, 58, 0.025);
 }
+.sapphire .widget .chart {
+  width: 100%;
+  height: 100%;
+}
 .sapphire .lines.widget > .title {
   padding: 6px 0;
   background: #3a3a3a;
@@ -59,6 +63,8 @@
   text-align: center;
 }
 .sapphire .lines.widget .chart {
+  width: 100%;
+  height: 100%;
   padding: 8px;
 }
 .sapphire .lines.widget .chart .lines .metric .line {
@@ -157,6 +163,10 @@
   padding-bottom: 10px;
   text-align: right;
 }
+.sapphire .last.widget .values .sparkline {
+  width: 100%;
+  height: 100%;
+}
 .sapphire .last.widget .values .sparkline .path {
   fill: none;
   stroke: #3a3a3a;
@@ -172,6 +182,8 @@
   text-align: center;
 }
 .sapphire .bars.widget .chart {
+  width: 100%;
+  height: 100%;
   padding: 10px 5px;
   margin: 0 auto;
 }
@@ -209,6 +221,10 @@
   background: #3a3a3a;
   color: #f2f2f2;
   text-align: center;
+}
+.sapphire .pie.widget .chart {
+  width: 100%;
+  height: 100%;
 }
 .sapphire .pie.widget .chart .slice path {
   stroke: rgba(242, 242, 242, 0.5);
