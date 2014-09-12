@@ -84,7 +84,7 @@ module.exports = _dereq_('./view').extend()
         .attr('class', 'widgets');
   })
 
-  .meth(function normalize(el) {
+  .meth('normalize', function(el) {
     var self = this;
     var node = el.node();
 
@@ -252,23 +252,23 @@ var grid = module.exports = strain()
     return data;
   })
 
-  .meth(function indexOffset(index) {
+  .meth('indexOffset', function(index) {
     return (index * this.scale()) + this.padding();
   })
 
-  .meth(function spanLength(span) {
+  .meth('spanLength', function(span) {
     return (span * this.scale()) - (this.padding() * 2);
   })
 
-  .meth(function offsetIndex(offset) {
+  .meth('offsetIndex', function(offset) {
     return Math.ceil((offset - this.padding()) / this.scale());
   })
 
-  .meth(function lengthSpan(len) {
+  .meth('lengthSpan', function(len) {
     return Math.ceil((len + (this.padding() * 2)) / this.scale());
   })
 
-  .static(function box(d) {
+  .static('box', function(d) {
     return {
       x1: d.col,
       x2: d.col + d.colspan - 1,
@@ -277,7 +277,7 @@ var grid = module.exports = strain()
     };
   })
 
-  .static(function uncollide(a) {
+  .static('uncollide', function(a) {
     var boxA = grid.box(a);
     
     return function(node, x1, y1, x2, y2) {
@@ -296,7 +296,7 @@ var grid = module.exports = strain()
     };
   })
 
-  .static(function intersection(a, b) {
+  .static('intersection', function(a, b) {
     return ((a.x1 <= b.x1 && b.x1 <= a.x2) && (a.y1 <= b.y1 && b.y1 <= a.y2))
         || ((b.x1 <= a.x1 && a.x1 <= b.x2) && (b.y1 <= a.y1 && a.y1 <= b.y2))
         || ((a.x1 <= b.x2 && b.x2 <= a.x2) && (a.y1 <= b.y1 && b.y1 <= a.y2))
@@ -418,7 +418,7 @@ utils.box = strain()
     bottom: 0
   })
 
-  .meth(function calc() {
+  .meth('calc', function() {
     var d = {};
     d.margin = this.margin();
     d.width = this.width();
@@ -454,17 +454,17 @@ utils.measure = function(el, name) {
 
 },{}],5:[function(_dereq_,module,exports){
 module.exports = strain()
-  .static(function draw(fn) {
+  .static('draw', function(fn) {
     this.meth('_draw_', fn);
   })
   .draw(function() {})
 
-  .static(function enter(fn) {
+  .static('enter', function(fn) {
     this.meth('_enter_', fn);
   })
   .enter(function() {})
 
-  .meth(function draw(el) {
+  .meth('draw', function(el) {
     var datum;
     el = sapphire.utils.ensureEl(el);
 
@@ -488,7 +488,7 @@ module.exports = strain()
     }
   })
 
-  .meth(function enter(el) {
+  .meth('enter', function(el) {
     el = sapphire.utils.ensureEl(el);
 
     var parent = this._type_._super_.prototype;
@@ -569,7 +569,7 @@ module.exports = _dereq_('./widget').extend()
     this.colors(d3.scale.category10());
   })
 
-  .meth(function normalize(el) {
+  .meth('normalize', function(el) {
     var self = this;
     var node = el.node();
 
@@ -1056,7 +1056,7 @@ module.exports = _dereq_('./widget').extend()
       .attr('class', 'legend');
   })
 
-  .meth(function normalize(el) {
+  .meth('normalize', function(el) {
     var self = this;
     var node = el.node();
 
@@ -1349,7 +1349,7 @@ module.exports = _dereq_('./widget').extend()
     this.colors(d3.scale.category10());
   })
 
-  .meth(function normalize(el) {
+  .meth('normalize', function(el) {
     var self = this;
     var node = el.node();
 
