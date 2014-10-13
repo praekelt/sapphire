@@ -57,6 +57,10 @@ module.exports = require('./widget').extend()
   .prop('yTicks')
   .default(5)
 
+  .prop('yMax')
+  .set(d3.functor)
+  .default(d3.max)
+
   .prop('colors')
 
   .init(function() {
@@ -137,8 +141,11 @@ module.exports = require('./widget').extend()
         d3.min(chart.datum(), function(d) { return d.x; }),
         d3.max(chart.datum(), function(d) { return d.x + d.dx; })]);
 
+    var ys = chart.datum()
+      .map(function(d) { return d.y; });
+
     var fy = d3.scale.linear()
-      .domain([0, d3.max(chart.datum(), function(d) { return d.y; })]);
+      .domain([0, this.yMax()(ys)]);
 
     var dims = utils.box()
       .width(utils.innerWidth(chart))
