@@ -107,18 +107,18 @@ describe("sapphire.widgets.bars", function() {
 
     var bar = el.select('.bar:nth-child(1)');
     expect(bar.attr('transform')).to.equal(transform(0, 234));
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height(234), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(+bar.select('rect').attr('height')).to.be.closeTo(height(234), 0.01);
 
     bar = el.select('.bar:nth-child(2)');
     expect(bar.attr('transform')).to.equal(transform(5, 456));
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height(456), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(+bar.select('rect').attr('height')).to.be.closeTo(height(456), 0.01);
 
     bar = el.select('.bar:nth-child(3)');
     expect(bar.attr('transform')).to.equal(transform(10, 789));
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height(789), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(+bar.select('rect').attr('height')).to.be.closeTo(height(789), 0.01);
 
     datum.values = [{
       x: 15,
@@ -142,18 +142,18 @@ describe("sapphire.widgets.bars", function() {
 
     bar = el.select('.bar:nth-child(1)');
     expect(bar.attr('transform')).to.equal(transform(15, 1234));
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height(1234), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(+bar.select('rect').attr('height')).to.be.closeTo(height(1234), 0.01);
 
     bar = el.select('.bar:nth-child(2)');
     expect(bar.attr('transform')).to.equal(transform(20, 1456));
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height(1456), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(+bar.select('rect').attr('height')).to.be.closeTo(height(1456), 0.01);
 
     bar = el.select('.bar:nth-child(3)');
     expect(bar.attr('transform')).to.equal(transform(25, 1789));
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height(1789), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(+bar.select('rect').attr('height')).to.be.closeTo(height(1789), 0.01);
 
     function width() {
       return (fx(dx) - fx(0)) - (bars.barPadding());
@@ -272,13 +272,13 @@ describe("sapphire.widgets.bars", function() {
       .range([0, dims.innerWidth]);
 
     var bar = el.select('.bar:nth-child(1)');
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(0, 2), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(0, 2), 0.01);
 
     bar = el.select('.bar:nth-child(2)');
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(5, 4), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(5, 4), 0.01);
 
     bar = el.select('.bar:nth-child(3)');
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(10, 6), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(10, 6), 0.01);
 
     datum.values = [{
       x: 15,
@@ -302,13 +302,13 @@ describe("sapphire.widgets.bars", function() {
     fx.domain([15, 25 + 12]);
 
     bar = el.select('.bar:nth-child(1)');
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(15, 8), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(15, 8), 0.01);
 
     bar = el.select('.bar:nth-child(2)');
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(20, 10), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(20, 10), 0.01);
 
     bar = el.select('.bar:nth-child(3)');
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(25, 12), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(25, 12), 0.01);
 
     function width(x, dx) {
       return (fx(x + dx) - fx(x)) - (bars.barPadding());
