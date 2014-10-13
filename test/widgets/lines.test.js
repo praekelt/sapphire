@@ -920,4 +920,124 @@ describe("sapphire.widgets.lines", function() {
     value = el.select('.legend .metric[data-key=baz] .value');
     expect(value.text()).to.equal('4,000,000');
   });
+
+  it("should support a configurable minimum y value", function() {
+    var lines = sapphire.widgets.lines()
+      .yTicks(3)
+      .yTickFormat(d3.format('s'))
+      .yMin(2000000);
+
+    datum.metrics = [datum.metrics[0]];
+    datum.metrics[0].values = [{
+      x: +(new Date(2014, 4)),
+      y: 4890000,
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 6890000,
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    var axis = el.selectAll('.chart .y.axis');
+    expect(axis.text()).to.equal(['2M', '4M', '6M'].join(''));
+  });
+
+  it("should support a configurable minimum y function", function() {
+    var lines = sapphire.widgets.lines()
+      .yTicks(3)
+      .yTickFormat(d3.format('s'))
+      .yMin(function(values) {
+        return d3.min([4000000].concat(values));
+      });
+
+    datum.metrics = [datum.metrics[0]];
+    datum.metrics[0].values = [{
+      x: +(new Date(2014, 4)),
+      y: 8890000,
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 10890000,
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    var axis = el.selectAll('.chart .y.axis');
+    expect(axis.text()).to.equal(['4M', '6M', '8M', '10M'].join(''));
+
+    datum.metrics[0].values = [{
+      x: +(new Date(2014, 4)),
+      y: 1890000,
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 8890000,
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    axis = el.selectAll('.chart .y.axis');
+    expect(axis.text()).to.equal(['2M', '4M', '6M', '8M'].join(''));
+  });
+
+  it("should support a configurable maximum y value", function() {
+    var lines = sapphire.widgets.lines()
+      .yTicks(3)
+      .yTickFormat(d3.format('s'))
+      .yMax(6000000);
+
+    datum.metrics = [datum.metrics[0]];
+    datum.metrics[0].values = [{
+      x: +(new Date(2014, 4)),
+      y: 2890000,
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 3890000,
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    var axis = el.selectAll('.chart .y.axis');
+    expect(axis.text()).to.equal(['3M', '4M', '5M', '6M'].join(''));
+  });
+
+  it("should support a configurable maximum y function", function() {
+    var lines = sapphire.widgets.lines()
+      .yTicks(3)
+      .yTickFormat(d3.format('s'))
+      .yMax(function(values) {
+        return d3.max([6000000].concat(values));
+      });
+
+    datum.metrics = [datum.metrics[0]];
+    datum.metrics[0].values = [{
+      x: +(new Date(2014, 4)),
+      y: 2890000,
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 3890000,
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    var axis = el.selectAll('.chart .y.axis');
+    expect(axis.text()).to.equal(['3M', '4M', '5M', '6M'].join(''));
+
+    datum.metrics[0].values = [{
+      x: +(new Date(2014, 4)),
+      y: 2890000,
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 10890000,
+    }];
+
+    el.datum(datum)
+      .call(lines);
+
+    axis = el.selectAll('.chart .y.axis');
+    expect(axis.text()).to.equal(['4M', '6M', '8M', '10M'].join(''));
+  });
 });
