@@ -15,7 +15,7 @@ gulp.task('scripts', function () {
     .bundle({standalone: 'sapphire'})
     .on('error', err)
     .pipe(source('sapphire.js'))
-    .pipe(streamify(wrap({src: './gulp/wrapper.jst'}, {
+    .pipe(streamify(wrap({src: '.umd.jst'}, {
       version: version,
       deps: ['d3', 'strain']
     })))
