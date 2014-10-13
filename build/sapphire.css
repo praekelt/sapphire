@@ -227,8 +227,7 @@
   height: 100%;
 }
 .sapphire .pie.widget .chart .slice path {
-  stroke: rgba(242, 242, 242, 0.5);
-  stroke-width: 4px;
+  stroke: none;
 }
 .sapphire .pie.widget .legend .table {
   border-collapse: collapse;
