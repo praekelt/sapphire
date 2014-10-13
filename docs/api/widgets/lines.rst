@@ -359,6 +359,35 @@ displaying each metric's title, colour and last ``y`` value.
       .yTicks(10);
 
 
+.. function:: lines.yMin([v])
+
+  Property for the chart's minimum y axis value. If a number is given, its
+  value will be used as the chart's minimum value. If a function is given, the
+  function will be passed an array of the y values to display and should return
+  the number to use as the minimum. Defaults to ``d3.min``.
+
+  .. code-block:: javascript
+
+    var lines = sapphire.widgets.lines()
+      .yMin(function(values) {
+        return d3.min([9000].concat(values));
+      });
+
+
+.. function:: lines.yMax([v])
+
+  Property for the chart's maximum y axis value. If a number is given, its
+  value will be used as the chart's maximum value. If a function is given, the
+  function will be passed an array of the y values to display and should return
+  the number to use as the maximum. Defaults to ``d3.max``.
+
+  .. code-block:: javascript
+
+    var lines = sapphire.widgets.lines()
+      .yMax(function(values) {
+        return d3.max([9000].concat(values));
+      });
+
 .. function:: lines.colors([fn])
 
   Property for the colour function to use to calculate each metric's colour
