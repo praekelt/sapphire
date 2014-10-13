@@ -40,7 +40,7 @@ module.exports = require('./widget').extend()
 
   .prop('innerRadius')
   .set(d3.functor)
-  .default(function(r) { return 0.35 * r; })
+  .default(0)
 
   .prop('valueFormat')
   .default(d3.format(',2s'))

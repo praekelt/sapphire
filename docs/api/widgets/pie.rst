@@ -248,7 +248,7 @@ displaying each metric's title, colour, value and percentage.
 
   Property for setting the pie chart's inner radius. If a function is given,
   the function is invoked with the pie chart's outer radius. Defaults to
-  ``function(r) { return 0.35 * r; }``.
+  ``0``.
 
   .. code-block:: javascript
 
