@@ -256,5 +256,27 @@ displaying each metric's title, colour, value and percentage.
       .innerRadius(0);
 
 
+.. function:: pie.showLegend(v)
+
+  Property for whether widget should display its legend. Defaults to
+  ``true``.
+
+  .. code-block:: javascript
+
+    var pie = sapphire.widgets.pie()
+      .showLegend(false);
+
+
+.. function:: pie.showPercentages(v)
+
+  Property for whether the widget should display percentages in its legend table
+  for each metric. Defaults to ``false``.
+
+  .. code-block:: javascript
+
+    var pie = sapphire.widgets.pie()
+      .showPercentages(true);
+
+
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements
 .. _d3.time.scale https://github.com/mbostock/d3/wiki/Time-Scales#scale
