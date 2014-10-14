@@ -51,6 +51,9 @@ module.exports = require('./widget').extend()
   .prop('showLegend')
   .default(true)
 
+  .prop('showPercentages')
+  .default(false)
+
   .init(function() {
     this.colors(d3.scale.category10());
   })
@@ -187,8 +190,9 @@ var legend = require('../view').extend()
   })
 
   .draw(function(el) {
-    var valueFormat = this.widget().valueFormat();
-    var percentFormat = this.widget().percentFormat();
+    var widget = this.widget()
+    var valueFormat = widget.valueFormat();
+    var percentFormat = widget.percentFormat();
 
     var metric = el.select('.table').selectAll('.metric')
       .data(function(d) { return d.metrics; },
@@ -203,8 +207,10 @@ var legend = require('../view').extend()
     enterMetric.append('td')
       .attr('class', 'title');
 
-    enterMetric.append('td')
-      .attr('class', 'percent');
+    if (widget.showPercentages()) {
+      enterMetric.append('td')
+        .attr('class', 'percent');
+    }
 
     enterMetric.append('td')
       .attr('class', 'value');
@@ -215,8 +221,10 @@ var legend = require('../view').extend()
     metric.select('.title')
       .text(function(d) { return d.title; });
 
-    metric.select('.percent')
-      .text(function(d) { return percentFormat(d.percent); });
+    if (widget.showPercentages()) {
+      metric.select('.percent')
+        .text(function(d) { return percentFormat(d.percent); });
+    }
 
     metric.select('.value')
       .text(function(d) { return valueFormat(d.value); });

@@ -374,10 +374,11 @@ describe("sapphire.widgets.pie", function() {
     }
   });
 
-  it("should display its metric percentages in a legend", function() {
+  it("should support display metric percentages in its legend", function() {
     var format = d3.format('.2%');
 
     var pie = sapphire.widgets.pie()
+      .showPercentages(true)
       .percentFormat(format)
       .key(function(d) { return d.key; });
 
@@ -418,6 +419,16 @@ describe("sapphire.widgets.pie", function() {
         .filter(function(d) { return d.key === key; })
         .text();
     }
+  });
+
+  it("should not show percentages in its legend if disabled", function() {
+    var pie = sapphire.widgets.pie()
+      .showPercentages(false);
+
+    el.datum(datum)
+      .call(pie);
+
+    expect(el.selectAll('.legend .metric .percent').size()).to.equal(0);
   });
 
   it("should display its metric values in a legend", function() {
