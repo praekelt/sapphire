@@ -253,10 +253,10 @@
   width: 12px;
 }
 .sapphire .pie.widget .legend .table .metric .title {
-  width: 55%;
+  width: 50%;
 }
 .sapphire .pie.widget .legend .table .metric .percent {
-  width: 15%;
+  width: 8%;
   text-align: right;
 }
 .sapphire .pie.widget .legend .table .metric .value {
