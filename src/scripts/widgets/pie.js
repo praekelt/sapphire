@@ -187,7 +187,7 @@ var legend = require('../view').extend()
   })
 
   .draw(function(el) {
-    var widget = this.widget()
+    var widget = this.widget();
     var valueFormat = widget.valueFormat();
     var percentFormat = widget.percentFormat();
 
