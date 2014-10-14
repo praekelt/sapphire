@@ -51,6 +51,14 @@ module.exports = require('./widget').extend()
   .prop('yTickFormat')
   .default(d3.format('.2s'))
 
+  .prop('yMin')
+  .set(d3.functor)
+  .default(d3.min)
+
+  .prop('yMax')
+  .set(d3.functor)
+  .default(d3.max)
+
   .prop('none')
   .default(0)
 
@@ -170,6 +178,8 @@ var chart = require('../view').extend()
   })
 
   .draw(function(el) {
+    var widget = this.widget();
+
     var dims = utils.box()
       .margin(this.margin())
       .width(utils.innerWidth(el))
@@ -187,8 +197,11 @@ var chart = require('../view').extend()
       .domain(d3.extent(allValues, function(d) { return d.x; }))
       .range([0, dims.innerWidth]);
 
+    var ys = allValues
+      .map(function(d) { return d.y; });
+
     var fy = d3.scale.linear()
-      .domain(d3.extent(allValues, function(d) { return d.y; }))
+      .domain([widget.yMin()(ys), widget.yMax()(ys)])
       .range([dims.innerHeight, 0]);
 
     var line = d3.svg.line()
@@ -245,8 +258,8 @@ var chart = require('../view').extend()
     var axis = d3.svg.axis()
       .scale(fx)
       .tickPadding(8)
-      .ticks(this.widget().xTicks())
-      .tickFormat(this.widget().xTickFormat())
+      .ticks(widget.xTicks())
+      .tickFormat(widget.xTickFormat())
       .tickSize(-dims.innerHeight);
 
     svg.select('.x.axis')
@@ -257,8 +270,8 @@ var chart = require('../view').extend()
       .orient('left')
       .scale(fy)
       .tickPadding(8)
-      .ticks(this.widget().yTicks())
-      .tickFormat(this.widget().yTickFormat())
+      .ticks(widget.yTicks())
+      .tickFormat(widget.yTickFormat())
       .tickSize(-dims.innerWidth);
     
     svg.select('.y.axis')

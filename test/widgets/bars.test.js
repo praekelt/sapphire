@@ -385,8 +385,6 @@ describe("sapphire.widgets.bars", function() {
       .yTicks(3)
       .yTickFormat(d3.format('s'));
 
-    expect(el.html()).to.be.empty;
-
     datum.values = [{
       x: +(new Date(2014, 2)),
       y: 234000
@@ -422,5 +420,63 @@ describe("sapphire.widgets.bars", function() {
     axis = el.selectAll('.chart .y.axis');
     expect(axis.size()).to.equal(1);
     expect(axis.text()).to.equal(['0', '2M', '4M', '6M'].join(''));
+  });
+
+  it("should support a configurable maximum y value", function() {
+    var bars = sapphire.widgets.bars()
+      .yTicks(3)
+      .yTickFormat(d3.format('s'))
+      .yMax(6000000);
+
+    datum.values = [{
+      x: +(new Date(2014, 4)),
+      y: 2890000,
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 3890000,
+    }];
+
+    el.datum(datum)
+      .call(bars);
+
+    var axis = el.selectAll('.chart .y.axis');
+    expect(axis.text()).to.equal(['0', '2M', '4M', '6M'].join(''));
+  });
+
+  it("should support a configurable maximum y function", function() {
+    var bars = sapphire.widgets.bars()
+      .yTicks(3)
+      .yTickFormat(d3.format('s'))
+      .yMax(function(values) {
+        return d3.max([6000000].concat(values));
+      });
+
+    datum.values = [{
+      x: +(new Date(2014, 4)),
+      y: 2890000,
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 3890000,
+    }];
+
+    el.datum(datum)
+      .call(bars);
+
+    var axis = el.selectAll('.chart .y.axis');
+    expect(axis.text()).to.equal(['0', '2M', '4M', '6M'].join(''));
+
+    datum.values = [{
+      x: +(new Date(2014, 4)),
+      y: 2890000,
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 10890000,
+    }];
+
+    el.datum(datum)
+      .call(bars);
+
+    axis = el.selectAll('.chart .y.axis');
+    expect(axis.text()).to.equal(['0', '5M', '10M'].join(''));
   });
 });
