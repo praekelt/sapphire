@@ -920,6 +920,16 @@ describe("sapphire.widgets.lines", function() {
     value = el.select('.legend .metric[data-key=baz] .value');
     expect(value.text()).to.equal('4,000,000');
   });
+  
+  it("should allow its legend to be disabled", function() {
+    var lines = sapphire.widgets.lines()
+      .showLegend(false);
+
+    el.datum(datum)
+      .call(lines);
+
+    expect(el.select('.legend').html()).to.be.empty;
+  });
 
   it("should support a configurable minimum y value", function() {
     var lines = sapphire.widgets.lines()
