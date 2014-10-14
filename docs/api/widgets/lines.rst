@@ -434,5 +434,16 @@ displaying each metric's title, colour and last ``y`` value.
       .colspan(4);
 
 
+.. function:: lines.showLegend(v)
+
+  Property for whether widget should display its legend. Defaults to
+  ``true``.
+
+  .. code-block:: javascript
+
+    var lines = sapphire.widgets.lines()
+      .showLegend(false);
+
+
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements
 .. _d3.time.scale: https://github.com/mbostock/d3/wiki/Time-Scales#scale

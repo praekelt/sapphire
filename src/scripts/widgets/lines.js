@@ -62,6 +62,9 @@ module.exports = require('./widget').extend()
   .prop('none')
   .default(0)
 
+  .prop('showLegend')
+  .default(true)
+
   .prop('colors')
   .prop('chart')
   .prop('legend')
@@ -140,8 +143,10 @@ module.exports = require('./widget').extend()
     values.select('.chart')
       .call(this.chart());
 
-    values.select('.legend')
-      .call(this.legend());
+    if (this.showLegend()) {
+      values.select('.legend')
+        .call(this.legend());
+    }
   });
 
 

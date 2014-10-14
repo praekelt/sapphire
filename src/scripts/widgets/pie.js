@@ -48,6 +48,9 @@ module.exports = require('./widget').extend()
   .prop('percentFormat')
   .default(d3.format('.0%'))
 
+  .prop('showLegend')
+  .default(true)
+
   .init(function() {
     this.colors(d3.scale.category10());
   })
@@ -103,11 +106,13 @@ module.exports = require('./widget').extend()
     el.select('.widget .title')
       .text(function(d) { return d.title; });
 
-    el.select('.legend')
-      .call(legend(this));
-
     el.select('.chart')
       .call(chart(this));
+
+    if (this.showLegend()) {
+      el.select('.legend')
+        .call(legend(this));
+    }
   });
 
 
@@ -182,8 +187,9 @@ var legend = require('../view').extend()
   })
 
   .draw(function(el) {
-    var valueFormat = this.widget().valueFormat();
-    var percentFormat = this.widget().percentFormat();
+    var widget = this.widget();
+    var valueFormat = widget.valueFormat();
+    var percentFormat = widget.percentFormat();
 
     var metric = el.select('.table').selectAll('.metric')
       .data(function(d) { return d.metrics; },
