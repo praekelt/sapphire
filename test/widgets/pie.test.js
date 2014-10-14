@@ -463,4 +463,14 @@ describe("sapphire.widgets.pie", function() {
         .text();
     }
   });
+
+  it("should allow its legend to be disabled", function() {
+    var pie = sapphire.widgets.pie()
+      .showLegend(false);
+
+    el.datum(datum)
+      .call(pie);
+
+    expect(el.select('.legend').html()).to.be.empty;
+  });
 });
