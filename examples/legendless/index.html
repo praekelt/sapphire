@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link
+    rel="stylesheet"
+    href="../../build/sapphire.css">
+    <style type="text/css">
+body {
+  background: #f2f2f2;
+}
+
+.sapphire {
+  width: 960px;
+  margin: 0 auto;
+}
+
+.widget {
+  float: left;
+  padding: 10px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="sapphire">
+      <div id="pie"></div>
+      <div id="lines"></div>
+    </div>
+    <script src="../../bower_components/d3/d3.min.js"></script>
+    <script src="../../bower_components/strain/strain.js"></script>
+    <script src="../../build/sapphire.js"></script>
+    <script>
+var pie = sapphire.widgets.pie()
+  .showLegend(false)
+  .key(function(d) { return d.title; })
+  .colors(d3.scale.category20())
+  .width(200);
+
+var lines = sapphire.widgets.lines()
+  .showLegend(false)
+  .width(700)
+
+d3.select('#pie')
+  .datum({
+    title: 'Legendless Pie',
+    metrics: [{
+      title: 'A',
+      value: 6
+    }, {
+      title: 'B',
+      value: 3
+    }]
+  })
+  .call(pie);
+
+d3.select('#lines')
+  .datum({
+    title: 'Legendless Lines',
+    metrics: [{
+      title: 'Foo',
+      values: d3.range(25)
+        .map(d3.random.bates(10))
+        .map(value(1000, 10000))
+    }, {
+      title: 'Bar',
+      values: d3.range(25)
+        .map(d3.random.bates(10))
+        .map(value(1000, 10000))
+    }]
+  })
+  .call(lines);
+
+function value(min, max) {
+  return function(y, i) {
+    return {
+      x: +(new Date()) + (i * 1000),
+      y: Math.round((y * (max - min)) + min)
+    }
+  }
+}
+    </script>
+  </body>
+</html>
