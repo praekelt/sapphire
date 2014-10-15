@@ -5,9 +5,6 @@ module.exports = require('./widget').extend()
   .prop('width')
   .default(400)
 
-  .prop('colspan')
-  .default(4)
-
   .prop('title')
   .set(d3.functor)
   .default(function(d) { return d.title; })
