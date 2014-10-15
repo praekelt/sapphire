@@ -4,15 +4,6 @@
   font-family: sans-serif;
   font-size: 14px;
 }
-.sapphire .dashboard {
-  margin: 0 auto;
-}
-.sapphire .dashboard .widgets {
-  position: relative;
-}
-.sapphire .dashboard .widgets .widget {
-  position: absolute;
-}
 .sapphire .widget {
   margin: 10px 0;
 }
