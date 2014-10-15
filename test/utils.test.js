@@ -143,20 +143,6 @@ describe("sapphire.utils", function() {
     });
   });
 
-  describe(".meta", function() {
-    it("should support metadata getting or setting using a selection", function() {
-      var d = {};
-      sapphire.utils.meta(el, d);
-      expect(sapphire.utils.meta(el)).to.equal(d);
-    });
-
-    it("should support metadata getting or setting using a selector", function() {
-      var d = {};
-      sapphire.utils.meta('.tmp', d);
-      expect(sapphire.utils.meta('.tmp')).to.equal(d);
-    });
-  });
-
   describe(".measure", function() {
     it("should return the requested measurement", function() {
       el.style('width', '200px');

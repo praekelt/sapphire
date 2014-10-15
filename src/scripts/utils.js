@@ -50,15 +50,6 @@ utils.px = function(fn) {
 };
 
 
-utils.meta = function(el, fn) {
-  el = utils.ensureEl(el);
-
-  return arguments.length > 1
-    ? el.property('__sapphire_meta__', fn)
-    : el.property('__sapphire_meta__');
-};
-
-
 utils.box = strain()
   .prop('width')
   .default(0)

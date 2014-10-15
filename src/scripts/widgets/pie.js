@@ -5,9 +5,6 @@ module.exports = require('./widget').extend()
   .prop('width')
   .default(400)
 
-  .prop('colspan')
-  .default(4)
-
   .prop('colors')
 
   .prop('title')
