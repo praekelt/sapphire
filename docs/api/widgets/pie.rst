@@ -233,17 +233,6 @@ displaying each metric's title, colour, value and percentage.
       .width(400);
 
 
-.. function:: pie.colspan([v])
-
-  Property for the widget's default column span in a dashboard. Used if the
-  widget is not standalone (see :func:`dashboard.colspan`). Defaults to ``4``.
-
-  .. code-block:: javascript
-
-    var pie = sapphire.widgets.pie()
-      .colspan(4);
-
-
 .. function:: pie.innerRadius([v])
 
   Property for setting the pie chart's inner radius. If a function is given,

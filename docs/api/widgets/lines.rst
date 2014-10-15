@@ -422,17 +422,5 @@ displaying each metric's title, colour and last ``y`` value.
       .width(400);
 
 
-.. function:: lines.colspan([v])
-
-  Property for the widget's default column span in a dashboard. Used if
-  the widget is not standalone (see :func:`dashboard.colspan`).
-  Defaults to ``4``.
-
-  .. code-block:: javascript
-
-    var lines = sapphire.widgets.lines()
-      .colspan(4);
-
-
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements
 .. _d3.time.scale: https://github.com/mbostock/d3/wiki/Time-Scales#scale

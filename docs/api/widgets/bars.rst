@@ -261,18 +261,6 @@ each bar corresponds to a time interval.
       .width(400);
 
 
-.. function:: bars.colspan([v])
-
-  Property for the widget's default column span in a dashboard. Used if
-  the widget is not standalone (see and :func:`dashboard.colspan`).
-  Defaults to ``4``.
-
-  .. code-block:: javascript
-
-    var bars = sapphire.widgets.bars()
-      .colspan(4);
-
-
 .. function:: bars.height([v])
 
   Property for the :ref:`accessor <accessors>` to use to access the
@@ -282,17 +270,6 @@ each bar corresponds to a time interval.
 
     var bars = sapphire.widgets.bars()
       .height(200);
-
-
-.. function:: bars.rowspan([v])
-
-  Property for the widget's default row span in a dashboard. Used if the
-  widget is not standalone (:func:`dashboard.rowspan`). Defaults to ``2``.
-
-  .. code-block:: javascript
-
-    var bars = sapphire.widgets.bars()
-      .rowspan(2);
 
 
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements

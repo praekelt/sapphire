@@ -204,17 +204,6 @@ value preceding it.
       .width(400);
 
 
-.. function:: last.colspan([v])
-
-  Property for the widget's default column span in a dashboard. Used if the
-  widget is not standalone (see :func:`dashboard.colspan`). Defaults to ``4``.
-
-  .. code-block:: javascript
-
-    var last = sapphire.widgets.last()
-      .colspan(4);
-
-
 .. function:: last.sparklineLimit([v])
 
   Property for the minimum number of values or datapoints needed for the
