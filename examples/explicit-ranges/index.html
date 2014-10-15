@@ -13,8 +13,8 @@ body {
   </head>
   <body>
     <div class="sapphire">
-      <div class="bars"></div>
-      <div class="lines"></div>
+      <div id="bars"></div>
+      <div id="lines"></div>
     </div>
     <script src="../../bower_components/d3/d3.min.js"></script>
     <script src="../../bower_components/strain/strain.js"></script>
@@ -29,7 +29,7 @@ var lines = sapphire.widgets.lines()
   .yMin(2)
   .yMax(10);
 
-d3.select('.bars')
+d3.select('#bars')
   .datum({
     title: 'Values between 0 and 10',
     values: d3.range(25)
@@ -38,7 +38,7 @@ d3.select('.bars')
   })
   .call(bars);
 
-d3.select('.lines')
+d3.select('#lines')
   .datum({
     title: 'Values between 2 and 10',
     metrics: [{
