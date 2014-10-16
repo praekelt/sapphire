@@ -15,6 +15,10 @@ body {
   width: 640px;
   margin: 0 auto;
 }
+
+.widget {
+  padding: 10px;
+}
     </style>
   </head>
   <body>
@@ -29,7 +33,10 @@ body {
     <script>
 var lines = sapphire.widgets.lines()
   .key(function(d) { return d.title; })
-  .colors(d3.scale.category10());
+  .colors(d3.scale.category10())
+
+  // TODO remove once #76 is resolved
+  .width(640);
 
 d3.select('#lines1')
   .datum({
