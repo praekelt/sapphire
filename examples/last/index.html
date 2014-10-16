@@ -66,7 +66,7 @@ d3.select('#last3')
 function value(min, max) {
   return function(y, i) {
     return {
-      x: +(new Date()) + (i * 1000),
+      x: +(new Date()) + (i * 1000 * 60 * 60 * 24),
       y: Math.round((y * (max - min)) + min)
     }
   }
