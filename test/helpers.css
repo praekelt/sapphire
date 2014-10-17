@@ -1,0 +1,11 @@
+.w640 {
+  width: 640px;
+}
+
+.h480 {
+  height: 480px;
+}
+
+.with-chart-h240 .chart {
+  height: 240px;
+}
