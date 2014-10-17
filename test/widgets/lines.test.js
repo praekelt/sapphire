@@ -49,43 +49,7 @@ describe("sapphire.widgets.lines", function() {
     el.remove();
   });
 
-  var helpers = {};
-
-  helpers.fx = strain()
-    .prop('metrics')
-    .prop('width')
-
-    .invoke(function(input) {
-      var values = this.metrics()
-        .reduce(function(results, metric) {
-          results.push.apply(results, metric.values);
-          return results;
-        }, []);
-
-      var scale = d3.scale.linear()
-        .domain(d3.extent(values, function(d) { return d.x; }))
-        .range([0, this.width()]);
-
-      return scale(input);
-    });
-
-  helpers.fy = strain()
-    .prop('metrics')
-    .prop('height')
-
-    .invoke(function(input) {
-      var values = this.metrics()
-        .reduce(function(results, metric) {
-          results.push.apply(results, metric.values);
-          return results;
-        }, []);
-
-      var scale = d3.scale.linear()
-        .domain(d3.extent(values, function(d) { return d.y; }))
-        .range([this.height(), 0]);
-
-      return scale(input);
-    });
+  helpers = {};
 
   helpers.path = strain()
     .prop('fx')
@@ -101,14 +65,6 @@ describe("sapphire.widgets.lines", function() {
 
       return line(data);
     });
-
-  it("should set its width", function() {
-    var lines = sapphire.widgets.lines()
-      .width(800);
-
-    lines(el.datum(datum));
-    expect(el.style('width')).to.equal('800px');
-  });
 
   it("should show its title", function() {
     var lines = sapphire.widgets.lines();
@@ -156,11 +112,11 @@ describe("sapphire.widgets.lines", function() {
 
     var colors = lines.colors();
       
-    var fx = helpers.fx()
-      .width(dims.innerWidth);
+    var fx = d3.scale.linear()
+      .range([0, dims.innerWidth]);
 
-    var fy = helpers.fy()
-      .height(dims.innerHeight);
+    var fy = d3.scale.linear()
+      .range([dims.innerHeight, 0]);
 
     var path = helpers.path()
       .fx(fx)
@@ -193,8 +149,8 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    fx.metrics(datum.metrics);
-    fy.metrics(datum.metrics);
+    fx.domain([123, 567]);
+    fy.domain([234, 889]);
 
     expect(el.selectAll('.chart .metric .line').size()).to.equal(2);
     var line = el.selectAll('.chart .metric[data-key=foo] .line');
@@ -233,8 +189,8 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    fx.metrics(datum.metrics);
-    fy.metrics(datum.metrics);
+    fx.domain([1123, 1567]);
+    fy.domain([1234, 3789]);
 
     expect(el.selectAll('.chart .metric .line').size()).to.equal(2);
     line = el.selectAll('.chart .metric[data-key=foo] .line');
@@ -264,16 +220,16 @@ describe("sapphire.widgets.lines", function() {
         });
 
     var dims = sapphire.utils.box()
-      .width(lines.width())
+      .width(lines.width()())
       .height(lines.chart().height())
       .margin(lines.chart().margin())
       .calc();
 
-    var fx = helpers.fx()
-      .width(dims.innerWidth);
+    var fx = d3.scale.linear()
+      .range([0, dims.innerWidth]);
 
-    var fy = helpers.fy()
-      .height(dims.innerHeight);
+    var fy = d3.scale.linear()
+      .range([dims.innerHeight, 0]);
 
     var colors = lines.colors();
 
@@ -304,17 +260,21 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    fx.metrics(datum.metrics);
-    fy.metrics(datum.metrics);
+    fx.domain([123, 567]);
+    fy.domain([234, 889]);
 
     expect(el.selectAll('.chart .metric .dot').size()).to.equal(2);
     var dot = el.selectAll('.chart .metric[data-key=foo] .dot');
     expect(dot.size()).to.equal(1);
     expect(dot.style('fill')).to.equal(colors('foo'));
+    expect(+dot.attr('cx')).to.equal(fx(567));
+    expect(+dot.attr('cy')).to.equal(fy(789));
 
     dot = el.selectAll('.chart .metric[data-key=bar] .dot');
     expect(dot.size()).to.equal(1);
     expect(dot.style('fill')).to.equal(colors('bar'));
+    expect(+dot.attr('cx')).to.equal(fx(567));
+    expect(+dot.attr('cy')).to.equal(fy(889));
 
     datum.metrics[0].values = [{
       x: 1123,
@@ -342,84 +302,43 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    fx.metrics(datum.metrics);
-    fy.metrics(datum.metrics);
+    fx.domain([1123, 1567]);
+    fy.domain([1234, 3789]);
 
     expect(el.selectAll('.chart .metric .dot').size()).to.equal(2);
     dot = el.selectAll('.chart .metric[data-key=foo] .dot');
     expect(dot.size()).to.equal(1);
     expect(dot.style('fill')).to.equal(colors('foo'));
+    expect(+dot.attr('cx')).to.equal(fx(1567));
+    expect(+dot.attr('cy')).to.equal(fy(1789));
 
     dot = el.selectAll('.chart .metric[data-key=baz] .dot');
     expect(dot.size()).to.equal(1);
     expect(dot.style('fill')).to.equal(colors('baz'));
+    expect(+dot.attr('cx')).to.equal(fx(1567));
+    expect(+dot.attr('cy')).to.equal(fy(3789));
   });
 
   it("should not draw dots for empty metrics", function() {
     var lines = sapphire.widgets.lines()
       .key(function(d) { return d.key; });
 
-    lines
-      .width(600)
-      .chart()
-        .height(150)
-        .margin({
-          top: 4,
-          left: 4,
-          bottom: 4,
-          right: 4 
-        });
-
-    var dims = sapphire.utils.box()
-      .width(lines.width()())
-      .height(lines.chart().height())
-      .margin(lines.chart().margin())
-      .calc();
-
-    var fx = helpers.fx()
-      .width(dims.innerWidth);
-
-    var fy = helpers.fy()
-      .height(dims.innerHeight);
-
-    var colors = lines.colors();
-
-    lines
-      .width(600)
-      .chart()
-        .height(150)
-        .margin({
-          top: 4,
-          left: 4,
-          bottom: 4,
-          right: 4 
-        });
-
     expect(el.html()).to.be.empty;
 
+    datum.metrics[0].key = 'foo';
     datum.metrics[0].values = [{
       x: 123,
       y: 234
-    }, {
-      x: 345,
-      y: 456
-    }, {
-      x: 567,
-      y: 789
     }];
 
+    datum.metrics[1].key = 'bar';
     datum.metrics[1].values = [];
 
     el.datum(datum)
       .call(lines);
 
-    fx.metrics(datum.metrics);
-    fy.metrics(datum.metrics);
-
-    expect(el.selectAll('.chart .metric .dot').size()).to.equal(1);
-    var dot = el.selectAll('.chart .metric[data-key=foo] .dot');
-    expect(dot.size()).to.equal(1);
-    expect(dot.style('fill')).to.equal(colors('foo'));
+    expect(el.selectAll('.chart .metric[data-key=foo] .dot').size()).to.equal(1);
+    expect(el.selectAll('.chart .metric[data-key=bar] .dot').size()).to.equal(0);
 
     datum.metrics[0].values = [];
 
@@ -427,24 +346,14 @@ describe("sapphire.widgets.lines", function() {
     datum.metrics[1].values = [{
       x: 1123,
       y: 3234
-    }, {
-      x: 1345,
-      y: 3456
-    }, {
-      x: 1567,
-      y: 3789
     }];
 
     el.datum(datum)
       .call(lines);
 
-    fx.metrics(datum.metrics);
-    fy.metrics(datum.metrics);
-
-    expect(el.selectAll('.chart .metric .dot').size()).to.equal(1);
-    dot = el.selectAll('.chart .metric[data-key=baz] .dot');
-    expect(dot.size()).to.equal(1);
-    expect(dot.style('fill')).to.equal(colors('baz'));
+    expect(el.selectAll('.chart .metric[data-key=foo] .dot').size()).to.equal(0);
+    expect(el.selectAll('.chart .metric[data-key=bar] .dot').size()).to.equal(0);
+    expect(el.selectAll('.chart .metric[data-key=baz] .dot').size()).to.equal(1);
   });
 
   it("should draw a chart x axis", function() {
