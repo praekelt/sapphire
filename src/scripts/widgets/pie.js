@@ -80,7 +80,7 @@ module.exports = require('./widget').extend()
   })
 
   .enter(function(el) {
-    el.attr('class', 'pie widget');
+    el.classed('pie widget', true);
 
     el.append('div')
       .attr('class', 'title');
