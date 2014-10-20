@@ -15,26 +15,31 @@ body {
   margin: 0 auto;
 }
 
-.widget {
-  float: left;
+.box {
   padding: 10px;
 }
     </style>
   </head>
   <body>
     <div class="sapphire">
-      <div id="last1"></div>
-      <div id="last2"></div>
-      <div id="last3"></div>
+      <div class="box">
+        <div id="last1"></div>
+      </div>
+
+      <div class="box">
+        <div id="last2"></div>
+      </div>
+
+      <div class="box">
+        <div id="last3"></div>
+      </div>
+    </div>
     </div>
     <script src="../../bower_components/d3/d3.min.js"></script>
     <script src="../../bower_components/strain/strain.js"></script>
     <script src="../../build/sapphire.js"></script>
     <script>
-var last = sapphire.widgets.last()
-
-  // TODO remove once #76 is resolved
-  .width(480);
+var last = sapphire.widgets.last();
 
 d3.select('#last1')
   .datum({

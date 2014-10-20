@@ -9,23 +9,36 @@
 body {
   background: #f2f2f2;
 }
+
+.sapphire {
+  width: 640px;
+  margin: 0 auto;
+}
+
+.box {
+  height: 240px;
+  padding: 10px;
+}
     </style>
   </head>
   <body>
     <div class="sapphire">
-      <div id="bars"></div>
-      <div id="lines"></div>
+      <div class="box">
+        <div id="bars"></div>
+      </div>
+
+      <div class="box">
+        <div id="lines"></div>
+      </div>
     </div>
     <script src="../../bower_components/d3/d3.min.js"></script>
     <script src="../../bower_components/strain/strain.js"></script>
     <script src="../../build/sapphire.js"></script>
     <script>
 var bars = sapphire.widgets.bars()
-  .width(600)
   .yMax(10);
 
 var lines = sapphire.widgets.lines()
-  .width(600)
   .yMin(2)
   .yMax(10);
 
