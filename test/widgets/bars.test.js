@@ -1,11 +1,14 @@
 describe("sapphire.widgets.bars", function() {
   var el;
   var datum;
+  var container;
 
   beforeEach(function() {
-    el = d3.select('body')
+    container = d3.select('body')
       .append('div')
       .attr('class', 'tmp');
+
+    el = container.append('div');
 
     datum = {
       title: 'Total Foo',
@@ -26,17 +29,7 @@ describe("sapphire.widgets.bars", function() {
   });
 
   afterEach(function() {
-    el.remove();
-  });
-
-  it("should set its dimensions", function() {
-    var bars = sapphire.widgets.bars()
-      .width(200)
-      .height(300);
-
-    bars(el.datum(datum));
-    expect(el.style('width')).to.equal('200px');
-    expect(el.style('height')).to.equal('300px');
+    container.remove();
   });
 
   it("should show its title", function() {
@@ -59,14 +52,15 @@ describe("sapphire.widgets.bars", function() {
   });
 
   it("should show its bars", function() {
+    container
+      .classed('w640 with-chart-h240', true);
+
     var fx = d3.scale.linear();
     var fy = d3.scale.linear();
 
     var bars = sapphire.widgets.bars()
-      .width(400)
-      .height(150)
       .barPadding(4)
-      .margin({
+      .chartMargin({
         top: 4,
         left: 4,
         bottom: 4,
@@ -92,9 +86,14 @@ describe("sapphire.widgets.bars", function() {
     expect(el.selectAll('.bar').size()).to.equal(3);
 
     var dims = sapphire.utils.box()
-      .width(parseInt(el.select('.chart').style('width')))
-      .height(parseInt(el.select('.chart').style('height')))
-      .margin(bars.margin())
+      .width(640)
+      .height(240)
+      .margin({
+        top: 4,
+        left: 4,
+        bottom: 4,
+        right: 4 
+      })
       .calc();
 
     var dx = (10 - 0) / 3;
@@ -169,17 +168,7 @@ describe("sapphire.widgets.bars", function() {
   });
 
   it("should colour its bars", function() {
-    var bars = sapphire.widgets.bars()
-      .width(400)
-      .height(150)
-      .barPadding(4)
-      .margin({
-        top: 4,
-        left: 4,
-        bottom: 4,
-        right: 4 
-      });
-
+    var bars = sapphire.widgets.bars();
     expect(el.html()).to.be.empty;
 
     datum.title = 'Total Bar';
@@ -228,12 +217,14 @@ describe("sapphire.widgets.bars", function() {
   });
 
   it("should allow its bars to have variable widths", function() {
+    container
+      .classed('w640 with-chart-h240', true);
+
     var fx = d3.scale.linear();
 
     var bars = sapphire.widgets.bars()
-      .width(400)
       .barPadding(4)
-      .margin({
+      .chartMargin({
         top: 4,
         left: 4,
         bottom: 4,
@@ -263,9 +254,14 @@ describe("sapphire.widgets.bars", function() {
     expect(el.selectAll('.bar').size()).to.equal(3);
 
     var dims = sapphire.utils.box()
-      .width(parseInt(el.select('.chart').style('width')))
-      .height(parseInt(el.select('.chart').style('height')))
-      .margin(bars.margin())
+      .width(640)
+      .height(240)
+      .margin({
+        top: 4,
+        left: 4,
+        bottom: 4,
+        right: 4 
+      })
       .calc();
 
     fx.domain([0, 10 + 6])
