@@ -5,6 +5,8 @@
   font-size: 14px;
 }
 .sapphire .widget {
+  width: 100%;
+  height: 100%;
   margin: 10px 0;
 }
 .sapphire .widget > .title {
@@ -43,70 +45,65 @@
 .sapphire .widget .table tr td:nth-child(2n + 1) {
   background: rgba(58, 58, 58, 0.025);
 }
-.sapphire .widget .chart {
-  width: 100%;
-  height: 100%;
-}
 .sapphire .lines.widget > .title {
   padding: 6px 0;
   background: #3a3a3a;
   color: #f2f2f2;
   text-align: center;
 }
-.sapphire .lines.widget .chart {
-  width: 100%;
-  height: 100%;
+.sapphire .lines.widget .values .chart {
   padding: 8px;
+  height: 160px;
 }
-.sapphire .lines.widget .chart .lines .metric .line {
+.sapphire .lines.widget .values .chart .lines .metric .line {
   fill: none;
   stroke-width: 2px;
 }
-.sapphire .lines.widget .axis line,
-.sapphire .lines.widget .axis path {
+.sapphire .lines.widget .values .axis line,
+.sapphire .lines.widget .values .axis path {
   fill: none;
   shape-rendering: crispEdges;
   stroke: #636363;
 }
-.sapphire .lines.widget .axis .tick text {
+.sapphire .lines.widget .values .axis .tick text {
   fill: #636363;
   stroke: none;
   font-size: 12px;
 }
-.sapphire .lines.widget .axis line {
+.sapphire .lines.widget .values .axis line {
   stroke-width: 1px;
   stroke: rgba(58, 58, 58, 0.07);
 }
-.sapphire .lines.widget .axis path {
+.sapphire .lines.widget .values .axis path {
   stroke: none;
 }
-.sapphire .lines.widget .legend .table {
+.sapphire .lines.widget .values .legend .table {
   border-collapse: collapse;
   width: 100%;
 }
-.sapphire .lines.widget .legend .table tr td {
+.sapphire .lines.widget .values .legend .table tr td {
   background: rgba(58, 58, 58, 0.07);
 }
-.sapphire .lines.widget .legend .table tr:nth-child(2n) td {
+.sapphire .lines.widget .values .legend .table tr:nth-child(2n) td {
   background: rgba(58, 58, 58, 0.025);
 }
-.sapphire .lines.widget .legend .table tr:nth-child(2n) td:nth-child(2n + 1) {
+.sapphire .lines.widget .values .legend .table tr:nth-child(2n) td:nth-child(2n + 1) {
   background: rgba(58, 58, 58, 0.07);
 }
-.sapphire .lines.widget .legend .table tr td {
+.sapphire .lines.widget .values .legend .table tr td {
   padding: 4px 12px;
 }
-.sapphire .lines.widget .legend .table tr td:nth-child(2n + 1) {
+.sapphire .lines.widget .values .legend .table tr td:nth-child(2n + 1) {
   background: rgba(58, 58, 58, 0.025);
 }
-.sapphire .lines.widget .legend .table .metric .swatch {
+.sapphire .lines.widget .values .legend .table .metric .swatch {
   padding: 0;
   width: 12px;
 }
-.sapphire .lines.widget .legend .table .metric .title {
+.sapphire .lines.widget .values .legend .table .metric .title {
   width: 70%;
 }
-.sapphire .lines.widget .legend .table .metric .value {
+.sapphire .lines.widget .values .legend .table .metric .value {
   text-align: right;
 }
 .sapphire .last.widget > .title {
@@ -154,9 +151,8 @@
   padding-bottom: 10px;
   text-align: right;
 }
-.sapphire .last.widget .values .sparkline {
-  width: 100%;
-  height: 100%;
+.sapphire .last.widget .values .chart {
+  height: 25px;
 }
 .sapphire .last.widget .values .sparkline .path {
   fill: none;
@@ -173,7 +169,6 @@
   text-align: center;
 }
 .sapphire .bars.widget .chart {
-  width: 100%;
   height: 100%;
   padding: 10px 5px;
   margin: 0 auto;
@@ -214,8 +209,7 @@
   text-align: center;
 }
 .sapphire .pie.widget .chart {
-  width: 100%;
-  height: 100%;
+  height: 220px;
 }
 .sapphire .pie.widget .chart .slice path {
   stroke: none;

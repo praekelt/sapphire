@@ -1,6 +1,7 @@
 describe("sapphire.widgets.pie", function() {
   var el;
   var datum;
+  var container;
   
   var helpers = {};
 
@@ -35,9 +36,11 @@ describe("sapphire.widgets.pie", function() {
     });
 
   beforeEach(function() {
-    el = d3.select('body')
+    container = d3.select('body')
       .append('div')
       .attr('class', 'tmp');
+
+    el = container.append('div');
 
     datum = {
       title: 'Total Foo and Bar',
@@ -61,14 +64,6 @@ describe("sapphire.widgets.pie", function() {
     el.remove();
   });
   
-  it("should set its width", function() {
-    var pie = sapphire.widgets.pie()
-      .width(800);
-
-    pie(el.datum(datum));
-    expect(el.style('width')).to.equal('800px');
-  });
-
   it("should show its title", function() {
     var pie = sapphire.widgets.pie();
     expect(el.html()).to.be.empty;
@@ -93,54 +88,63 @@ describe("sapphire.widgets.pie", function() {
   });
 
   it("should center its chart", function() {
+    container
+      .classed('w640 with-chart-h240', true);
+
     var pie = sapphire.widgets.pie()
-      .width(300)
-      .margin({
-        top: 40,
-        left: 20,
-        right: 20,
-        bottom: 20
+      .chartMargin({
+        top: 4,
+        left: 4,
+        right: 4,
+        bottom: 4
       });
 
     var arc = helpers.arc()
-      .width(300)
+      .width(240)
       .margin({
-        top: 40,
-        left: 20,
-        right: 20,
-        bottom: 20
+        top: 4,
+        left: 4,
+        right: 4,
+        bottom: 4
       });
 
     el.datum(datum)
       .call(pie);
 
-    var center = (300 / 2) - arc.radius();
-    var translate = sapphire.utils.translate(center, center);
+    var translate = sapphire.utils.translate(
+        (640 / 2) - arc.radius(),
+        (240 / 2) - arc.radius());
+
     expect(el.select('svg g').attr('transform')).to.equal(translate);
 
+    container
+      .classed('w640 with-chart-h240', false)
+      .classed('w480 with-chart-h120', true);
+
     pie
-      .width(100)
-      .margin({
-        top: 10,
-        left: 10,
-        right: 10,
-        bottom: 10
+      .chartMargin({
+        top: 2,
+        left: 2,
+        right: 2,
+        bottom: 2
       });
 
     arc
-      .width(100)
+      .width(120)
       .margin({
-        top: 10,
-        left: 10,
-        right: 10,
-        bottom: 10
+        top: 2,
+        left: 2,
+        right: 2,
+        bottom: 2
       });
 
     el.datum(datum)
       .call(pie);
 
-    center = (100 / 2) - arc.radius();
-    translate = sapphire.utils.translate(center, center);
+    translate = sapphire.utils.translate(
+        (480 / 2) - arc.radius(),
+        (120 / 2) - arc.radius());
+
     expect(el.select('svg g').attr('transform')).to.equal(translate);
   });
 
@@ -172,9 +176,11 @@ describe("sapphire.widgets.pie", function() {
   });
 
   it("should size its slices according to their values", function() {
+    container
+      .classed('w640 with-chart-h240', true);
+
     var pie = sapphire.widgets.pie()
-      .width(300)
-      .margin({
+      .chartMargin({
         top: 20,
         left: 20,
         right: 20,
@@ -190,7 +196,7 @@ describe("sapphire.widgets.pie", function() {
         right: 20,
         bottom: 20
       })
-      .width(300)
+      .width(240)
       .innerRadius(15);
 
     expect(el.html()).to.be.empty;

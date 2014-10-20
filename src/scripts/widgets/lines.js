@@ -2,9 +2,6 @@ var utils = require('../utils');
 
 
 module.exports = require('./widget').extend()
-  .prop('width')
-  .default(400)
-
   .prop('title')
   .set(d3.functor)
   .default(function(d) { return d.title; })
@@ -58,6 +55,14 @@ module.exports = require('./widget').extend()
 
   .prop('none')
   .default(0)
+
+  .prop('chartMargin')
+  .default({
+    top: 10,
+    left: 35,
+    right: 15,
+    bottom: 20
+  })
 
   .prop('colors')
   .prop('chart')
@@ -126,8 +131,6 @@ module.exports = require('./widget').extend()
   .draw(function(el) {
     this.normalize(el);
 
-    el.style('width', utils.px(this.width()));
-
     el.select('.widget .title')
       .text(function(d) { return d.title; });
 
@@ -143,17 +146,6 @@ module.exports = require('./widget').extend()
 
 
 var chart = require('../view').extend()
-  .prop('height')
-  .default(150)
-
-  .prop('margin')
-  .default({
-    top: 10,
-    left: 35,
-    right: 15,
-    bottom: 20
-  })
-
   .prop('widget')
 
   .init(function(widget) {
@@ -178,9 +170,9 @@ var chart = require('../view').extend()
     var widget = this.widget();
 
     var dims = utils.box()
-      .margin(this.margin())
+      .margin(widget.chartMargin())
       .width(utils.innerWidth(el))
-      .height(this.height())
+      .height(utils.innerHeight(el))
       .calc();
 
     var allValues = el

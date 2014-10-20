@@ -2,16 +2,10 @@ var utils = require('../utils');
 
 
 module.exports = require('./widget').extend()
-  .prop('width')
-  .default(400)
-
-  .prop('height')
-  .default(200)
-
   .prop('barPadding')
   .default(2.5)
 
-  .prop('margin')
+  .prop('chartMargin')
   .default({
     top: 10,
     left: 38,
@@ -89,9 +83,7 @@ module.exports = require('./widget').extend()
       return {
         x: self.x().call(node, d, i),
         y: self.y().call(node, d, i),
-        dx: self.dx().call(node, d, i),
-        width: self.width().call(node, d, i),
-        height: self.height().call(node, d, i)
+        dx: self.dx().call(node, d, i)
       };
     }
   })
@@ -121,9 +113,6 @@ module.exports = require('./widget').extend()
     var self = this;
     this.normalize(el);
 
-    el.style('width', utils.px(this.width()))
-      .style('height', utils.px(this.height()));
-
     el.select('.widget .title')
       .text(function(d) { return d.title; });
 
@@ -142,14 +131,10 @@ module.exports = require('./widget').extend()
       .domain([0, this.yMax()(ys)]);
 
     var dims = utils.box()
-      .width(utils.innerWidth(chart))
+      .width(utils.innerWidth(el))
       .height(utils.innerHeight(chart))
-      .margin(this.margin())
+      .margin(this.chartMargin())
       .calc();
-
-    chart
-      .style('width', utils.px(dims.width))
-      .style('height', utils.px(dims.height));
 
     fx.range([0, dims.innerWidth]);
     fy.range([dims.innerHeight, 0]);

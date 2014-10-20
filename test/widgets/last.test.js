@@ -1,11 +1,14 @@
 describe("sapphire.widgets.last", function() {
   var el;
   var datum;
+  var container;
 
   beforeEach(function() {
-    el = d3.select('body')
+    container = d3.select('body')
       .append('div')
       .attr('class', 'tmp');
+
+    el = container.append('div');
 
     datum = {
       title: 'Total Bar and Baz',
@@ -23,7 +26,7 @@ describe("sapphire.widgets.last", function() {
   });
 
   afterEach(function() {
-    el.remove();
+    container.remove();
   });
 
   var helpers = {};
@@ -66,14 +69,6 @@ describe("sapphire.widgets.last", function() {
 
       return line(data);
     });
-
-  it("should set its width", function() {
-    var last = sapphire.widgets.last()
-      .width(800);
-
-    last(el.datum(datum));
-    expect(el.style('width')).to.equal('800px');
-  });
 
   it("should show the last value", function() {
     var last = sapphire.widgets.last();
@@ -277,26 +272,27 @@ describe("sapphire.widgets.last", function() {
   });
 
   it("should display a sparkline", function() {
-    var last = sapphire.widgets.last();
+    container
+      .classed('w640 with-chart-h240', true);
 
-    last
-      .sparklineLimit(2);
-
-    last
-      .width(200)
-      .sparkline()
-        .height(25)
-        .margin({
-          top: 4,
-          left: 4,
-          bottom: 4,
-          right: 4 
-        });
+    var last = sapphire.widgets.last()
+      .sparklineLimit(2)
+      .sparklineMargin({
+        top: 4,
+        left: 4,
+        bottom: 4,
+        right: 4 
+      });
 
     var dims = sapphire.utils.box()
-      .width(last.width()())
-      .height(last.sparkline().height())
-      .margin(last.sparkline().margin())
+      .width(640)
+      .height(240)
+      .margin({
+        top: 4,
+        left: 4,
+        bottom: 4,
+        right: 4 
+      })
       .calc();
 
     var fx = helpers.fx()
@@ -449,24 +445,27 @@ describe("sapphire.widgets.last", function() {
   });
 
   it("should display a diff line", function() {
-    var last = sapphire.widgets.last()
-      .sparklineLimit(2);
+    container
+      .classed('w640 with-chart-h240', true);
 
-    last
-      .width(200)
-      .sparkline()
-        .height(25)
-        .margin({
-          top: 4,
-          left: 4,
-          bottom: 4,
-          right: 4 
-        });
+    var last = sapphire.widgets.last()
+      .sparklineLimit(2)
+      .sparklineMargin({
+        top: 4,
+        left: 4,
+        bottom: 4,
+        right: 4 
+      });
 
     var dims = sapphire.utils.box()
-      .width(last.width()())
-      .height(last.sparkline().height())
-      .margin(last.sparkline().margin())
+      .width(640)
+      .height(240)
+      .margin({
+        top: 4,
+        left: 4,
+        bottom: 4,
+        right: 4 
+      })
       .calc();
 
     var fx = helpers.fx()
@@ -529,24 +528,27 @@ describe("sapphire.widgets.last", function() {
   });
 
   it("should display a dot for the last value", function() {
-    var last = sapphire.widgets.last()
-      .sparklineLimit(2);
+    container
+      .classed('w640 with-chart-h240', true);
 
-    last
-      .width(200)
-      .sparkline()
-        .height(25)
-        .margin({
-          top: 4,
-          left: 4,
-          bottom: 4,
-          right: 4 
-        });
+    var last = sapphire.widgets.last()
+      .sparklineLimit(2)
+      .sparklineMargin({
+        top: 4,
+        left: 4,
+        bottom: 4,
+        right: 4 
+      });
 
     var dims = sapphire.utils.box()
-      .width(last.width()())
-      .height(last.sparkline().height())
-      .margin(last.sparkline().margin())
+      .width(640)
+      .height(240)
+      .margin({
+        top: 4,
+        left: 4,
+        bottom: 4,
+        right: 4 
+      })
       .calc();
 
     var fx = helpers.fx()

@@ -15,25 +15,31 @@ body {
   margin: 0 auto;
 }
 
-.widget {
+.box {
+  height: 240px;
   padding: 10px;
 }
     </style>
   </head>
   <body>
     <div class="sapphire">
-      <div id="bars1"></div>
-      <div id="bars2"></div>
-      <div id="bars3"></div>
+      <div class="box">
+        <div id="bars1"></div>
+      </div>
+
+      <div class="box">
+        <div id="bars2"></div>
+      </div>
+
+      <div class="box">
+        <div id="bars3"></div>
+      </div>
     </div>
     <script src="../../bower_components/d3/d3.min.js"></script>
     <script src="../../bower_components/strain/strain.js"></script>
     <script src="../../build/sapphire.js"></script>
     <script>
-var bars = sapphire.widgets.bars()
-
-  // TODO remove once #76 is resolved
-  .width(640);
+var bars = sapphire.widgets.bars();
 
 d3.select('#bars1')
   .datum({

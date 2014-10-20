@@ -15,7 +15,8 @@ body {
   margin: 0 auto;
 }
 
-.pie {
+.box {
+  width: 200px;
   float: left;
   padding: 10px;
 }
@@ -23,9 +24,17 @@ body {
   </head>
   <body>
     <div class="sapphire">
-      <div id="pie1"></div>
-      <div id="pie2"></div>
-      <div id="pie3"></div>
+      <div class="box">
+        <div id="pie1"></div>
+      </div>
+
+      <div class="box">
+        <div id="pie2"></div>
+      </div>
+
+      <div class="box">
+        <div id="pie3"></div>
+      </div>
     </div>
     <script src="../../bower_components/d3/d3.min.js"></script>
     <script src="../../bower_components/strain/strain.js"></script>
@@ -34,8 +43,7 @@ body {
 
 var pie = sapphire.widgets.pie()
   .key(function(d) { return d.title; })
-  .colors(d3.scale.category20())
-  .width(200);
+  .colors(d3.scale.category20());
 
 d3.select('#pie1')
   .datum({
