@@ -63,6 +63,17 @@ describe("sapphire.widgets.pie", function() {
   afterEach(function() {
     el.remove();
   });
+
+  it("should not overwrite existing class attributes", function() {
+    var pie = sapphire.widgets.pie();
+
+    el.datum(datum)
+      .attr('class', 'foo');
+
+    pie(el);
+
+    expect(el.classed('foo')).to.be.true;
+  });
   
   it("should show its title", function() {
     var pie = sapphire.widgets.pie();

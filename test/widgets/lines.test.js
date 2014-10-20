@@ -69,6 +69,17 @@ describe("sapphire.widgets.lines", function() {
       return line(data);
     });
 
+  it("should not overwrite existing class attributes", function() {
+    var lines = sapphire.widgets.lines();
+
+    el.datum(datum)
+      .attr('class', 'foo');
+
+    lines(el);
+
+    expect(el.classed('foo')).to.be.true;
+  });
+
   it("should show its title", function() {
     var lines = sapphire.widgets.lines();
     expect(el.html()).to.be.empty;
