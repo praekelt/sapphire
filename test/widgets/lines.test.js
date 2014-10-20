@@ -1,11 +1,14 @@
 describe("sapphire.widgets.lines", function() {
   var el;
   var datum;
+  var container;
 
   beforeEach(function() {
-    el = d3.select('body')
+    container = d3.select('body')
       .append('div')
       .attr('class', 'tmp');
+
+    el = container.append('div');
 
     datum = {
       title: 'Total Foo and Bar',
@@ -46,7 +49,7 @@ describe("sapphire.widgets.lines", function() {
   });
 
   afterEach(function() {
-    el.remove();
+    container.remove();
   });
 
   helpers = {};
@@ -90,24 +93,29 @@ describe("sapphire.widgets.lines", function() {
   });
 
   it("should draw lines for its metrics", function() {
+    container
+      .classed('w640 with-chart-h240', true);
+
     var lines = sapphire.widgets.lines()
       .key(function(d) { return d.key; });
 
     lines
-      .width(600)
-      .chart()
-        .height(150)
-        .margin({
-          top: 4,
-          left: 4,
-          bottom: 4,
-          right: 4 
-        });
+      .chartMargin({
+        top: 4,
+        left: 4,
+        bottom: 4,
+        right: 4 
+      });
 
     var dims = sapphire.utils.box()
-      .width(lines.width()())
-      .height(lines.chart().height())
-      .margin(lines.chart().margin())
+      .width(640)
+      .height(240)
+      .margin({
+        top: 4,
+        left: 4,
+        bottom: 4,
+        right: 4 
+      })
       .calc();
 
     var colors = lines.colors();
@@ -124,6 +132,7 @@ describe("sapphire.widgets.lines", function() {
 
     expect(el.html()).to.be.empty;
 
+    datum.metrics[1].key = 'foo';
     datum.metrics[0].values = [{
       x: 123,
       y: 234
@@ -135,6 +144,7 @@ describe("sapphire.widgets.lines", function() {
       y: 789
     }];
 
+    datum.metrics[1].key = 'bar';
     datum.metrics[1].values = [{
       x: 123,
       y: 834
@@ -205,24 +215,29 @@ describe("sapphire.widgets.lines", function() {
   });
 
   it("should draw dots for its metrics' last values", function() {
+    container
+      .classed('w640 with-chart-h240', true);
+
     var lines = sapphire.widgets.lines()
       .key(function(d) { return d.key; });
 
     lines
-      .width(600)
-      .chart()
-        .height(150)
-        .margin({
-          top: 4,
-          left: 4,
-          bottom: 4,
-          right: 4 
-        });
+      .chartMargin({
+        top: 4,
+        left: 4,
+        bottom: 4,
+        right: 4 
+      });
 
     var dims = sapphire.utils.box()
-      .width(lines.width()())
-      .height(lines.chart().height())
-      .margin(lines.chart().margin())
+      .width(640)
+      .height(240)
+      .margin({
+        top: 4,
+        left: 4,
+        bottom: 4,
+        right: 4 
+      })
       .calc();
 
     var fx = d3.scale.linear()

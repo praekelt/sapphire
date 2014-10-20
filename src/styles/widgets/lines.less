@@ -6,50 +6,52 @@
     .widget .title();
   }
 
-  .chart {
-    .widget .chart();
-    padding: 8px;
+  .values {
+    .chart {
+      padding: 8px;
+      height: 160px;
 
-    .lines {
-      .metric {
-        .line {
-          fill: none;
-          stroke-width: 2px;
+      .lines {
+        .metric {
+          .line {
+            fill: none;
+            stroke-width: 2px;
+          }
         }
+      }
+
+    }
+
+    .axis {
+      .widget .axis();
+
+      line {
+        stroke-width: 1px;
+        stroke: fade(@fg-color, 7%);
+      }
+      
+      path {
+        stroke: none;
       }
     }
 
-  }
+    .legend {
+      .table {
+        .widget .table();
 
-  .axis {
-    .widget .axis();
+        .metric {
+          .swatch {
+            padding: 0;
+            width: 12px;
+          }
 
-    line {
-      stroke-width: 1px;
-      stroke: fade(@fg-color, 7%);
-    }
-    
-    path {
-      stroke: none;
-    }
-  }
+          .title {
+            width: 70%;
+          }
 
-  .legend {
-    .table {
-      .widget .table();
-
-      .metric {
-        .swatch {
-          padding: 0;
-          width: 12px;
-        }
-
-        .title {
-          width: 70%;
-        }
-
-        .value {
-          text-align: right;
+          .value {
+            text-align: right;
+          }
         }
       }
     }
