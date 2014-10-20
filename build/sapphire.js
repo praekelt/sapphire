@@ -173,16 +173,10 @@ var utils = _dereq_('../utils');
 
 
 module.exports = _dereq_('./widget').extend()
-  .prop('width')
-  .default(400)
-
-  .prop('height')
-  .default(200)
-
   .prop('barPadding')
   .default(2.5)
 
-  .prop('margin')
+  .prop('chartMargin')
   .default({
     top: 10,
     left: 38,
@@ -260,9 +254,7 @@ module.exports = _dereq_('./widget').extend()
       return {
         x: self.x().call(node, d, i),
         y: self.y().call(node, d, i),
-        dx: self.dx().call(node, d, i),
-        width: self.width().call(node, d, i),
-        height: self.height().call(node, d, i)
+        dx: self.dx().call(node, d, i)
       };
     }
   })
@@ -292,9 +284,6 @@ module.exports = _dereq_('./widget').extend()
     var self = this;
     this.normalize(el);
 
-    el.style('width', utils.px(this.width()))
-      .style('height', utils.px(this.height()));
-
     el.select('.widget .title')
       .text(function(d) { return d.title; });
 
@@ -313,14 +302,10 @@ module.exports = _dereq_('./widget').extend()
       .domain([0, this.yMax()(ys)]);
 
     var dims = utils.box()
-      .width(utils.innerWidth(chart))
+      .width(utils.innerWidth(el))
       .height(utils.innerHeight(chart))
-      .margin(this.margin())
+      .margin(this.chartMargin())
       .calc();
-
-    chart
-      .style('width', utils.px(dims.width))
-      .style('height', utils.px(dims.height));
 
     fx.range([0, dims.innerWidth]);
     fy.range([dims.innerHeight, 0]);
@@ -394,9 +379,6 @@ var utils = _dereq_('../utils');
 
 
 module.exports = _dereq_('./widget').extend()
-  .prop('width')
-  .default(400)
-
   .prop('title')
   .set(d3.functor)
   .default(function(d) { return d.title; })
@@ -433,6 +415,14 @@ module.exports = _dereq_('./widget').extend()
   .default(15)
   .set(function(v) { return Math.max(utils.ensure(v, 2), 2); })
 
+  .prop('sparklineMargin')
+  .default({
+    top: 4,
+    left: 4,
+    bottom: 4,
+    right: 4 
+  })
+
   .prop('sparkline')
   .prop('summary')
 
@@ -454,7 +444,7 @@ module.exports = _dereq_('./widget').extend()
       .attr('class', 'last value');
 
     values.append('div')
-      .attr('class', 'sparkline');
+      .attr('class', 'sparkline chart');
 
     values.append('div')
       .attr('class', 'summary');
@@ -463,8 +453,6 @@ module.exports = _dereq_('./widget').extend()
   .draw(function(el) {
     var self = this;
     var node = el.node();
-
-    el.style('width', utils.px(this.width()));
 
     el.select('.title')
       .text(function(d, i) {
@@ -559,17 +547,6 @@ var summary = _dereq_('../view').extend()
 var sparkline = _dereq_('../view').extend()
   .prop('widget')
 
-  .prop('height')
-  .default(25)
-
-  .prop('margin')
-  .default({
-    top: 4,
-    left: 4,
-    bottom: 4,
-    right: 4 
-  })
-
   .init(function(widget) {
     this.widget(widget);
   })
@@ -586,15 +563,17 @@ var sparkline = _dereq_('../view').extend()
   })
 
   .draw(function(el) {
-    if (el.datum().length < this.widget().sparklineLimit()) {
+    var widget = this.widget();
+
+    if (el.datum().length < widget.sparklineLimit()) {
       el.style('height', 0);
       return;
     }
 
     var dims = utils.box()
-      .margin(this.margin())
+      .margin(widget.sparklineMargin())
       .width(utils.innerWidth(el))
-      .height(this.height())
+      .height(utils.innerHeight(el))
       .calc();
 
     var fx = d3.scale.linear()
@@ -641,9 +620,6 @@ var utils = _dereq_('../utils');
 
 
 module.exports = _dereq_('./widget').extend()
-  .prop('width')
-  .default(400)
-
   .prop('title')
   .set(d3.functor)
   .default(function(d) { return d.title; })
@@ -697,6 +673,14 @@ module.exports = _dereq_('./widget').extend()
 
   .prop('none')
   .default(0)
+
+  .prop('chartMargin')
+  .default({
+    top: 10,
+    left: 35,
+    right: 15,
+    bottom: 20
+  })
 
   .prop('colors')
   .prop('chart')
@@ -765,8 +749,6 @@ module.exports = _dereq_('./widget').extend()
   .draw(function(el) {
     this.normalize(el);
 
-    el.style('width', utils.px(this.width()));
-
     el.select('.widget .title')
       .text(function(d) { return d.title; });
 
@@ -782,17 +764,6 @@ module.exports = _dereq_('./widget').extend()
 
 
 var chart = _dereq_('../view').extend()
-  .prop('height')
-  .default(150)
-
-  .prop('margin')
-  .default({
-    top: 10,
-    left: 35,
-    right: 15,
-    bottom: 20
-  })
-
   .prop('widget')
 
   .init(function(widget) {
@@ -817,9 +788,9 @@ var chart = _dereq_('../view').extend()
     var widget = this.widget();
 
     var dims = utils.box()
-      .margin(this.margin())
+      .margin(widget.chartMargin())
       .width(utils.innerWidth(el))
-      .height(this.height())
+      .height(utils.innerHeight(el))
       .calc();
 
     var allValues = el
@@ -972,9 +943,6 @@ var utils = _dereq_('../utils');
 
 
 module.exports = _dereq_('./widget').extend()
-  .prop('width')
-  .default(400)
-
   .prop('colors')
 
   .prop('title')
@@ -997,7 +965,7 @@ module.exports = _dereq_('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.value; })
 
-  .prop('margin')
+  .prop('chartMargin')
   .default({
     top: 20,
     left: 20,
@@ -1065,8 +1033,6 @@ module.exports = _dereq_('./widget').extend()
   .draw(function(el) {
     this.normalize(el);
 
-    el.style('width', utils.px(this.width()));
-
     el.select('.widget .title')
       .text(function(d) { return d.title; });
 
@@ -1091,12 +1057,10 @@ var chart = _dereq_('../view').extend()
   })
 
   .draw(function(el) {
-    var width = utils.innerWidth(el);
-
     var dims = utils.box()
-      .margin(this.widget().margin())
-      .width(width)
-      .height(width)
+      .margin(this.widget().chartMargin())
+      .width(utils.innerWidth(el))
+      .height(utils.innerHeight(el))
       .calc();
 
     var radius = Math.min(dims.innerWidth, dims.innerHeight) / 2;
@@ -1188,14 +1152,7 @@ var legend = _dereq_('../view').extend()
   });
 
 },{"../utils":2,"../view":3,"./widget":9}],9:[function(_dereq_,module,exports){
-module.exports = _dereq_('../view').extend()
-  .prop('width')
-  .set(d3.functor)
-  .default(0)
-
-  .prop('height')
-  .set(d3.functor)
-  .default(0);
+module.exports = _dereq_('../view').extend();
 
 },{"../view":3}]},{},[1])
 (1)
