@@ -2,9 +2,6 @@ var utils = require('../utils');
 
 
 module.exports = require('./widget').extend()
-  .prop('width')
-  .default(400)
-
   .prop('title')
   .set(d3.functor)
   .default(function(d) { return d.title; })
@@ -41,6 +38,14 @@ module.exports = require('./widget').extend()
   .default(15)
   .set(function(v) { return Math.max(utils.ensure(v, 2), 2); })
 
+  .prop('sparklineMargin')
+  .default({
+    top: 4,
+    left: 4,
+    bottom: 4,
+    right: 4 
+  })
+
   .prop('sparkline')
   .prop('summary')
 
@@ -62,7 +67,7 @@ module.exports = require('./widget').extend()
       .attr('class', 'last value');
 
     values.append('div')
-      .attr('class', 'sparkline');
+      .attr('class', 'sparkline chart');
 
     values.append('div')
       .attr('class', 'summary');
@@ -71,8 +76,6 @@ module.exports = require('./widget').extend()
   .draw(function(el) {
     var self = this;
     var node = el.node();
-
-    el.style('width', utils.px(this.width()));
 
     el.select('.title')
       .text(function(d, i) {
@@ -167,17 +170,6 @@ var summary = require('../view').extend()
 var sparkline = require('../view').extend()
   .prop('widget')
 
-  .prop('height')
-  .default(25)
-
-  .prop('margin')
-  .default({
-    top: 4,
-    left: 4,
-    bottom: 4,
-    right: 4 
-  })
-
   .init(function(widget) {
     this.widget(widget);
   })
@@ -194,15 +186,17 @@ var sparkline = require('../view').extend()
   })
 
   .draw(function(el) {
-    if (el.datum().length < this.widget().sparklineLimit()) {
+    var widget = this.widget()
+
+    if (el.datum().length < widget.sparklineLimit()) {
       el.style('height', 0);
       return;
     }
 
     var dims = utils.box()
-      .margin(this.margin())
+      .margin(widget.sparklineMargin())
       .width(utils.innerWidth(el))
-      .height(this.height())
+      .height(utils.innerHeight(el))
       .calc();
 
     var fx = d3.scale.linear()
