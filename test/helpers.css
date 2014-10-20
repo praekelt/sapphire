@@ -1,3 +1,7 @@
+.w480 {
+  width: 480px;
+}
+
 .w640 {
   width: 640px;
 }
@@ -6,6 +10,14 @@
   height: 480px;
 }
 
+.h640 {
+  height: 480px;
+}
+
 .with-chart-h240 .chart {
   height: 240px;
+}
+
+.with-chart-h120 .chart {
+  height: 120px;
 }

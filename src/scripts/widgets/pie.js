@@ -2,9 +2,6 @@ var utils = require('../utils');
 
 
 module.exports = require('./widget').extend()
-  .prop('width')
-  .default(400)
-
   .prop('colors')
 
   .prop('title')
@@ -27,7 +24,7 @@ module.exports = require('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.value; })
 
-  .prop('margin')
+  .prop('chartMargin')
   .default({
     top: 20,
     left: 20,
@@ -95,8 +92,6 @@ module.exports = require('./widget').extend()
   .draw(function(el) {
     this.normalize(el);
 
-    el.style('width', utils.px(this.width()));
-
     el.select('.widget .title')
       .text(function(d) { return d.title; });
 
@@ -121,12 +116,10 @@ var chart = require('../view').extend()
   })
 
   .draw(function(el) {
-    var width = utils.innerWidth(el);
-
     var dims = utils.box()
-      .margin(this.widget().margin())
-      .width(width)
-      .height(width)
+      .margin(this.widget().chartMargin())
+      .width(utils.innerWidth(el))
+      .height(utils.innerHeight(el))
       .calc();
 
     var radius = Math.min(dims.innerWidth, dims.innerHeight) / 2;
