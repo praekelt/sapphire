@@ -44,7 +44,7 @@ function safeDraw(fn) {
   return function(el) {
     var datum;
     if (el.node()) datum = el.datum();
-    fn.apply(this, arguments)
+    fn.apply(this, arguments);
     if (typeof datum != 'undefined') el.datum(datum);
-  }
+  };
 }
