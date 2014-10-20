@@ -186,7 +186,7 @@ var sparkline = require('../view').extend()
   })
 
   .draw(function(el) {
-    var widget = this.widget()
+    var widget = this.widget();
 
     if (el.datum().length < widget.sparklineLimit()) {
       el.style('height', 0);

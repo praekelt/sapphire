@@ -143,7 +143,7 @@ describe("sapphire.widgets.pie", function() {
 
     translate = sapphire.utils.translate(
         (480 / 2) - arc.radius(),
-        (120 / 2) - arc.radius())
+        (120 / 2) - arc.radius());
 
     expect(el.select('svg g').attr('transform')).to.equal(translate);
   });
