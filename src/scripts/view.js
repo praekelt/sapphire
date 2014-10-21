@@ -1,21 +1,16 @@
 module.exports = strain()
   .static('draw', function(fn) {
-    this.meth('_draw_', fn);
+    this.meth('_draw_', safeDraw(fn));
   })
   .draw(function() {})
 
   .static('enter', function(fn) {
-    this.meth('_enter_', fn);
+    this.meth('_enter_', safeDraw(fn));
   })
   .enter(function() {})
 
   .meth('draw', function(el) {
-    var datum;
     el = sapphire.utils.ensureEl(el);
-
-    if (el.node()) {
-      datum = el.datum();
-    }
 
     if (el.node() && !el.node().hasChildNodes()) {
       this.enter.apply(this, arguments);
@@ -27,10 +22,6 @@ module.exports = strain()
     }
 
     this._draw_.apply(this, arguments);
-
-    if (typeof datum != 'undefined') {
-      el.datum(datum);
-    }
   })
 
   .meth('enter', function(el) {
@@ -47,3 +38,13 @@ module.exports = strain()
   .invoke(function() {
     return this.draw.apply(this, arguments);
   });
+
+
+function safeDraw(fn) {
+  return function(el) {
+    var datum;
+    if (el.node()) datum = el.datum();
+    fn.apply(this, arguments);
+    if (typeof datum != 'undefined') el.datum(datum);
+  };
+}

@@ -71,6 +71,31 @@ describe("sapphire.view", function() {
       thing().draw(el);
       expect(el.datum()).to.equal(a);
     });
+
+    it("should restore orginally bound datum each draw in the chain", function() {
+      var datum = {foo: 'bar'};
+
+      var thing = sapphire.view.extend()
+        .draw(function(el) {
+          el.classed('thing', true);
+          expect(el.datum()).to.deep.equal(datum);
+          el.datum({});
+        });
+
+      var subthing = thing.extend()
+        .extend()
+        .draw(function(el) {
+          el.classed('subthing', true);
+          expect(el.datum()).to.deep.equal(datum);
+          el.datum({});
+        });
+
+      el.datum(datum)
+        .call(subthing());
+
+      expect(el.datum()).to.deep.equal(datum);
+      expect(el.attr('class')).to.contain('thing subthing');
+    });
   });
 
   describe(".enter", function() {
@@ -164,6 +189,31 @@ describe("sapphire.view", function() {
 
       thing().draw(el, 'sir');
       expect(el.select('.thing').text()).to.equal('sir foo');
+    });
+
+    it("should restore orginally bound datum each enter in the chain", function() {
+      var datum = {foo: 'bar'};
+
+      var thing = sapphire.view.extend()
+        .enter(function(el) {
+          el.classed('thing', true);
+          expect(el.datum()).to.deep.equal(datum);
+          el.datum({});
+        });
+
+      var subthing = thing.extend()
+        .extend()
+        .enter(function(el) {
+          el.classed('subthing', true);
+          expect(el.datum()).to.deep.equal(datum);
+          el.datum({});
+        });
+
+      el.datum(datum)
+        .call(subthing());
+
+      expect(el.datum()).to.deep.equal(datum);
+      expect(el.attr('class')).to.contain('thing subthing');
     });
   });
 });
