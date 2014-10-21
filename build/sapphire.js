@@ -260,7 +260,7 @@ module.exports = _dereq_('./widget').extend()
   })
 
   .enter(function(el) {
-    el.attr('class', 'bars widget');
+    el.classed('bars widget', true);
 
     el.append('div')
       .attr('class', 'title');
@@ -432,7 +432,7 @@ module.exports = _dereq_('./widget').extend()
   })
 
   .enter(function(el) {
-    el.attr('class', 'last widget');
+    el.classed('last widget', true);
 
     el.append('div')
       .attr('class', 'title');
@@ -693,7 +693,7 @@ module.exports = _dereq_('./widget').extend()
   })
 
   .enter(function(el) {
-    el.attr('class', 'lines widget');
+    el.classed('lines widget', true);
 
     el.append('div')
       .attr('class', 'title');
@@ -1018,7 +1018,7 @@ module.exports = _dereq_('./widget').extend()
   })
 
   .enter(function(el) {
-    el.attr('class', 'pie widget');
+    el.classed('pie widget', true);
 
     el.append('div')
       .attr('class', 'title');
