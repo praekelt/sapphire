@@ -59,7 +59,7 @@ $ bower install
 
 # development
 
-To run `gulp` directly, you'll install gulp globally:
+To run `gulp` directly, install gulp globally:
 
 ```
 # npm install -g gulp
@@ -91,4 +91,4 @@ $ gulp lint
 
 # contribution
 
-For reporting bugs, issues or feature requests, make a github issue. If you'd like to work on it, submit a pull request either linked to the corresponding issue, or referencing the corresponding issue via a github comment or git commit message. When submitting pull requests, *don't include* build file changes, they make reviews more difficult to review.
+For reporting bugs, issues or feature requests, make a github issue. If you'd like to work on it, submit a pull request either linked to the corresponding issue, or referencing the corresponding issue via a github comment or git commit message. When submitting pull requests, *don't include* build file changes, they make reviewing difficult.
