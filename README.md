@@ -46,7 +46,7 @@ $ bower install
 Run the tests to check if everything is happy:
 
 ```
-$ gulp test
+$ npm test
 ```
 
 # [examples](examples/)
@@ -58,6 +58,18 @@ $ bower install
 ```
 
 # development
+
+To run `gulp` directly, you'll install gulp globally:
+
+```
+# npm install -g gulp
+```
+
+Or if you don't like globally installed things, use the locally installed gulp's binary:
+
+```
+$ ./node_modules/.bin/gulp --help
+```
 
 After editing source scripts or files, do a:
 
