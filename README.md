@@ -21,9 +21,9 @@ d3.select('#rainbows-earthworms')
 
 ## installation
 
-1. Install [node.js](http://nodejs.org/)
+Install [node.js](http://nodejs.org/)
 
-2. Install bower globally:
+Install bower globally:
 
 ```
 # npm install -g bower
@@ -36,14 +36,14 @@ $ npm install bower
 $ ./node_modules/.bin/bower --help
 ```
 
-3. Install the dependencies:
+Install the dependencies:
 
 ```
 $ npm install
 $ bower install
 ```
 
-4. Run the tests to check if everything is happy:
+Run the tests to check if everything is happy:
 
 ```
 $ gulp test
@@ -59,17 +59,13 @@ $ bower install
 
 # development
 
-Either:
-
-  1. After editing source scripts or files, do a:
+After editing source scripts or files, do a:
 
 ```
 $ gulp build
 ```
 
-Or:
-
-  2. Keep a watch task running for rebuilds to happen on file changes:
+Or, keep a watch task running for rebuilds to happen on file changes:
 
 ```
 $ gulp watch
