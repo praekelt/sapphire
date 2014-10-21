@@ -32,6 +32,17 @@ describe("sapphire.widgets.bars", function() {
     container.remove();
   });
 
+  it("should not overwrite existing class attributes", function() {
+    var bars = sapphire.widgets.bars();
+
+    el.datum(datum)
+      .attr('class', 'foo');
+
+    bars(el);
+
+    expect(el.classed('foo')).to.be.true;
+  });
+
   it("should show its title", function() {
     var bars = sapphire.widgets.bars();
     expect(el.html()).to.be.empty;

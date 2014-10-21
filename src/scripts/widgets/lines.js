@@ -75,7 +75,7 @@ module.exports = require('./widget').extend()
   })
 
   .enter(function(el) {
-    el.attr('class', 'lines widget');
+    el.classed('lines widget', true);
 
     el.append('div')
       .attr('class', 'title');

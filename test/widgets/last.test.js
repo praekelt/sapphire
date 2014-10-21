@@ -70,6 +70,17 @@ describe("sapphire.widgets.last", function() {
       return line(data);
     });
 
+  it("should not overwrite existing class attributes", function() {
+    var last = sapphire.widgets.last();
+
+    el.datum(datum)
+      .attr('class', 'foo');
+
+    last(el);
+
+    expect(el.classed('foo')).to.be.true;
+  });
+
   it("should show the last value", function() {
     var last = sapphire.widgets.last();
     expect(el.html()).to.be.empty;

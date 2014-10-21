@@ -89,7 +89,7 @@ module.exports = require('./widget').extend()
   })
 
   .enter(function(el) {
-    el.attr('class', 'bars widget');
+    el.classed('bars widget', true);
 
     el.append('div')
       .attr('class', 'title');
