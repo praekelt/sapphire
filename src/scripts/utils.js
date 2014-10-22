@@ -98,3 +98,8 @@ utils.measure = function(el, name) {
   el = utils.ensureEl(el);
   return parseInt(el.style(name));
 };
+
+
+utils.isEmptyNode = function() {
+  return !this.hasChildNodes();
+};

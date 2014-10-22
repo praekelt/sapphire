@@ -55,143 +55,188 @@ module.exports = require('./widget').extend()
     this.colors(d3.scale.category10());
   })
 
-  .meth('normalize', function(el) {
-    var self = this;
-    var node = el.node();
+  .draw(function(el) {
+    var opts = this.props();
+    normalize(el, opts);
 
-    el.datum(function(d, i) {
-      var values = self.values()
-        .call(node, d, i)
-        .map(value);
+    opts.width = utils.innerWidth(el);
+    opts.color = opts.colors(el.datum().title);
+    drawWidget(el, opts);
+  });
 
-      var len = values.length;
-      var dxAvg = values.length
-        ? (values[len - 1].x - values[0].x) / len
-        : 0;
 
-      values.forEach(function(d) {
-        d.dx = utils.ensure(d.dx, dxAvg);
-      });
+function drawWidget(el, opts) {
+  el.classed('bars widget', true);
 
-      return {
-        values: values,
-        title: self.title().call(node, d, i)
-      };
+  el.select('[data-widget-component="title"]')
+    .call(drawTitle);
+
+  el.select('[data-widget-component="chart"]')
+    .call(drawChart, opts);
+}
+
+
+function drawTitle(title) {
+  title
+    .classed('title', true)
+    .text(function(d) { return d.title; });
+}
+
+
+function drawChart(chart, opts) {
+  chart
+    .classed('chart', true)
+    .datum(function(d) { return d.values; });
+
+  var dims = utils.box()
+    .width(opts.width)
+    .height(utils.innerHeight(chart))
+    .margin(opts.chartMargin)
+    .calc();
+
+  var fx = d3.time.scale()
+    .domain([
+      d3.min(chart.datum(), function(d) { return d.x; }),
+      d3.max(chart.datum(), function(d) { return d.x + d.dx; })]);
+
+  var ys = chart.datum()
+    .map(function(d) { return d.y; });
+
+  var fy = d3.scale.linear()
+    .domain([0, opts.yMax(ys)]);
+
+  fx.range([0, dims.innerWidth]);
+  fy.range([dims.innerHeight, 0]);
+
+  chart
+    .filter(utils.isEmptyNode)
+    .call(initChart);
+
+  chart.select('svg')
+    .call(drawSvg, dims, fx, fy, opts);
+}
+
+
+function initChart(chart) {
+  var svg = chart
+    .append('svg')
+    .append('g');
+
+  svg.append('g')
+    .attr('class', 'bars');
+
+  svg.append('g')
+    .attr('class', 'y axis');
+
+  svg.append('g')
+    .attr('class', 'x axis');
+}
+
+
+function drawSvg(svg, dims, fx, fy, opts) {
+  svg
+    .attr('width', dims.width)
+    .attr('height', dims.height)
+    .select('g')
+      .attr('transform', utils.translate(
+        dims.margin.left,
+        dims.margin.top));
+
+  svg.select('.bars')
+     .call(drawBars, dims, fx, fy, opts);
+
+  svg.select('.x.axis')
+    .call(drawXAxis, dims, fx, opts);
+
+  svg.select('.y.axis')
+    .call(drawYAxis, dims, fy, opts);
+}
+
+
+function drawBars(bars, dims, fx, fy, opts) {
+  bars
+    .selectAll('.bar')
+    .data(function(d) { return d; },
+          function(d) { return d.x; })
+    .call(drawBar, dims, fx, fy, opts);
+}
+
+
+function drawBar(bar, dims, fx, fy, opts) {
+  bar.enter().append('g')
+    .attr('class', 'bar')
+    .append('rect');
+
+  bar
+    .attr('transform', function(d) {
+      return utils.translate(fx(d.x), fy(d.y));
     });
 
-    function value(d, i) {
-      return {
-        x: self.x().call(node, d, i),
-        y: self.y().call(node, d, i),
-        dx: self.dx().call(node, d, i)
-      };
-    }
-  })
+  bar.select('rect')
+    .style('fill', opts.color)
+    .attr('width', function(d) {
+      var width = fx(d.x + d.dx) - fx(d.x);
+      width -= opts.barPadding;
+      return Math.max(width, 1);
+    })
+    .attr('height', function(d) {
+      return dims.innerHeight - fy(d.y); 
+    });
 
-  .enter(function(el) {
-    el.classed('bars widget', true);
+  bar.exit()
+    .remove();
+}
 
-    el.append('div')
-      .attr('class', 'title');
 
-    var svg = el.append('div')
-      .attr('class', 'chart')
-      .append('svg')
-      .append('g');
-
-    svg.append('g')
-      .attr('class', 'bars');
-
-    svg.append('g')
-      .attr('class', 'y axis');
-
-    svg.append('g')
-      .attr('class', 'x axis');
-  })
-
-  .draw(function(el) {
-    var self = this;
-    this.normalize(el);
-
-    el.select('.widget .title')
-      .text(function(d) { return d.title; });
-
-    var chart = el.select('.chart')
-      .datum(function(d) { return d.values; });
-
-    var fx = d3.time.scale()
-      .domain([
-        d3.min(chart.datum(), function(d) { return d.x; }),
-        d3.max(chart.datum(), function(d) { return d.x + d.dx; })]);
-
-    var ys = chart.datum()
-      .map(function(d) { return d.y; });
-
-    var fy = d3.scale.linear()
-      .domain([0, this.yMax()(ys)]);
-
-    var dims = utils.box()
-      .width(utils.innerWidth(el))
-      .height(utils.innerHeight(chart))
-      .margin(this.chartMargin())
-      .calc();
-
-    fx.range([0, dims.innerWidth]);
-    fy.range([dims.innerHeight, 0]);
-
-    var svg = chart.select('svg')
-      .attr('width', dims.width)
-      .attr('height', dims.height)
-      .select('g')
-        .attr('transform', utils.translate(
-          dims.margin.left,
-          dims.margin.top));
-
-    var bar = svg.select('.bars')
-      .selectAll('.bar')
-      .data(function(d) { return d; },
-            function(d) { return d.x; });
-
-    bar.enter().append('g')
-      .attr('class', 'bar')
-      .append('rect');
-
-    bar
-      .attr('transform', function(d) {
-        return utils.translate(fx(d.x), fy(d.y));
-      });
-
-    bar.select('rect')
-      .style('fill', this.colors()(el.datum().title))
-      .attr('width', function(d) {
-        var width = fx(d.x + d.dx) - fx(d.x);
-        width -= self.barPadding();
-        return Math.max(width, 1);
-      })
-      .attr('height', function(d) {
-        return dims.innerHeight - fy(d.y); 
-      });
-
-    bar.exit()
-      .remove();
-
-    var axis = d3.svg.axis()
+function drawXAxis(axis, dims, fx, opts) {
+  axis
+    .attr('transform', utils.translate(0, dims.innerHeight))
+    .call(d3.svg.axis()
       .scale(fx)
-      .ticks(this.xTicks())
-      .tickFormat(this.xTickFormat());
+      .ticks(opts.xTicks)
+      .tickFormat(opts.xTickFormat));
+}
 
-    svg.select('.x.axis')
-      .attr('transform', utils.translate(0, dims.innerHeight))
-      .call(axis);
 
-    axis = d3.svg.axis()
-      .orient('left')
-      .scale(fy)
-      .tickPadding(8)
-      .tickSize(-dims.innerWidth)
-      .ticks(this.yTicks())
-      .tickFormat(this.yTickFormat());
-    
-    svg.select('.y.axis')
-      .call(axis);
+function drawYAxis(axis, dims, fy, opts) {
+  axis.call(d3.svg.axis()
+    .orient('left')
+    .scale(fy)
+    .tickPadding(8)
+    .tickSize(-dims.innerWidth)
+    .ticks(opts.yTicks)
+    .tickFormat(opts.yTickFormat));
+}
+
+
+function normalize(el, opts) {
+  var node = el.node();
+
+  el.datum(function(d, i) {
+    var values = opts.values
+      .call(node, d, i)
+      .map(value);
+
+    var len = values.length;
+    var dxAvg = values.length
+      ? (values[len - 1].x - values[0].x) / len
+      : 0;
+
+    values.forEach(function(d) {
+      d.dx = utils.ensure(d.dx, dxAvg);
+    });
+
+    return {
+      values: values,
+      title: opts.title.call(node, d, i)
+    };
   });
+
+  function value(d, i) {
+    return {
+      x: opts.x.call(node, d, i),
+      y: opts.y.call(node, d, i),
+      dx: opts.dx.call(node, d, i)
+    };
+  }
+}

@@ -10,6 +10,12 @@ describe("sapphire.widgets.bars", function() {
 
     el = container.append('div');
 
+    el.append('div')
+      .attr('data-widget-component', 'title');
+
+    el.append('div')
+      .attr('data-widget-component', 'chart');
+
     datum = {
       title: 'Total Foo',
       values: [{
@@ -45,21 +51,24 @@ describe("sapphire.widgets.bars", function() {
 
   it("should show its title", function() {
     var bars = sapphire.widgets.bars();
-    expect(el.html()).to.be.empty;
 
     datum.title = 'Total Bar';
 
     el.datum(datum)
       .call(bars);
 
-    expect(el.select('.title').text()).to.equal('Total Bar');
+    expect(title()).to.equal('Total Bar');
 
     datum.title = 'Total Baz';
 
     el.datum(datum)
       .call(bars);
 
-    expect(el.select('.title').text()).to.equal('Total Baz');
+    expect(title()).to.equal('Total Baz');
+
+    function title() {
+      return el.select('[data-widget-component="title"]').text();
+    }
   });
 
   it("should show its bars", function() {
@@ -77,8 +86,6 @@ describe("sapphire.widgets.bars", function() {
         bottom: 4,
         right: 4 
       });
-
-    expect(el.html()).to.be.empty;
 
     datum.values = [{
       x: 0,
@@ -180,8 +187,6 @@ describe("sapphire.widgets.bars", function() {
 
   it("should colour its bars", function() {
     var bars = sapphire.widgets.bars();
-    expect(el.html()).to.be.empty;
-
     datum.title = 'Total Bar';
 
     datum.values = [{
@@ -242,8 +247,6 @@ describe("sapphire.widgets.bars", function() {
         right: 4 
       })
       .dx(function(d) { return d.dx; });
-
-    expect(el.html()).to.be.empty;
 
     datum.values = [{
       x: 0,
@@ -347,8 +350,6 @@ describe("sapphire.widgets.bars", function() {
     var bars = sapphire.widgets.bars()
       .xTicks(3)
       .xTickFormat(d3.time.format('%b'));
-
-    expect(el.html()).to.be.empty;
 
     datum.values = [{
       x: +(new Date(2014, 2)),
