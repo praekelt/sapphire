@@ -2,23 +2,8 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <link
-    rel="stylesheet"
-    href="../../build/sapphire.css">
-    <style type="text/css">
-body {
-  background: #f2f2f2;
-}
-
-.sapphire {
-  width: 480px;
-  margin: 0 auto;
-}
-
-.box {
-  padding: 10px;
-}
-    </style>
+    <link rel="stylesheet" href="../../build/sapphire.css">
+    <link rel="stylesheet" href="example.css">
   </head>
   <body>
     <div class="sapphire">
@@ -34,48 +19,10 @@ body {
         <div id="last3"></div>
       </div>
     </div>
-    </div>
+
     <script src="../../bower_components/d3/d3.min.js"></script>
     <script src="../../bower_components/strain/strain.js"></script>
     <script src="../../build/sapphire.js"></script>
-    <script>
-var last = sapphire.widgets.last();
-
-d3.select('#last1')
-  .datum({
-    title: 'Foo',
-    values: d3.range(25)
-      .map(d3.random.bates(10))
-      .map(value(300, 1000))
-  })
-  .call(last);
-
-d3.select('#last2')
-  .datum({
-    title: 'Bar',
-    values: d3.range(25)
-      .map(d3.random.bates(10))
-      .map(value(5000, 20000))
-  })
-  .call(last);
-
-d3.select('#last3')
-  .datum({
-    title: 'Baz',
-    values: d3.range(25)
-      .map(d3.random.bates(10))
-      .map(value(300000, 9000000))
-  })
-  .call(last);
-
-function value(min, max) {
-  return function(y, i) {
-    return {
-      x: +(new Date()) + (i * 1000 * 60 * 60 * 24),
-      y: Math.round((y * (max - min)) + min)
-    }
-  }
-}
-    </script>
+    <script src="example.js"></script>
   </body>
 </html>
