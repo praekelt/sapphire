@@ -10,6 +10,15 @@ describe("sapphire.widgets.lines", function() {
 
     el = container.append('div');
 
+    el.append('div')
+      .attr('data-widget-component', 'title');
+
+    el.append('div')
+      .attr('data-widget-component', 'chart');
+
+    el.append('div')
+      .attr('data-widget-component', 'legend');
+
     datum = {
       title: 'Total Foo and Bar',
       metrics: [{
@@ -82,7 +91,6 @@ describe("sapphire.widgets.lines", function() {
 
   it("should show its title", function() {
     var lines = sapphire.widgets.lines();
-    expect(el.html()).to.be.empty;
 
     datum.title = 'Total Bar and Baz';
 
@@ -140,8 +148,6 @@ describe("sapphire.widgets.lines", function() {
     var path = helpers.path()
       .fx(fx)
       .fy(fy);
-
-    expect(el.html()).to.be.empty;
 
     datum.metrics[1].key = 'foo';
     datum.metrics[0].values = [{
@@ -259,8 +265,6 @@ describe("sapphire.widgets.lines", function() {
 
     var colors = lines.colors();
 
-    expect(el.html()).to.be.empty;
-
     datum.metrics[0].values = [{
       x: 123,
       y: 234
@@ -349,8 +353,6 @@ describe("sapphire.widgets.lines", function() {
     var lines = sapphire.widgets.lines()
       .key(function(d) { return d.key; });
 
-    expect(el.html()).to.be.empty;
-
     datum.metrics[0].key = 'foo';
     datum.metrics[0].values = [{
       x: 123,
@@ -388,8 +390,6 @@ describe("sapphire.widgets.lines", function() {
     lines
       .xTicks(3)
       .xTickFormat(d3.time.format('%b'));
-
-    expect(el.html()).to.be.empty;
 
     datum.metrics[0].values = [{
       x: +(new Date(2014, 2)),
@@ -457,8 +457,6 @@ describe("sapphire.widgets.lines", function() {
       .yTicks(3)
       .yTickFormat(d3.format('s'));
 
-    expect(el.html()).to.be.empty;
-
     datum.metrics[0].values = [{
       x: +(new Date(2014, 2)),
       y: 234000
@@ -521,7 +519,6 @@ describe("sapphire.widgets.lines", function() {
 
   it("should draw its legend", function() {
     var lines = sapphire.widgets.lines();
-    expect(el.html()).to.be.empty;
 
     datum.metrics[0].values = [{
       x: 0,
@@ -600,8 +597,6 @@ describe("sapphire.widgets.lines", function() {
       .key(function(d) { return d.key; });
 
     var colors = lines.colors();
-
-    expect(el.html()).to.be.empty;
 
     datum.metrics[0].values = [{
       x: 0,
@@ -695,8 +690,6 @@ describe("sapphire.widgets.lines", function() {
     var lines = sapphire.widgets.lines()
       .key(function(d) { return d.key; });
 
-    expect(el.html()).to.be.empty;
-
     datum.metrics[0].values = [{
       x: 0,
       y: 0
@@ -777,8 +770,6 @@ describe("sapphire.widgets.lines", function() {
   it("should draw its legend's metrics' last values", function() {
     var lines = sapphire.widgets.lines()
       .key(function(d) { return d.key; });
-
-    expect(el.html()).to.be.empty;
 
     datum.metrics[0].values = [{
       x: 0,
