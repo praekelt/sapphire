@@ -13,7 +13,7 @@ var version = require('./bower').version;
 gulp.task('scripts', function () {
   return browserify('./src/scripts/index.js')
     .bundle({standalone: 'sapphire'})
-    .on('error', err)
+    .on('error', error)
     .pipe(source('sapphire.js'))
     .pipe(streamify(wrap({src: '.umd.jst'}, {
       version: version,
@@ -29,7 +29,7 @@ gulp.task('scripts:debug', function () {
       standalone: 'sapphire',
       debug: true
     })
-    .on('error', err)
+    .on('error', error)
     .pipe(source('sapphire.debug.js'))
     .pipe(gulp.dest("./build"));
 });
@@ -39,7 +39,7 @@ gulp.task('styles', function () {
   return gulp
     .src('./src/styles/sapphire.less')
     .pipe(less())
-    .on('error', err)
+    .on('error', error)
     .pipe(gulp.dest('./build'));
 });
 
@@ -111,14 +111,10 @@ gulp.task('install', function() {
 });
 
 
-gulp.task('ci', ['lint'], function () {
-  gulp.start('test');
-});
+gulp.task('ci', ['lint', 'test']);
 
 
-gulp.task('default', function () {
-  gulp.start('build');
-});
+gulp.task('default', ['build', 'test']);
 
 
 gulp.task('watch', function() {
@@ -127,7 +123,7 @@ gulp.task('watch', function() {
 });
 
 
-function err(e) {
+function error(e) {
   console.error(e.toString());
   this.emit('end');
 }
