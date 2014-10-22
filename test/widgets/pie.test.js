@@ -42,6 +42,15 @@ describe("sapphire.widgets.pie", function() {
 
     el = container.append('div');
 
+    el.append('div')
+      .attr('data-widget-component', 'title');
+
+    el.append('div')
+      .attr('data-widget-component', 'chart');
+
+    el.append('div')
+      .attr('data-widget-component', 'legend');
+
     datum = {
       title: 'Total Foo and Bar',
       metrics: [{
@@ -77,8 +86,6 @@ describe("sapphire.widgets.pie", function() {
   
   it("should show its title", function() {
     var pie = sapphire.widgets.pie();
-    expect(el.html()).to.be.empty;
-
     datum.title = 'Total Bar and Baz';
 
     el.datum(datum)
@@ -163,8 +170,6 @@ describe("sapphire.widgets.pie", function() {
     var pie = sapphire.widgets.pie()
       .key(function(d) { return d.key; });
 
-    expect(el.html()).to.be.empty;
-
     datum.metrics[0].key = 'foo';
     datum.metrics[1].key = 'bar';
     datum.metrics[2].key = 'baz';
@@ -209,8 +214,6 @@ describe("sapphire.widgets.pie", function() {
       })
       .width(240)
       .innerRadius(15);
-
-    expect(el.html()).to.be.empty;
 
     datum.metrics[0].key = 'foo';
     datum.metrics[1].key = 'bar';
@@ -257,8 +260,6 @@ describe("sapphire.widgets.pie", function() {
 
     var colors = pie.colors();
 
-    expect(el.html()).to.be.empty;
-
     datum.metrics[0].key = 'foo';
     datum.metrics[1].key = 'bar';
     datum.metrics[2].key = 'baz';
@@ -291,8 +292,6 @@ describe("sapphire.widgets.pie", function() {
   it("should display its metrics in a legend", function() {
     var pie = sapphire.widgets.pie()
       .key(function(d) { return d.key; });
-
-    expect(el.html()).to.be.empty;
 
     datum.metrics[0].key = 'foo';
     datum.metrics[1].key = 'bar';

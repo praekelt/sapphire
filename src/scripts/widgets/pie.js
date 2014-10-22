@@ -76,136 +76,195 @@ module.exports = require('./widget').extend()
     el.datum().metrics.forEach(function(d) { d.percent = d.value / sum; });
   })
 
-  .enter(function(el) {
-    el.classed('pie widget', true);
-
-    el.append('div')
-      .attr('class', 'title');
-
-    el.append('div')
-      .attr('class', 'chart');
-
-    el.append('div')
-      .attr('class', 'legend');
-  })
-
   .draw(function(el) {
-    this.normalize(el);
-
-    el.select('.widget .title')
-      .text(function(d) { return d.title; });
-
-    el.select('.legend')
-      .call(legend(this));
-
-    el.select('.chart')
-      .call(chart(this));
+    var opts = this.props();
+    normalize(el, opts);
+    drawWidget(el, opts);
   });
 
 
-var chart = require('../view').extend()
-  .prop('widget')
+function drawWidget(el, opts) {
+  el.classed('pie widget', true);
 
-  .init(function(widget) {
-    this.widget(widget);
-  })
+  el.select('[data-widget-component="title"]')
+    .call(drawTitle);
 
-  .enter(function(el) {
-    el.append('svg')
-      .append('g');
-  })
+  el.select('[data-widget-component="chart"]')
+    .datum(getMetrics)
+    .call(drawChart, opts);
 
-  .draw(function(el) {
-    var dims = utils.box()
-      .margin(this.widget().chartMargin())
-      .width(utils.innerWidth(el))
-      .height(utils.innerHeight(el))
-      .calc();
+  el.select('[data-widget-component="legend"]')
+    .datum(getMetrics)
+    .call(drawLegend, opts);
+}
 
-    var radius = Math.min(dims.innerWidth, dims.innerHeight) / 2;
 
-    var svg = el.select('svg')
-      .attr('width', dims.width)
-      .attr('height', dims.height)
-      .select('g')
-        .attr('transform', utils.translate(
-          (dims.width / 2) - radius,
-          (dims.height / 2) - radius));
+function drawTitle(title) {
+  title
+    .classed('title', true)
+    .text(function(d) { return d.title; });
+}
 
-    var arc = d3.svg.arc()
-      .innerRadius(this.widget().innerRadius()(radius))
-      .outerRadius(radius);
 
-    var layout = d3.layout.pie()
-      .value(function(d) { return d.value; });
+function drawChart(chart, opts) {
+  chart
+    .classed('chart', true);
 
-    var slice = svg.selectAll('.slice')
-      .data(function(d) { return layout(d.metrics); },
-            function(d) { return d.data.key; });
+  chart
+    .filter(utils.isEmptyNode)
+    .call(initChart);
 
-    slice.enter().append('g')
-      .attr('class', 'slice')
-      .append('path');
+  var dims = utils.box()
+    .margin(opts.chartMargin)
+    .width(utils.innerWidth(chart))
+    .height(utils.innerHeight(chart))
+    .calc();
 
-    slice
-      .attr('transform', utils.translate(radius, radius));
+  dims.radius = Math.min(dims.innerWidth, dims.innerHeight) / 2;
 
-    slice.select('path')
-      .attr('d', arc)
-      .style('fill', function(d) { return d.data.color; });
+  chart.select('svg')
+    .call(drawSvg, dims, opts);
+}
 
-    slice.exit()
-      .remove();
+
+function initChart(chart) {
+  chart.append('svg')
+    .append('g');
+}
+
+
+function drawSvg(svg, dims, opts) {
+  svg
+    .attr('width', dims.width)
+    .attr('height', dims.height)
+    .select('g')
+      .attr('transform', utils.translate(
+        (dims.width / 2) - dims.radius,
+        (dims.height / 2) - dims.radius))
+      .call(drawSlices, dims, opts);
+}
+
+
+function drawSlices(svg, dims, opts) {
+  var arc = d3.svg.arc()
+    .innerRadius(opts.innerRadius(dims.radius))
+    .outerRadius(dims.radius);
+
+  var layout = d3.layout.pie()
+    .value(function(d) { return d.value; });
+
+  svg.selectAll('.slice')
+    .data(function(d) { return layout(d); },
+          function(d) { return d.data.key; })
+    .call(drawSlice, dims, arc, opts);
+}
+
+
+function drawSlice(slice, dims, arc, opts) {
+  slice.enter().append('g')
+    .attr('class', 'slice')
+    .append('path');
+
+  slice
+    .attr('transform', utils.translate(dims.radius, dims.radius));
+
+  slice.select('path')
+    .attr('d', arc)
+    .style('fill', function(d) { return d.data.color; });
+
+  slice.exit()
+    .remove();
+}
+
+
+function drawLegend(legend, opts) {
+  legend
+    .classed('legend', true);
+
+  legend
+    .filter(utils.isEmptyNode)
+    .call(initLegend);
+
+  legend.select('.table').selectAll('.metric')
+    .data(function(d) { return d; },
+          function(d) { return d.key; })
+    .call(drawLegendMetric, opts);
+}
+
+
+function initLegend(legend) {
+  legend.append('table')
+    .attr('class', 'table');
+}
+
+
+function drawLegendMetric(metric, opts) {
+  metric.enter().append('tr')
+    .call(enterLegendMetric);
+
+  metric.select('.swatch')
+    .style('background', function(d) { return d.color; });
+
+  metric.select('.title')
+    .text(function(d) { return d.title; });
+
+  metric.select('.percent')
+    .text(function(d) { return opts.percentFormat(d.percent); });
+
+  metric.select('.value')
+    .text(function(d) { return opts.valueFormat(d.value); });
+
+  metric.exit()
+    .remove();
+}
+
+
+function enterLegendMetric(metric) {
+  metric
+    .attr('class', 'metric');
+
+  metric.append('td')
+    .attr('class', 'swatch');
+
+  metric.append('td')
+    .attr('class', 'title');
+
+  metric.append('td')
+    .attr('class', 'percent');
+
+  metric.append('td')
+    .attr('class', 'value');
+}
+
+
+function normalize(el, opts) {
+  var node = el.node();
+
+  el.datum(function(d, i) {
+    return {
+      title: opts.title.call(node, d, i),
+      metrics: opts.metrics.call(node, d, i).map(metric)
+    };
   });
 
+  function metric(d, i) {
+    var key = opts.key
+      .call(node, d, i)
+      .toString();
 
-var legend = require('../view').extend()
-  .prop('widget')
+    return {
+      key: key,
+      color: opts.colors(key),
+      title: opts.metricTitle.call(node, d, i),
+      value: opts.value.call(node, d, i)
+    };
+  }
 
-  .init(function(widget) {
-    this.widget(widget);
-  })
+  var sum = d3.sum(el.datum().metrics, function(d) { return d.value; });
+  el.datum().metrics.forEach(function(d) { d.percent = d.value / sum; });
+}
 
-  .enter(function(el) {
-    el.append('table')
-      .attr('class', 'table');
-  })
 
-  .draw(function(el) {
-    var valueFormat = this.widget().valueFormat();
-    var percentFormat = this.widget().percentFormat();
-
-    var metric = el.select('.table').selectAll('.metric')
-      .data(function(d) { return d.metrics; },
-            function(d) { return d.key; });
-
-    var enterMetric = metric.enter().append('tr')
-      .attr('class', 'metric');
-
-    enterMetric.append('td')
-      .attr('class', 'swatch');
-
-    enterMetric.append('td')
-      .attr('class', 'title');
-
-    enterMetric.append('td')
-      .attr('class', 'percent');
-
-    enterMetric.append('td')
-      .attr('class', 'value');
-
-    metric.select('.swatch')
-      .style('background', function(d) { return d.color; });
-
-    metric.select('.title')
-      .text(function(d) { return d.title; });
-
-    metric.select('.percent')
-      .text(function(d) { return percentFormat(d.percent); });
-
-    metric.select('.value')
-      .text(function(d) { return valueFormat(d.value); });
-
-    metric.exit()
-      .remove();
-  });
+function getMetrics(d) {
+  return d.metrics;
+}
