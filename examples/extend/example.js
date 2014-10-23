@@ -40,7 +40,7 @@ function widget(el) {
     .on('click', function() {
       datum.interval = getInterval(this);
       widget(el);
-    })
+    });
 
   interval
     .filter(function() {
