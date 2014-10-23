@@ -10,18 +10,6 @@ describe("sapphire.widgets.last", function() {
 
     el = container.append('div');
 
-    el.append('div')
-      .attr('data-widget-component', 'title');
-
-    el.append('div')
-      .attr('data-widget-component', 'last-value');
-
-    el.append('div')
-      .attr('data-widget-component', 'sparkline');
-
-    el.append('div')
-      .attr('data-widget-component', 'summary');
-
     datum = {
       title: 'Total Bar and Baz',
       values: [{
@@ -616,5 +604,34 @@ describe("sapphire.widgets.last", function() {
 
     expect(+el.select('.sparkline .dot').attr('cx')).to.equal(fx(1567));
     expect(+el.select('.sparkline .dot').attr('cy')).to.equal(fy(1789));
+  });
+
+  it("should allow the widget components to be specified explicitly", function() {
+    var last = sapphire.widgets.last()
+      .explicitComponents(true);
+
+    el.datum(datum).call(last);
+    expect(el.selectAll('[data-widget-component="title"]').size()).to.equal(0);
+    expect(el.selectAll('[data-widget-component="last-value"]').size()).to.equal(0);
+    expect(el.selectAll('[data-widget-component="sparkline"]').size()).to.equal(0);
+    expect(el.selectAll('[data-widget-component="summary"]').size()).to.equal(0);
+
+    el.append('div')
+      .attr('data-widget-component', 'title');
+
+    el.append('div')
+      .attr('data-widget-component', 'last-value');
+
+    el.append('div')
+      .attr('data-widget-component', 'sparkline');
+
+    el.append('div')
+      .attr('data-widget-component', 'summary');
+
+    el.datum(datum).call(last);
+    expect(el.selectAll('[data-widget-component="title"]').size()).to.equal(1);
+    expect(el.selectAll('[data-widget-component="last-value"]').size()).to.equal(1);
+    expect(el.selectAll('[data-widget-component="sparkline"]').size()).to.equal(1);
+    expect(el.selectAll('[data-widget-component="summary"]').size()).to.equal(1);
   });
 });

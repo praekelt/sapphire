@@ -42,15 +42,6 @@ describe("sapphire.widgets.pie", function() {
 
     el = container.append('div');
 
-    el.append('div')
-      .attr('data-widget-component', 'title');
-
-    el.append('div')
-      .attr('data-widget-component', 'chart');
-
-    el.append('div')
-      .attr('data-widget-component', 'legend');
-
     datum = {
       title: 'Total Foo and Bar',
       metrics: [{
@@ -478,5 +469,29 @@ describe("sapphire.widgets.pie", function() {
         .filter(function(d) { return d.key === key; })
         .text();
     }
+  });
+
+  it("should allow the widget components to be specified explicitly", function() {
+    var pie = sapphire.widgets.pie()
+      .explicitComponents(true);
+
+    el.datum(datum).call(pie);
+    expect(el.selectAll('[data-widget-component="title"]').size()).to.equal(0);
+    expect(el.selectAll('[data-widget-component="chart"]').size()).to.equal(0);
+    expect(el.selectAll('[data-widget-component="legend"]').size()).to.equal(0);
+
+    el.append('div')
+      .attr('data-widget-component', 'title');
+
+    el.append('div')
+      .attr('data-widget-component', 'chart');
+
+    el.append('div')
+      .attr('data-widget-component', 'legend');
+
+    el.datum(datum).call(pie);
+    expect(el.selectAll('[data-widget-component="title"]').size()).to.equal(1);
+    expect(el.selectAll('[data-widget-component="chart"]').size()).to.equal(1);
+    expect(el.selectAll('[data-widget-component="legend"]').size()).to.equal(1);
   });
 });

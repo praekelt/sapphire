@@ -68,11 +68,22 @@ module.exports = require('./widget').extend()
 function drawWidget(el, opts) {
   el.classed('bars widget', true);
 
-  el.select('[data-widget-component="title"]')
-    .call(drawTitle);
+  if (!opts.explicitComponents) initComponents(el);
 
-  el.select('[data-widget-component="chart"]')
-    .call(drawChart, opts);
+  var component = el.select('[data-widget-component="title"]')
+  if (component.size()) component.call(drawTitle);
+
+  component = el.select('[data-widget-component="chart"]')
+  if (component.size()) component.call(drawChart, opts);
+}
+
+
+function initComponents(el) {
+  el.append('div')
+    .attr('data-widget-component', 'title');
+
+  el.append('div')
+    .attr('data-widget-component', 'chart');
 }
 
 

@@ -86,16 +86,28 @@ module.exports = require('./widget').extend()
 function drawWidget(el, opts) {
   el.classed('pie widget', true);
 
-  el.select('[data-widget-component="title"]')
-    .call(drawTitle);
+  if (!opts.explicitComponents) initComponents(el);
 
-  el.select('[data-widget-component="chart"]')
-    .datum(getMetrics)
-    .call(drawChart, opts);
+  var component = el.select('[data-widget-component="title"]');
+  if (component.size()) component.call(drawTitle);
 
-  el.select('[data-widget-component="legend"]')
-    .datum(getMetrics)
-    .call(drawLegend, opts);
+  component = el.select('[data-widget-component="chart"]');
+  if (component.size()) component.datum(getMetrics).call(drawChart, opts);
+
+  component = el.select('[data-widget-component="legend"]');
+  if (component.size()) component.datum(getMetrics).call(drawLegend, opts);
+}
+
+
+function initComponents(el) {
+  el.append('div')
+    .attr('data-widget-component', 'title');
+
+  el.append('div')
+    .attr('data-widget-component', 'chart');
+
+  el.append('div')
+    .attr('data-widget-component', 'legend');
 }
 
 

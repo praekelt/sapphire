@@ -58,20 +58,34 @@ module.exports = require('./widget').extend()
 function drawWidget(el, opts) {
   el.classed('last widget', true);
 
-  el.select('[data-widget-component="title"]')
-    .call(drawTitle);
+  if (!opts.explicitComponents) initComponents(el);
 
-  el.select('[data-widget-component="last-value"]')
-    .datum(getValues)
-    .call(drawLastValue, opts);
+  var component = el.select('[data-widget-component="title"]');
+  if (component.size()) component.call(drawTitle);
 
-  el.select('[data-widget-component="sparkline"]')
-    .datum(getValues)
-    .call(drawSparkline, opts);
+  component = el.select('[data-widget-component="last-value"]');
+  if (component.size()) component.datum(getValues).call(drawLastValue, opts);
 
-  el.select('[data-widget-component="summary"]')
-    .datum(getValues)
-    .call(drawSummary, opts);
+  component = el.select('[data-widget-component="sparkline"]');
+  if (component.size()) component.datum(getValues).call(drawSparkline, opts);
+
+  component = el.select('[data-widget-component="summary"]');
+  if (component.size()) component.datum(getValues).call(drawSummary, opts);
+}
+
+
+function initComponents(el) {
+  el.append('div')
+    .attr('data-widget-component', 'title');
+
+  el.append('div')
+    .attr('data-widget-component', 'last-value');
+
+  el.append('div')
+    .attr('data-widget-component', 'sparkline');
+
+  el.append('div')
+    .attr('data-widget-component', 'summary');
 }
 
 
