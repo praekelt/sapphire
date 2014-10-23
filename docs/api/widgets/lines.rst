@@ -422,5 +422,41 @@ displaying each metric's title, colour and last ``y`` value.
       .width(400);
 
 
+.. function:: lines.explicitComponents([v])
+
+  Property for setting whether the widget should expect its components
+  to be layed out explictly or not.
+
+  If set to ``false``, the widget will append the components automatically.
+
+  If set to ``true``, the widget will look for the relevant element's
+  component child elements to decide where to draw each.
+
+  Defaults to ``false``.
+
+  .. code-block:: html
+
+    <div id="foo">
+      <div data-widget-component="title"></div>
+      <div data-widget-component="chart"></div>
+      <div data-widget-component="legend"></div>
+     </div>
+
+  .. code-block:: javascript
+
+    var lines = sapphire.widgets.lines()
+      .explicitComponents(true);
+
+    d3.select("#foo")
+      .datum({...})
+      .call(lines);
+
+  The lines widget's components are:
+
+    - ``'title'``: title of the widget
+    - ``'chart'``: the actual line chart
+    - ``'legend'``: table showing the color, title and values of each metric
+
+
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements
 .. _d3.time.scale: https://github.com/mbostock/d3/wiki/Time-Scales#scale
