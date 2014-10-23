@@ -70,10 +70,10 @@ function drawWidget(el, opts) {
 
   if (!opts.explicitComponents) initComponents(el);
 
-  var component = el.select('[data-widget-component="title"]')
+  var component = el.select('[data-widget-component="title"]');
   if (component.size()) component.call(drawTitle);
 
-  component = el.select('[data-widget-component="chart"]')
+  component = el.select('[data-widget-component="chart"]');
   if (component.size()) component.call(drawChart, opts);
 }
 
