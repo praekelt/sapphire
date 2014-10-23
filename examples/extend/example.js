@@ -27,7 +27,9 @@ function widget(el) {
 
   var bars = sapphire.widgets.bars()
     .explicitComponents(true)
-    .values(function(d) { return truncate(d.interval, d.allValues); });
+    .values(function(d) {
+      return truncate(d.interval, d.allValues);
+    });
 
   bars(el);
 
@@ -51,7 +53,8 @@ function widget(el) {
 
 
 function getInterval(el) {
-  return intervals[d3.select(el).attr('data-interval')];
+  var name = d3.select(el).attr('data-interval');
+  return intervals[name];
 }
 
 
