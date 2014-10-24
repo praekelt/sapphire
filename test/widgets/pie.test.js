@@ -82,7 +82,7 @@ describe("sapphire.widgets.pie", function() {
     el.datum(datum)
       .call(pie);
 
-    var title = el.selectAll('.widget > .title');
+    var title = el.selectAll('.sph-title');
     expect(title.size()).to.equal(1);
     expect(title.text()).to.equal(datum.title);
 
@@ -91,7 +91,7 @@ describe("sapphire.widgets.pie", function() {
     el.datum(datum)
       .call(pie);
 
-    title = el.selectAll('.widget > .title');
+    title = el.selectAll('.sph-title');
     expect(title.size()).to.equal(1);
     expect(title.text()).to.equal(datum.title);
   });
@@ -168,7 +168,7 @@ describe("sapphire.widgets.pie", function() {
     el.datum(datum)
       .call(pie);
 
-    var slice = el.selectAll('.slice');
+    var slice = el.selectAll('.sph-chart-pie-slice');
     expect(slice.size()).to.equal(3);
 
     datum.metrics[0].key = 'foo';
@@ -178,7 +178,7 @@ describe("sapphire.widgets.pie", function() {
     el.datum(datum)
       .call(pie);
 
-    slice = el.selectAll('.slice');
+    slice = el.selectAll('.sph-chart-pie-slice');
     expect(slice.size()).to.equal(3);
   });
 
@@ -239,7 +239,7 @@ describe("sapphire.widgets.pie", function() {
     expect(d('baz')).to.equal(arc('baz'));
 
     function d(key) {
-      return el.selectAll('.slice path')
+      return el.selectAll('.sph-chart-pie-slice path')
         .filter(function(d) { return d.data.key === key; })
         .attr('d');
     }
@@ -274,7 +274,7 @@ describe("sapphire.widgets.pie", function() {
     expect(fill('baz')).to.equal(colors('baz'));
 
     function fill(key) {
-      return el.selectAll('.slice path')
+      return el.selectAll('.sph-chart-pie-slice path')
         .filter(function(d) { return d.data.key === key; })
         .style('fill');
     }
@@ -291,7 +291,7 @@ describe("sapphire.widgets.pie", function() {
     el.datum(datum)
       .call(pie);
 
-    expect(el.selectAll('.legend .metric').size()).to.equal(3);
+    expect(el.selectAll('.sph-table-pie-metric').size()).to.equal(3);
 
     datum.metrics[0].key = 'foo';
     datum.metrics[1].key = 'ham';
@@ -300,7 +300,7 @@ describe("sapphire.widgets.pie", function() {
     el.datum(datum)
       .call(pie);
 
-    expect(el.selectAll('.legend .metric').size()).to.equal(3);
+    expect(el.selectAll('.sph-table-pie-metric').size()).to.equal(3);
   });
 
   it("should colour its legend swatches according to their metric keys", function() {
@@ -332,7 +332,7 @@ describe("sapphire.widgets.pie", function() {
     expect(bg('baz')).to.equal(colors('baz'));
 
     function bg(key) {
-      var v = el.selectAll('.legend .metric .swatch')
+      var v = el.selectAll('.sph-swatch')
         .filter(function(d) { return d.key === key; })
         .style('background-color');
 
@@ -375,7 +375,7 @@ describe("sapphire.widgets.pie", function() {
     expect(title('baz')).to.equal('Baz');
 
     function title(key) {
-      return el.selectAll('.legend .metric .title')
+      return el.selectAll('.sph-table-pie-title')
         .filter(function(d) { return d.key === key; })
         .text();
     }
@@ -421,7 +421,7 @@ describe("sapphire.widgets.pie", function() {
     expect(percent('baz')).to.equal(format(7000000 / sum));
 
     function percent(key) {
-      return el.selectAll('.legend .metric .percent')
+      return el.selectAll('.sph-table-pie-percent')
         .filter(function(d) { return d.key === key; })
         .text();
     }
@@ -465,7 +465,7 @@ describe("sapphire.widgets.pie", function() {
     expect(value('baz')).to.equal(format(7000000));
 
     function value(key) {
-      return el.selectAll('.legend .metric .value')
+      return el.selectAll('.sph-table-pie-value')
         .filter(function(d) { return d.key === key; })
         .text();
     }
