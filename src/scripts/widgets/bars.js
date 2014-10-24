@@ -66,7 +66,7 @@ module.exports = require('./widget').extend()
 
 
 function drawWidget(el, opts) {
-  el.classed('sph-widget sph-widget-bars', true);
+  el.classed('sph-widget sph-bars', true);
 
   if (!opts.explicitComponents) initComponents(el);
 
@@ -134,7 +134,7 @@ function initChart(chart) {
     .append('g');
 
   svg.append('g')
-    .attr('class', 'sph-chart-bars-bars');
+    .attr('class', 'sph-bars-bars');
 
   svg.append('g')
     .attr('class', 'sph-axis sph-axis-bars-y');
@@ -153,7 +153,7 @@ function drawSvg(svg, dims, fx, fy, opts) {
         dims.margin.left,
         dims.margin.top));
 
-  svg.select('.sph-chart-bars-bars')
+  svg.select('.sph-bars-bars')
      .call(drawBars, dims, fx, fy, opts);
 
   svg.select('.sph-axis-bars-x')
@@ -166,7 +166,7 @@ function drawSvg(svg, dims, fx, fy, opts) {
 
 function drawBars(bars, dims, fx, fy, opts) {
   bars
-    .selectAll('.sph-chart-bars-bar')
+    .selectAll('.sph-bars-bar')
     .data(function(d) { return d; },
           function(d) { return d.x; })
     .call(drawBar, dims, fx, fy, opts);
@@ -175,7 +175,7 @@ function drawBars(bars, dims, fx, fy, opts) {
 
 function drawBar(bar, dims, fx, fy, opts) {
   bar.enter().append('g')
-    .attr('class', 'sph-chart-bars-bar')
+    .attr('class', 'sph-bars-bar')
     .append('rect');
 
   bar

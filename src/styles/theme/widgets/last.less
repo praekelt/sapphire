@@ -12,23 +12,23 @@
 }
 
 
-.sph-widget-last-status(@color) {
+.sph-last-status(@color) {
   .sph-summary-diff { color: @color; }
   .sph-sparkline-path-diff { stroke: @color; }
   .sph-sparkline-dot { fill: @color; }
 }
 
 
-.sph-widget-last.sph-is-status-good {
-  .sph-widget-last-status(@good-color); 
+.sph-last.sph-is-status-good {
+  .sph-last-status(@good-color); 
 }
 
 
-.sph-widget-last.sph-is-status-bad {
-  .sph-widget-last-status(@bad-color); 
+.sph-last.sph-is-status-bad {
+  .sph-last-status(@bad-color); 
 }
 
 
-.sph-widget-last.sph-is-status-neutral {
-  .sph-widget-last-status(@fg-color); 
+.sph-last.sph-is-status-neutral {
+  .sph-last-status(@fg-color); 
 }

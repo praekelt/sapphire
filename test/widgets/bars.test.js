@@ -95,7 +95,7 @@ describe("sapphire.widgets.bars", function() {
     el.datum(datum)
       .call(bars);
 
-    expect(el.selectAll('.sph-chart-bars-bar').size()).to.equal(3);
+    expect(el.selectAll('.sph-bars-bar').size()).to.equal(3);
 
     var dims = sapphire.utils.box()
       .width(640)
@@ -116,17 +116,17 @@ describe("sapphire.widgets.bars", function() {
     fy.domain([0, 789])
       .range([dims.innerHeight, 0]);
 
-    var bar = el.select('.sph-chart-bars-bar:nth-child(1)');
+    var bar = el.select('.sph-bars-bar:nth-child(1)');
     expect(bar.attr('transform')).to.equal(transform(0, 234));
     expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
     expect(+bar.select('rect').attr('height')).to.be.closeTo(height(234), 0.01);
 
-    bar = el.select('.sph-chart-bars-bar:nth-child(2)');
+    bar = el.select('.sph-bars-bar:nth-child(2)');
     expect(bar.attr('transform')).to.equal(transform(5, 456));
     expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
     expect(+bar.select('rect').attr('height')).to.be.closeTo(height(456), 0.01);
 
-    bar = el.select('.sph-chart-bars-bar:nth-child(3)');
+    bar = el.select('.sph-bars-bar:nth-child(3)');
     expect(bar.attr('transform')).to.equal(transform(10, 789));
     expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
     expect(+bar.select('rect').attr('height')).to.be.closeTo(height(789), 0.01);
@@ -145,23 +145,23 @@ describe("sapphire.widgets.bars", function() {
     el.datum(datum)
       .call(bars);
 
-    expect(el.selectAll('.sph-chart-bars-bar').size()).to.equal(3);
+    expect(el.selectAll('.sph-bars-bar').size()).to.equal(3);
 
     dx = (25 - 15) / 3;
     fx.domain([15, 25 + dx]);
     fy.domain([0, 1789]);
 
-    bar = el.select('.sph-chart-bars-bar:nth-child(1)');
+    bar = el.select('.sph-bars-bar:nth-child(1)');
     expect(bar.attr('transform')).to.equal(transform(15, 1234));
     expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
     expect(+bar.select('rect').attr('height')).to.be.closeTo(height(1234), 0.01);
 
-    bar = el.select('.sph-chart-bars-bar:nth-child(2)');
+    bar = el.select('.sph-bars-bar:nth-child(2)');
     expect(bar.attr('transform')).to.equal(transform(20, 1456));
     expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
     expect(+bar.select('rect').attr('height')).to.be.closeTo(height(1456), 0.01);
 
-    bar = el.select('.sph-chart-bars-bar:nth-child(3)');
+    bar = el.select('.sph-bars-bar:nth-child(3)');
     expect(bar.attr('transform')).to.equal(transform(25, 1789));
     expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
     expect(+bar.select('rect').attr('height')).to.be.closeTo(height(1789), 0.01);
@@ -198,10 +198,10 @@ describe("sapphire.widgets.bars", function() {
       .call(bars);
 
     var color = bars.colors()('Total Bar');
-    expect(el.selectAll('.sph-chart-bars-bar').size()).to.equal(3);
-    expect(el.select('.sph-chart-bars-bar:nth-child(1) rect').style('fill')).to.equal(color);
-    expect(el.select('.sph-chart-bars-bar:nth-child(2) rect').style('fill')).to.equal(color);
-    expect(el.select('.sph-chart-bars-bar:nth-child(3) rect').style('fill')).to.equal(color);
+    expect(el.selectAll('.sph-bars-bar').size()).to.equal(3);
+    expect(el.select('.sph-bars-bar:nth-child(1) rect').style('fill')).to.equal(color);
+    expect(el.select('.sph-bars-bar:nth-child(2) rect').style('fill')).to.equal(color);
+    expect(el.select('.sph-bars-bar:nth-child(3) rect').style('fill')).to.equal(color);
 
     datum.title = 'Total Baz';
 
@@ -220,10 +220,10 @@ describe("sapphire.widgets.bars", function() {
       .call(bars);
 
     color = bars.colors()('Total Baz');
-    expect(el.selectAll('.sph-chart-bars-bar').size()).to.equal(3);
-    expect(el.select('.sph-chart-bars-bar:nth-child(1) rect').style('fill')).to.equal(color);
-    expect(el.select('.sph-chart-bars-bar:nth-child(2) rect').style('fill')).to.equal(color);
-    expect(el.select('.sph-chart-bars-bar:nth-child(3) rect').style('fill')).to.equal(color);
+    expect(el.selectAll('.sph-bars-bar').size()).to.equal(3);
+    expect(el.select('.sph-bars-bar:nth-child(1) rect').style('fill')).to.equal(color);
+    expect(el.select('.sph-bars-bar:nth-child(2) rect').style('fill')).to.equal(color);
+    expect(el.select('.sph-bars-bar:nth-child(3) rect').style('fill')).to.equal(color);
   });
 
   it("should allow its bars to have variable widths", function() {
@@ -259,7 +259,7 @@ describe("sapphire.widgets.bars", function() {
     el.datum(datum)
       .call(bars);
 
-    expect(el.selectAll('.sph-chart-bars-bar').size()).to.equal(3);
+    expect(el.selectAll('.sph-bars-bar').size()).to.equal(3);
 
     var dims = sapphire.utils.box()
       .width(640)
@@ -275,13 +275,13 @@ describe("sapphire.widgets.bars", function() {
     fx.domain([0, 10 + 6])
       .range([0, dims.innerWidth]);
 
-    var bar = el.select('.sph-chart-bars-bar:nth-child(1)');
+    var bar = el.select('.sph-bars-bar:nth-child(1)');
     expect(+bar.select('rect').attr('width')).to.be.closeTo(width(0, 2), 0.01);
 
-    bar = el.select('.sph-chart-bars-bar:nth-child(2)');
+    bar = el.select('.sph-bars-bar:nth-child(2)');
     expect(+bar.select('rect').attr('width')).to.be.closeTo(width(5, 4), 0.01);
 
-    bar = el.select('.sph-chart-bars-bar:nth-child(3)');
+    bar = el.select('.sph-bars-bar:nth-child(3)');
     expect(+bar.select('rect').attr('width')).to.be.closeTo(width(10, 6), 0.01);
 
     datum.values = [{
@@ -301,17 +301,17 @@ describe("sapphire.widgets.bars", function() {
     el.datum(datum)
       .call(bars);
 
-    expect(el.selectAll('.sph-chart-bars-bar').size()).to.equal(3);
+    expect(el.selectAll('.sph-bars-bar').size()).to.equal(3);
 
     fx.domain([15, 25 + 12]);
 
-    bar = el.select('.sph-chart-bars-bar:nth-child(1)');
+    bar = el.select('.sph-bars-bar:nth-child(1)');
     expect(+bar.select('rect').attr('width')).to.be.closeTo(width(15, 8), 0.01);
 
-    bar = el.select('.sph-chart-bars-bar:nth-child(2)');
+    bar = el.select('.sph-bars-bar:nth-child(2)');
     expect(+bar.select('rect').attr('width')).to.be.closeTo(width(20, 10), 0.01);
 
-    bar = el.select('.sph-chart-bars-bar:nth-child(3)');
+    bar = el.select('.sph-bars-bar:nth-child(3)');
     expect(+bar.select('rect').attr('width')).to.be.closeTo(width(25, 12), 0.01);
 
     function width(x, dx) {
@@ -336,7 +336,7 @@ describe("sapphire.widgets.bars", function() {
     el.datum(datum)
       .call(bars);
 
-    var bar = el.select('.sph-chart-bars-bar');
+    var bar = el.select('.sph-bars-bar');
     expect(+bar.select('rect').attr('width')).to.equal(1);
   });
 

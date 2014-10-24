@@ -168,7 +168,7 @@ describe("sapphire.widgets.pie", function() {
     el.datum(datum)
       .call(pie);
 
-    var slice = el.selectAll('.sph-chart-pie-slice');
+    var slice = el.selectAll('.sph-pie-slice');
     expect(slice.size()).to.equal(3);
 
     datum.metrics[0].key = 'foo';
@@ -178,7 +178,7 @@ describe("sapphire.widgets.pie", function() {
     el.datum(datum)
       .call(pie);
 
-    slice = el.selectAll('.sph-chart-pie-slice');
+    slice = el.selectAll('.sph-pie-slice');
     expect(slice.size()).to.equal(3);
   });
 
@@ -239,7 +239,7 @@ describe("sapphire.widgets.pie", function() {
     expect(d('baz')).to.equal(arc('baz'));
 
     function d(key) {
-      return el.selectAll('.sph-chart-pie-slice path')
+      return el.selectAll('.sph-pie-slice path')
         .filter(function(d) { return d.data.key === key; })
         .attr('d');
     }
@@ -274,7 +274,7 @@ describe("sapphire.widgets.pie", function() {
     expect(fill('baz')).to.equal(colors('baz'));
 
     function fill(key) {
-      return el.selectAll('.sph-chart-pie-slice path')
+      return el.selectAll('.sph-pie-slice path')
         .filter(function(d) { return d.data.key === key; })
         .style('fill');
     }

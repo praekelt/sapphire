@@ -80,7 +80,7 @@ module.exports = require('./widget').extend()
 
 
 function drawWidget(el, opts) {
-  el.classed('sph-widget sph-widget-lines', true);
+  el.classed('sph-widget sph-lines', true);
 
   if (!opts.explicitComponents) initComponents(el);
 
@@ -162,7 +162,7 @@ function initChart(chart) {
     .attr('class', 'sph-axis sph-axis-lines sph-axis-lines-y');
 
   svg.append('g')
-    .attr('class', 'sph-chart-lines-metrics');
+    .attr('class', 'sph-lines-metrics');
 }
 
 
@@ -173,7 +173,7 @@ function drawSvg(svg, dims, fx, fy, opts) {
     .select('g')
       .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
 
-  svg.select('.sph-chart-lines-metrics')
+  svg.select('.sph-lines-metrics')
     .call(drawChartMetrics, fx, fy);
 
   svg.select('.sph-axis-lines-x')
@@ -189,7 +189,7 @@ function drawChartMetrics(metrics, fx, fy) {
     .x(function(d) { return fx(d.x); })
     .y(function(d) { return fy(d.y); });
 
-  metrics.selectAll('.sph-chart-lines-metric')
+  metrics.selectAll('.sph-lines-metric')
     .data(function(d) { return d; },
           function(d) { return d.key; })
     .call(drawChartMetric, fx, fy, line);
@@ -198,19 +198,19 @@ function drawChartMetrics(metrics, fx, fy) {
 
 function drawChartMetric(metric, fx, fy, line) {
   metric.enter().append('g')
-    .attr('class', 'sph-chart-lines-metric')
+    .attr('class', 'sph-lines-metric')
     .attr('data-key', function(d) { return d.key; })
     .append('path')
-      .attr('class', 'sph-chart-lines-line');
+      .attr('class', 'sph-lines-line');
 
-  metric.select('.sph-chart-lines-line')
+  metric.select('.sph-lines-line')
     .attr('stroke', function(d) { return d.color; })
     .attr('d', function(d) { return line(d.values); });
 
   metric.exit()
     .remove();
 
-  metric.selectAll('.sph-chart-lines-dot')
+  metric.selectAll('.sph-lines-dot')
     .data(function(d) {
       if (!d.values.length) { return []; }
       var last = d.values[d.values.length - 1];
@@ -227,7 +227,7 @@ function drawChartMetric(metric, fx, fy, line) {
 
 function drawDot(dot, fx, fy) {
   dot.enter().append('circle')
-    .attr('class', 'sph-chart-lines-dot')
+    .attr('class', 'sph-lines-dot')
     .attr('r', 4);
 
   dot

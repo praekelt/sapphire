@@ -54,7 +54,7 @@ module.exports = require('./widget').extend()
 
 
 function drawWidget(el, opts) {
-  el.classed('sph-widget sph-widget-pie', true);
+  el.classed('sph-widget sph-pie', true);
 
   if (!opts.explicitComponents) initComponents(el);
 
@@ -135,7 +135,7 @@ function drawSlices(svg, dims, opts) {
   var layout = d3.layout.pie()
     .value(function(d) { return d.value; });
 
-  svg.selectAll('.sph-chart-pie-slice')
+  svg.selectAll('.sph-pie-slice')
     .data(function(d) { return layout(d); },
           function(d) { return d.data.key; })
     .call(drawSlice, dims, arc, opts);
@@ -144,7 +144,7 @@ function drawSlices(svg, dims, opts) {
 
 function drawSlice(slice, dims, arc, opts) {
   slice.enter().append('g')
-    .attr('class', 'sph-chart-pie-slice')
+    .attr('class', 'sph-pie-slice')
     .append('path');
 
   slice

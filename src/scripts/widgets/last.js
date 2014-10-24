@@ -54,7 +54,7 @@ module.exports = require('./widget').extend()
 
 
 function drawWidget(el, opts) {
-  el.classed('sph-widget sph-widget-last', true)
+  el.classed('sph-widget sph-last', true)
     .classed('sph-is-status-good', false)
     .classed('sph-is-status-bad', false)
     .classed('sph-is-status-neutral', false)
