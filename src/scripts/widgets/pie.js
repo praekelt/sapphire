@@ -46,36 +46,6 @@ module.exports = require('./widget').extend()
     this.colors(d3.scale.category10());
   })
 
-  .meth('normalize', function(el) {
-    var self = this;
-    var node = el.node();
-
-    el.datum(function(d, i) {
-      return {
-        title: self.title().call(node, d, i),
-        metrics: self.metrics()
-          .call(node, d, i)
-          .map(metric)
-      };
-    });
-
-    function metric(d, i) {
-      var key = self.key()
-        .call(node, d, i)
-        .toString();
-
-      return {
-        key: key,
-        color: self.colors()(key),
-        title: self.metricTitle().call(node, d, i),
-        value: self.value().call(node, d, i)
-      };
-    }
-
-    var sum = d3.sum(el.datum().metrics, function(d) { return d.value; });
-    el.datum().metrics.forEach(function(d) { d.percent = d.value / sum; });
-  })
-
   .draw(function(el) {
     var opts = this.props();
     normalize(el, opts);
