@@ -1,0 +1,17 @@
+.sph-table {
+  tr:nth-child(2n) {
+    td {
+      background: fade(@fg-color, 2.5%);
+      &:nth-child(2n + 1) { background: fade(@fg-color, 7%); }
+    }
+  }
+
+  td { background: fade(@fg-color, 7%); }
+  td:nth-child(2n + 1) { background: fade(@fg-color, 2.5%); }
+}
+
+
+td.sph-swatch {
+  padding: 0;
+  width: 12px;
+}
