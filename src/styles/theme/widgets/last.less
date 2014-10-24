@@ -1,0 +1,34 @@
+@import "../vars";
+
+
+.sph-sparkline-path {
+  stroke: @fg-color;
+  stroke-width: 4px;
+}
+
+
+.sph-sparkline-path-diff {
+  stroke-width: 4.5px;
+}
+
+
+.sph-widget-last-status(@color) {
+  .sph-summary-diff { color: @color; }
+  .sph-sparkline-path-diff { stroke: @color; }
+  .sph-sparkline-dot { fill: @color; }
+}
+
+
+.sph-widget-last.sph-is-status-good {
+  .sph-widget-last-status(@good-color); 
+}
+
+
+.sph-widget-last.sph-is-status-bad {
+  .sph-widget-last-status(@bad-color); 
+}
+
+
+.sph-widget-last.sph-is-status-neutral {
+  .sph-widget-last-status(@fg-color); 
+}
