@@ -37,7 +37,7 @@ function widget(el) {
     .text(function(d) { return d.title; });
 
   var interval = el.selectAll('.widget-interval')
-    .classed('active-widget-interval', false)
+    .classed('is-widget-interval-active', false)
     .on('click', null)
     .on('click', function() {
       datum.interval = getInterval(this);
@@ -48,7 +48,7 @@ function widget(el) {
     .filter(function() {
       return getInterval(this) === datum.interval;
     })
-    .classed('active-widget-interval', true);
+    .classed('is-widget-interval-active', true);
 }
 
 

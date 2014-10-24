@@ -34,6 +34,6 @@ body {
   font-weight: bold;
 }
 
-.active-widget-interval {
+.is-widget-interval-active {
   border-bottom: 3px solid #5d5d5d;
 }
