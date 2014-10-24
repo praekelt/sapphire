@@ -291,7 +291,7 @@ describe("sapphire.widgets.pie", function() {
     el.datum(datum)
       .call(pie);
 
-    expect(el.selectAll('.sph-table-pie-metric').size()).to.equal(3);
+    expect(el.selectAll('.sph-row-pie-metric').size()).to.equal(3);
 
     datum.metrics[0].key = 'foo';
     datum.metrics[1].key = 'ham';
@@ -300,7 +300,7 @@ describe("sapphire.widgets.pie", function() {
     el.datum(datum)
       .call(pie);
 
-    expect(el.selectAll('.sph-table-pie-metric').size()).to.equal(3);
+    expect(el.selectAll('.sph-row-pie-metric').size()).to.equal(3);
   });
 
   it("should colour its legend swatches according to their metric keys", function() {
@@ -332,7 +332,7 @@ describe("sapphire.widgets.pie", function() {
     expect(bg('baz')).to.equal(colors('baz'));
 
     function bg(key) {
-      var v = el.selectAll('.sph-swatch')
+      var v = el.selectAll('.sph-col-swatch')
         .filter(function(d) { return d.key === key; })
         .style('background-color');
 
@@ -375,7 +375,7 @@ describe("sapphire.widgets.pie", function() {
     expect(title('baz')).to.equal('Baz');
 
     function title(key) {
-      return el.selectAll('.sph-table-pie-title')
+      return el.selectAll('.sph-col-pie-title')
         .filter(function(d) { return d.key === key; })
         .text();
     }
@@ -421,7 +421,7 @@ describe("sapphire.widgets.pie", function() {
     expect(percent('baz')).to.equal(format(7000000 / sum));
 
     function percent(key) {
-      return el.selectAll('.sph-table-pie-percent')
+      return el.selectAll('.sph-col-pie-percent')
         .filter(function(d) { return d.key === key; })
         .text();
     }
@@ -465,7 +465,7 @@ describe("sapphire.widgets.pie", function() {
     expect(value('baz')).to.equal(format(7000000));
 
     function value(key) {
-      return el.selectAll('.sph-table-pie-value')
+      return el.selectAll('.sph-col-pie-value')
         .filter(function(d) { return d.key === key; })
         .text();
     }

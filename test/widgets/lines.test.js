@@ -590,7 +590,7 @@ describe("sapphire.widgets.lines", function() {
 
     var legend = el.selectAll('.sph-table-lines');
     expect(legend.size()).to.equal(1);
-    expect(legend.selectAll('.sph-table-lines-metric').size()).to.equal(2);
+    expect(legend.selectAll('.sph-row-lines-metric').size()).to.equal(2);
 
     datum.metrics[0].values = [{
       x: 4,
@@ -626,7 +626,7 @@ describe("sapphire.widgets.lines", function() {
 
     legend = el.selectAll('.sph-table-lines');
     expect(legend.size()).to.equal(1);
-    expect(legend.selectAll('.sph-table-lines-metric').size()).to.equal(2);
+    expect(legend.selectAll('.sph-row-lines-metric').size()).to.equal(2);
   });
 
   it("should draw its legend's metric swatches", function() {
@@ -667,13 +667,13 @@ describe("sapphire.widgets.lines", function() {
       .call(lines);
 
     var swatch = el
-      .select('.sph-table-lines-metric[data-key=foo] .sph-swatch')
+      .select('.sph-row-lines-metric[data-key=foo] .sph-col-swatch')
       .style('background-color');
 
     expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('foo')));
 
     swatch = el
-      .select('.sph-table-lines-metric[data-key=bar] .sph-swatch')
+      .select('.sph-row-lines-metric[data-key=bar] .sph-col-swatch')
       .style('background-color');
 
     expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('bar')));
@@ -711,13 +711,13 @@ describe("sapphire.widgets.lines", function() {
       .call(lines);
 
     swatch = el
-      .select('.sph-table-lines-metric[data-key=foo] .sph-swatch')
+      .select('.sph-row-lines-metric[data-key=foo] .sph-col-swatch')
       .style('background-color');
 
     expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('foo')));
 
     swatch = el
-      .select('.sph-table-lines-metric[data-key=baz] .sph-swatch')
+      .select('.sph-row-lines-metric[data-key=baz] .sph-col-swatch')
       .style('background-color');
 
     expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('baz')));
@@ -759,14 +759,14 @@ describe("sapphire.widgets.lines", function() {
       .call(lines);
 
     var title = el
-      .select('.sph-table-lines-metric[data-key=foo]')
-      .select('.sph-table-lines-title');
+      .select('.sph-row-lines-metric[data-key=foo]')
+      .select('.sph-col-lines-title');
 
     expect(title.text()).to.equal('Total Foo');
 
     title = el
-      .select('.sph-table-lines-metric[data-key=bar]')
-      .select('.sph-table-lines-title');
+      .select('.sph-row-lines-metric[data-key=bar]')
+      .select('.sph-col-lines-title');
 
     expect(title.text()).to.equal('Total Bar');
 
@@ -804,14 +804,14 @@ describe("sapphire.widgets.lines", function() {
       .call(lines);
 
     title = el
-      .select('.sph-table-lines-metric[data-key=foo]')
-      .select('.sph-table-lines-title');
+      .select('.sph-row-lines-metric[data-key=foo]')
+      .select('.sph-col-lines-title');
 
     expect(title.text()).to.equal('Total Foo');
 
     title = el
-      .select('.sph-table-lines-metric[data-key=baz]')
-      .select('.sph-table-lines-title');
+      .select('.sph-row-lines-metric[data-key=baz]')
+      .select('.sph-col-lines-title');
 
     expect(title.text()).to.equal('Total Baz');
   });
@@ -852,14 +852,14 @@ describe("sapphire.widgets.lines", function() {
       .call(lines);
 
     var value = el
-      .select('.sph-table-lines-metric[data-key=foo]')
-      .select('.sph-table-lines-value');
+      .select('.sph-row-lines-metric[data-key=foo]')
+      .select('.sph-col-lines-value');
 
     expect(value.text()).to.equal('4,000,000');
 
     value = el
-      .select('.sph-table-lines-metric[data-key=bar]')
-      .select('.sph-table-lines-value');
+      .select('.sph-row-lines-metric[data-key=bar]')
+      .select('.sph-col-lines-value');
 
     expect(value.text()).to.equal('5,000,000');
 
@@ -896,14 +896,14 @@ describe("sapphire.widgets.lines", function() {
       .call(lines);
 
     value = el
-      .select('.sph-table-lines-metric[data-key=foo]')
-      .select('.sph-table-lines-value');
+      .select('.sph-row-lines-metric[data-key=foo]')
+      .select('.sph-col-lines-value');
 
     expect(value.text()).to.equal('9,000,000');
 
     value = el
-      .select('.sph-table-lines-metric[data-key=baz]')
-      .select('.sph-table-lines-value');
+      .select('.sph-row-lines-metric[data-key=baz]')
+      .select('.sph-col-lines-value');
 
     expect(value.text()).to.equal('4,000,000');
   });

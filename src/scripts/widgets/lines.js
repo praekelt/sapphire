@@ -268,7 +268,7 @@ function drawLegend(legend, opts) {
     .filter(utils.isEmptyNode)
     .call(initLegend);
 
-  legend.select('.sph-table-lines').selectAll('.sph-table-lines-metric')
+  legend.select('.sph-table-lines').selectAll('.sph-row-lines-metric')
     .data(function(d) { return d; },
           function(d) { return d.key; })
     .call(drawLegendMetric, opts);
@@ -287,13 +287,13 @@ function drawLegendMetric(metric, opts) {
   metric.enter().append('tr')
     .call(enterLegendMetric);
 
-  metric.select('.sph-swatch')
+  metric.select('.sph-col-swatch')
     .style('background', function(d) { return d.color; });
 
-  metric.select('.sph-table-lines-title')
+  metric.select('.sph-col-lines-title')
     .text(function(d) { return d.title; });
 
-  metric.select('.sph-table-lines-value')
+  metric.select('.sph-col-lines-value')
     .text(function(d) {
       d = d.values[d.values.length - 1];
 
@@ -310,16 +310,16 @@ function drawLegendMetric(metric, opts) {
 function enterLegendMetric(metric) {
   metric
     .attr('data-key', function(d) { return d.key; })
-    .attr('class', 'sph-table-lines-metric');
+    .attr('class', 'sph-row-lines-metric');
 
   metric.append('td')
-    .attr('class', 'sph-swatch');
+    .attr('class', 'sph-col-swatch');
 
   metric.append('td')
-    .attr('class', 'sph-table-lines-title');
+    .attr('class', 'sph-col-lines-title');
 
   metric.append('td')
-    .attr('class', 'sph-table-lines-value');
+    .attr('class', 'sph-col-lines-value');
 }
 
 

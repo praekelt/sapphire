@@ -164,7 +164,7 @@ function drawLegend(legend, opts) {
     .filter(utils.isEmptyNode)
     .call(initLegend);
 
-  legend.select('.sph-table-pie').selectAll('.sph-table-pie-metric')
+  legend.select('.sph-table-pie').selectAll('.sph-row-pie-metric')
     .data(function(d) { return d; },
           function(d) { return d.key; })
     .call(drawLegendMetric, opts);
@@ -181,16 +181,16 @@ function drawLegendMetric(metric, opts) {
   metric.enter().append('tr')
     .call(enterLegendMetric);
 
-  metric.select('.sph-swatch')
+  metric.select('.sph-col-swatch')
     .style('background', function(d) { return d.color; });
 
-  metric.select('.sph-table-pie-title')
+  metric.select('.sph-col-pie-title')
     .text(function(d) { return d.title; });
 
-  metric.select('.sph-table-pie-percent')
+  metric.select('.sph-col-pie-percent')
     .text(function(d) { return opts.percentFormat(d.percent); });
 
-  metric.select('.sph-table-pie-value')
+  metric.select('.sph-col-pie-value')
     .text(function(d) { return opts.valueFormat(d.value); });
 
   metric.exit()
@@ -200,19 +200,19 @@ function drawLegendMetric(metric, opts) {
 
 function enterLegendMetric(metric) {
   metric
-    .attr('class', 'sph-table-pie-metric');
+    .attr('class', 'sph-row-pie-metric');
 
   metric.append('td')
-    .attr('class', 'sph-swatch');
+    .attr('class', 'sph-col-swatch');
 
   metric.append('td')
-    .attr('class', 'sph-table-pie-title');
+    .attr('class', 'sph-col-pie-title');
 
   metric.append('td')
-    .attr('class', 'sph-table-pie-percent');
+    .attr('class', 'sph-col-pie-percent');
 
   metric.append('td')
-    .attr('class', 'sph-table-pie-value');
+    .attr('class', 'sph-col-pie-value');
 }
 
 
