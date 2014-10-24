@@ -137,10 +137,10 @@ function initChart(chart) {
     .attr('class', 'sph-bars');
 
   svg.append('g')
-    .attr('class', 'sph-axis sph-axis-bars-x');
+    .attr('class', 'sph-axis sph-axis-bars-y');
 
   svg.append('g')
-    .attr('class', 'sph-axis sph-axis-bars-y');
+    .attr('class', 'sph-axis sph-axis-bars-x');
 }
 
 
