@@ -1,0 +1,17 @@
+@import "./vars";
+
+
+.sph-axis {
+  @color: lighten(@fg-color, 16%);
+
+  line, path {
+    stroke: @color;
+  }
+
+  /* .tick is a class set by d3 */
+  .tick {
+    text {
+      fill: @color;
+    }
+  }
+}

@@ -35,13 +35,25 @@ gulp.task('scripts:debug', function () {
 });
 
 
-gulp.task('styles', function () {
+gulp.task('styles:modules', function () {
   return gulp
     .src('./src/styles/sapphire.less')
     .pipe(less())
     .on('error', error)
     .pipe(gulp.dest('./build'));
 });
+
+
+gulp.task('styles:theme', function () {
+  return gulp
+    .src('./src/styles/sapphire-theme.less')
+    .pipe(less())
+    .on('error', error)
+    .pipe(gulp.dest('./build'));
+});
+
+
+gulp.task('styles', ['styles:modules', 'styles:theme']);
 
 
 gulp.task('test', ['scripts:debug', 'styles'], function() {
