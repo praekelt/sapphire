@@ -95,8 +95,8 @@ describe("sapphire.widgets.last", function() {
     el.datum(datum)
       .call(last);
 
-    expect(el.selectAll('.last.value').size()).to.equal(1);
-    expect(el.select('.last.value').text()).to.equal('910');
+    expect(el.selectAll('.sph-last-value').size()).to.equal(1);
+    expect(el.select('.sph-last-value').text()).to.equal('910');
 
     datum.values = [{
       x: 1123,
@@ -109,8 +109,8 @@ describe("sapphire.widgets.last", function() {
     el.datum(datum)
       .call(last);
 
-    expect(el.selectAll('.last.value').size()).to.equal(1);
-    expect(el.select('.last.value').text()).to.equal('1,910');
+    expect(el.selectAll('.sph-last-value').size()).to.equal(1);
+    expect(el.select('.sph-last-value').text()).to.equal('1,910');
   });
 
   it("should use the appropriate diff class", function() {
@@ -127,9 +127,9 @@ describe("sapphire.widgets.last", function() {
     el.datum(datum)
       .call(last);
 
-    expect(el.selectAll('.good').size()).to.be.above(0);
-    expect(el.selectAll('.bad').size()).to.equal(0);
-    expect(el.selectAll('.neutral').size()).to.equal(0);
+    expect(el.classed('sph-is-status-good')).to.be.true;
+    expect(el.classed('sph-is-status-bad')).to.be.false;
+    expect(el.classed('sph-is-status-neutral')).to.be.false;
 
     datum.values = [{
       x: 1123,
@@ -142,9 +142,9 @@ describe("sapphire.widgets.last", function() {
     el.datum(datum)
       .call(last);
 
-    expect(el.selectAll('.good').size()).to.equal(0);
-    expect(el.selectAll('.bad').size()).to.be.above(0);
-    expect(el.selectAll('.neutral').size()).to.equal(0);
+    expect(el.classed('sph-is-status-good')).to.be.false;
+    expect(el.classed('sph-is-status-bad')).to.be.true;
+    expect(el.classed('sph-is-status-neutral')).to.be.false;
 
     datum.values = [{
       x: 1123,
@@ -157,9 +157,9 @@ describe("sapphire.widgets.last", function() {
     el.datum(datum)
       .call(last);
 
-    expect(el.selectAll('.good').size()).to.equal(0);
-    expect(el.selectAll('.bad').size()).to.equal(0);
-    expect(el.selectAll('.neutral').size()).to.be.above(0);
+    expect(el.classed('sph-is-status-good')).to.be.false;
+    expect(el.classed('sph-is-status-bad')).to.be.false;
+    expect(el.classed('sph-is-status-neutral')).to.be.true;
   });
 
   it("should use a neutral diff class for less than two values", function() {
@@ -173,18 +173,18 @@ describe("sapphire.widgets.last", function() {
     el.datum(datum)
       .call(last);
 
-    expect(el.selectAll('.good').size()).to.equal(0);
-    expect(el.selectAll('.bad').size()).to.equal(0);
-    expect(el.selectAll('.neutral').size()).to.be.above(0);
+    expect(el.classed('sph-is-status-good')).to.be.false;
+    expect(el.classed('sph-is-status-bad')).to.be.false;
+    expect(el.classed('sph-is-status-neutral')).to.be.true;
 
     datum.values = [];
 
     el.datum(datum)
       .call(last);
 
-    expect(el.selectAll('.good').size()).to.equal(0);
-    expect(el.selectAll('.bad').size()).to.equal(0);
-    expect(el.selectAll('.neutral').size()).to.be.above(0);
+    expect(el.classed('sph-is-status-good')).to.be.false;
+    expect(el.classed('sph-is-status-bad')).to.be.false;
+    expect(el.classed('sph-is-status-neutral')).to.be.true;
   });
 
   it("should show a diff summary if there are two or more values", function() {
@@ -201,10 +201,10 @@ describe("sapphire.widgets.last", function() {
     el.datum(datum)
       .call(last);
 
-    expect(el.selectAll('.summary').size())
+    expect(el.selectAll('.sph-summary').size())
         .to.equal(1);
 
-    expect(el.select('.summary').text())
+    expect(el.select('.sph-summary').text())
         .to.equal('+565 from 2 Mar 8:30 to 3 Mar 6:30');
 
     datum.values = [{
@@ -218,10 +218,10 @@ describe("sapphire.widgets.last", function() {
     el.datum(datum)
       .call(last);
 
-    expect(el.selectAll('.summary').size())
+    expect(el.selectAll('.sph-summary').size())
         .to.equal(1);
 
-    expect(el.select('.summary').text())
+    expect(el.select('.sph-summary').text())
         .to.equal('-2,035 from 4 Mar 2:30 to 5 Mar 12:30');
   });
 
@@ -236,16 +236,16 @@ describe("sapphire.widgets.last", function() {
     el.datum(datum)
       .call(last);
 
-    expect(el.selectAll('.summary').size()).to.equal(1);
-    expect(el.select('.summary').text()).to.equal('');
+    expect(el.selectAll('.sph-summary').size()).to.equal(1);
+    expect(el.select('.sph-summary').text()).to.equal('');
 
     datum.values = [];
 
     el.datum(datum)
       .call(last);
 
-    expect(el.selectAll('.summary').size()).to.equal(1);
-    expect(el.select('.summary').text()).to.equal('');
+    expect(el.selectAll('.sph-summary').size()).to.equal(1);
+    expect(el.select('.sph-summary').text()).to.equal('');
   });
 
   it("should show its title", function() {
@@ -256,16 +256,16 @@ describe("sapphire.widgets.last", function() {
     el.datum(datum)
       .call(last);
 
-    expect(el.selectAll('.title').size()).to.equal(1);
-    expect(el.select('.title').text()).to.equal(datum.title);
+    expect(el.selectAll('.sph-title').size()).to.equal(1);
+    expect(el.select('.sph-title').text()).to.equal(datum.title);
 
     datum.title = 'Total Qux and Corge';
 
     el.datum(datum)
       .call(last);
 
-    expect(el.selectAll('.title').size()).to.equal(1);
-    expect(el.select('.title').text()).to.equal(datum.title);
+    expect(el.selectAll('.sph-title').size()).to.equal(1);
+    expect(el.select('.sph-title').text()).to.equal(datum.title);
   });
 
   it("should show the 'none' value if values are not available", function() {
@@ -278,7 +278,7 @@ describe("sapphire.widgets.last", function() {
       .call(last);
 
     last(el);
-    expect(el.select('.last').text()).to.equal('23');
+    expect(el.select('.sph-last-value').text()).to.equal('23');
   });
 
   it("should display a sparkline", function() {
@@ -332,10 +332,10 @@ describe("sapphire.widgets.last", function() {
     fx.values(datum.values);
     fy.values(datum.values);
 
-    expect(el.selectAll('.sparkline .rest.path').size())
+    expect(el.selectAll('.sph-sparkline-path-rest').size())
       .to.equal(1);
 
-    expect(el.select('.sparkline .rest.path').attr('d'))
+    expect(el.select('.sph-sparkline-path-rest').attr('d'))
       .to.equal(path(datum.values));
 
     datum.values = [{
@@ -355,10 +355,10 @@ describe("sapphire.widgets.last", function() {
     fx.values(datum.values);
     fy.values(datum.values);
 
-    expect(el.selectAll('.sparkline .rest.path').size())
+    expect(el.selectAll('.sph-sparkline-path-rest').size())
       .to.equal(1);
 
-    expect(el.select('.sparkline .rest.path').attr('d'))
+    expect(el.select('.sph-sparkline-path-rest').attr('d'))
       .to.equal(path(datum.values));
   });
 
@@ -380,7 +380,7 @@ describe("sapphire.widgets.last", function() {
     el.datum(datum)
       .call(last);
 
-    expect(parseInt(el.selectAll('.sparkline').style('height')))
+    expect(parseInt(el.selectAll('.sph-chart-sparkline').style('height')))
       .to.be.above(0);
 
     datum.values = [{
@@ -391,7 +391,7 @@ describe("sapphire.widgets.last", function() {
     el.datum(datum)
       .call(last);
 
-    expect(parseInt(el.selectAll('.sparkline').style('height')))
+    expect(parseInt(el.selectAll('.sph-chart-sparkline').style('height')))
       .to.equal(0);
   });
 
@@ -423,7 +423,7 @@ describe("sapphire.widgets.last", function() {
     el.datum(datum)
       .call(last);
 
-    expect(parseInt(el.selectAll('.summary').style('height')))
+    expect(parseInt(el.selectAll('.sph-summary').style('height')))
       .to.be.above(0);
 
     datum.values = [{
@@ -434,7 +434,7 @@ describe("sapphire.widgets.last", function() {
     el.datum(datum)
       .call(last);
 
-    expect(parseInt(el.selectAll('.summary').style('height')))
+    expect(parseInt(el.selectAll('.sph-summary').style('height')))
       .to.equal(0);
   });
 
@@ -499,10 +499,10 @@ describe("sapphire.widgets.last", function() {
     fx.values(datum.values);
     fy.values(datum.values);
 
-    expect(el.selectAll('.sparkline .diff.path').size())
+    expect(el.selectAll('.sph-sparkline-path-diff').size())
       .to.equal(1);
 
-    expect(el.select('.sparkline .diff.path').attr('d'))
+    expect(el.select('.sph-sparkline-path-diff').attr('d'))
       .to.equal(path(datum.values.slice(-2)));
 
     datum.values = [{
@@ -522,10 +522,10 @@ describe("sapphire.widgets.last", function() {
     fx.values(datum.values);
     fy.values(datum.values);
 
-    expect(el.selectAll('.sparkline .diff.path').size())
+    expect(el.selectAll('.sph-sparkline-path-diff').size())
       .to.equal(1);
 
-    expect(el.select('.sparkline .diff.path').attr('d'))
+    expect(el.select('.sph-sparkline-path-diff').attr('d'))
       .to.equal(path(datum.values.slice(-2)));
   });
 
@@ -576,11 +576,11 @@ describe("sapphire.widgets.last", function() {
     el.datum(datum)
       .call(last);
 
-    expect(el.selectAll('.sparkline .dot').size())
+    expect(el.selectAll('.sph-sparkline-dot').size())
       .to.equal(1);
 
-    expect(+el.select('.sparkline .dot').attr('cx')).to.equal(fx(567));
-    expect(+el.select('.sparkline .dot').attr('cy')).to.equal(fy(789));
+    expect(+el.select('.sph-sparkline-dot').attr('cx')).to.equal(fx(567));
+    expect(+el.select('.sph-sparkline-dot').attr('cy')).to.equal(fy(789));
 
     datum.values = [{
       x: 1123,
@@ -599,11 +599,11 @@ describe("sapphire.widgets.last", function() {
     el.datum(datum)
       .call(last);
 
-    expect(el.selectAll('.sparkline .dot').size())
+    expect(el.selectAll('.sph-sparkline-dot').size())
       .to.equal(1);
 
-    expect(+el.select('.sparkline .dot').attr('cx')).to.equal(fx(1567));
-    expect(+el.select('.sparkline .dot').attr('cy')).to.equal(fy(1789));
+    expect(+el.select('.sph-sparkline-dot').attr('cx')).to.equal(fx(1567));
+    expect(+el.select('.sph-sparkline-dot').attr('cy')).to.equal(fy(1789));
   });
 
   it("should allow the widget components to be specified explicitly", function() {

@@ -1,0 +1,89 @@
+.sph-title {
+  color: #f2f2f2;
+  background: #3a3a3a;
+}
+.sph-axis {
+  /* .tick is a class set by d3 */
+}
+.sph-axis line,
+.sph-axis path {
+  stroke: #636363;
+}
+.sph-axis .tick text {
+  fill: #636363;
+}
+.sph-table tr:nth-child(2n) td {
+  background: rgba(58, 58, 58, 0.025);
+}
+.sph-table tr:nth-child(2n) td:nth-child(2n + 1) {
+  background: rgba(58, 58, 58, 0.07);
+}
+.sph-table td {
+  background: rgba(58, 58, 58, 0.07);
+}
+.sph-table td:nth-child(2n + 1) {
+  background: rgba(58, 58, 58, 0.025);
+}
+td.sph-col-swatch {
+  padding: 0;
+  width: 12px;
+}
+.sph-widget {
+  color: #3a3a3a;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+.sph-chart-bars {
+  min-height: 180px;
+}
+.sph-axis-bars-y line {
+  stroke-width: 1px;
+  stroke: rgba(242, 242, 242, 0.5);
+}
+.sph-axis-bars-y path {
+  stroke: none;
+}
+.sph-sparkline-path {
+  stroke: #3a3a3a;
+  stroke-width: 4px;
+}
+.sph-sparkline-path-diff {
+  stroke-width: 4.5px;
+}
+.sph-last.sph-is-status-good .sph-summary-diff {
+  color: #2ca02c;
+}
+.sph-last.sph-is-status-good .sph-sparkline-path-diff {
+  stroke: #2ca02c;
+}
+.sph-last.sph-is-status-good .sph-sparkline-dot {
+  fill: #2ca02c;
+}
+.sph-last.sph-is-status-bad .sph-summary-diff {
+  color: #d62728;
+}
+.sph-last.sph-is-status-bad .sph-sparkline-path-diff {
+  stroke: #d62728;
+}
+.sph-last.sph-is-status-bad .sph-sparkline-dot {
+  fill: #d62728;
+}
+.sph-last.sph-is-status-neutral .sph-summary-diff {
+  color: #3a3a3a;
+}
+.sph-last.sph-is-status-neutral .sph-sparkline-path-diff {
+  stroke: #3a3a3a;
+}
+.sph-last.sph-is-status-neutral .sph-sparkline-dot {
+  fill: #3a3a3a;
+}
+.sph-lines-metric {
+  stroke-width: 2px;
+}
+.sph-axis-lines line {
+  stroke-width: 1px;
+  stroke: rgba(58, 58, 58, 0.07);
+}
+.sph-axis-lines path {
+  stroke: none;
+}

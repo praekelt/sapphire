@@ -66,7 +66,7 @@ module.exports = require('./widget').extend()
 
 
 function drawWidget(el, opts) {
-  el.classed('bars widget', true);
+  el.classed('sph-widget sph-bars', true);
 
   if (!opts.explicitComponents) initComponents(el);
 
@@ -89,14 +89,14 @@ function initComponents(el) {
 
 function drawTitle(title) {
   title
-    .classed('title', true)
+    .classed('sph-title', true)
     .text(function(d) { return d.title; });
 }
 
 
 function drawChart(chart, opts) {
   chart
-    .classed('chart', true)
+    .classed('sph-chart sph-chart-bars', true)
     .datum(function(d) { return d.values; });
 
   var dims = utils.box()
@@ -134,13 +134,13 @@ function initChart(chart) {
     .append('g');
 
   svg.append('g')
-    .attr('class', 'bars');
+    .attr('class', 'sph-bars-bars');
 
   svg.append('g')
-    .attr('class', 'y axis');
+    .attr('class', 'sph-axis sph-axis-bars-y');
 
   svg.append('g')
-    .attr('class', 'x axis');
+    .attr('class', 'sph-axis sph-axis-bars-x');
 }
 
 
@@ -153,20 +153,20 @@ function drawSvg(svg, dims, fx, fy, opts) {
         dims.margin.left,
         dims.margin.top));
 
-  svg.select('.bars')
+  svg.select('.sph-bars-bars')
      .call(drawBars, dims, fx, fy, opts);
 
-  svg.select('.x.axis')
+  svg.select('.sph-axis-bars-x')
     .call(drawXAxis, dims, fx, opts);
 
-  svg.select('.y.axis')
+  svg.select('.sph-axis-bars-y')
     .call(drawYAxis, dims, fy, opts);
 }
 
 
 function drawBars(bars, dims, fx, fy, opts) {
   bars
-    .selectAll('.bar')
+    .selectAll('.sph-bars-bar')
     .data(function(d) { return d; },
           function(d) { return d.x; })
     .call(drawBar, dims, fx, fy, opts);
@@ -175,7 +175,7 @@ function drawBars(bars, dims, fx, fy, opts) {
 
 function drawBar(bar, dims, fx, fy, opts) {
   bar.enter().append('g')
-    .attr('class', 'bar')
+    .attr('class', 'sph-bars-bar')
     .append('rect');
 
   bar

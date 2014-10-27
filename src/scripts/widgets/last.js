@@ -49,14 +49,16 @@ module.exports = require('./widget').extend()
   .draw(function(el) {
     var opts = this.props();
     normalize(el, opts);
-
-    opts.status = status(el.datum().values);
     drawWidget(el, opts);
   });
 
 
 function drawWidget(el, opts) {
-  el.classed('last widget', true);
+  el.classed('sph-widget sph-last', true)
+    .classed('sph-is-status-good', false)
+    .classed('sph-is-status-bad', false)
+    .classed('sph-is-status-neutral', false)
+    .classed(getStatus(el.datum().values), true);
 
   if (!opts.explicitComponents) initComponents(el);
 
@@ -96,14 +98,14 @@ function getValues(d) {
 
 function drawTitle(title) {
   title
-    .classed('title', true)
+    .classed('sph-title', true)
     .text(function(d) { return d.title; });
 }
 
 
 function drawLastValue(value, opts) {
   value
-    .classed('last value', true)
+    .classed('sph-last-value', true)
     .datum(function(d, i) {
       d = d[d.length - 1];
 
@@ -117,9 +119,7 @@ function drawLastValue(value, opts) {
 
 function drawSparkline(sparkline, opts) {
   sparkline
-    .classed('sparkline chart', true)
-    .classed('good bad neutral', false)
-    .classed(opts.status, true);
+    .classed('sph-chart sph-chart-sparkline', true);
 
   if (sparkline.datum().length < opts.sparklineLimit) {
     // TODO something better than this
@@ -157,10 +157,10 @@ function drawSvg(svg, dims, fx, fy) {
     .select('g')
       .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
 
-  svg.select('.paths')
+  svg.select('.sph-sparkline-paths')
     .call(drawPaths, fx, fy);
 
-  svg.selectAll('.dot')
+  svg.selectAll('.sph-sparkline-dot')
     .data(function(d) { return d.slice(-1); })
     .call(drawDot, fx, fy);
 }
@@ -171,10 +171,10 @@ function drawPaths(paths, fx, fy) {
     .x(function(d) { return fx(d.x); })
     .y(function(d) { return fy(d.y); });
 
-  paths.select('.rest.path')
+  paths.select('.sph-sparkline-path-rest')
     .attr('d', line);
 
-  paths.select('.diff.path')
+  paths.select('.sph-sparkline-path-diff')
     .datum(function(d) { return d.slice(-2); })
     .attr('d', line);
 }
@@ -185,19 +185,19 @@ function initSparkline(sparkline) {
     .append('g');
 
   var paths = svg.append('g')
-    .attr('class', 'paths');
+    .attr('class', 'sph-sparkline-paths');
 
   paths.append('path')
-    .attr('class', 'rest path');
+    .attr('class', 'sph-sparkline-path sph-sparkline-path-rest');
 
   paths.append('path')
-    .attr('class', 'diff path');
+    .attr('class', 'sph-sparkline-path sph-sparkline-path-diff');
 }
 
 
 function drawDot(dot, fx, fy) {
   dot.enter().append('circle')
-    .attr('class', 'dot')
+    .attr('class', 'sph-sparkline-dot')
     .attr('r', 4);
 
   dot
@@ -210,9 +210,7 @@ function drawDot(dot, fx, fy) {
 
 function drawSummary(summary, opts) {
   summary
-    .classed('summary', true)
-    .classed('good bad neutral', false)
-    .classed(opts.status, true);
+    .classed('sph-summary', true);
 
   if (summary.datum().length < opts.summaryLimit) {
     // TODO something better than this
@@ -224,14 +222,14 @@ function drawSummary(summary, opts) {
     .filter(utils.isEmptyNode)
     .call(initSummary);
 
-  summary.select('.diff')
+  summary.select('.sph-summary-diff')
     .datum(function(d) {
       d = d.slice(-2);
       return d[1].y - d[0].y;
     })
     .text(opts.diffFormat);
 
-  summary.select('.time')
+  summary.select('.sph-summary-time')
     .datum(function(d) {
       d = d.slice(-2);
 
@@ -247,10 +245,10 @@ function drawSummary(summary, opts) {
 
 function initSummary(summary) {
   summary.append('span')
-    .attr('class', 'diff');
+    .attr('class', 'sph-summary-diff');
 
   summary.append('span')
-    .attr('class', 'time');
+    .attr('class', 'sph-summary-time');
 }
 
 
@@ -275,14 +273,14 @@ function normalize(el, opts) {
 }
 
 
-function status(values) {
+function getStatus(values) {
   values = values.slice(-2);
 
   var diff = values.length > 1
     ? values[1].y - values[0].y
     : 0;
 
-  if (diff > 0) return 'good';
-  if (diff < 0) return 'bad';
-  return 'neutral';
+  if (diff > 0) return 'sph-is-status-good';
+  if (diff < 0) return 'sph-is-status-bad';
+  return 'sph-is-status-neutral';
 }
