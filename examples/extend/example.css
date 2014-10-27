@@ -13,7 +13,7 @@ body {
 
 .widget-titlebar {
   padding: 6px 10px;
-  height: 20px;
+  height: 25px;
   color: #5d5d5d;
   background: #e8e8e8;
 }
@@ -32,6 +32,8 @@ body {
   cursor: pointer;
   font-size: 0.9em;
   font-weight: bold;
+  border: none;
+  background-color: transparent;
 }
 
 .is-widget-interval-active {
