@@ -117,57 +117,30 @@ utils.measure = function(el, name) {
   return parseInt(el.style(name));
 };
 
+
+utils.isEmptyNode = function() {
+  return !this.hasChildNodes();
+};
+
 },{}],3:[function(_dereq_,module,exports){
 module.exports = strain()
   .static('draw', function(fn) {
-    this.meth('_draw_', safeDraw(fn));
+    this.meth('_draw_', fn);
   })
   .draw(function() {})
-
-  .static('enter', function(fn) {
-    this.meth('_enter_', safeDraw(fn));
-  })
-  .enter(function() {})
 
   .meth('draw', function(el) {
     el = sapphire.utils.ensureEl(el);
 
-    if (el.node() && !el.node().hasChildNodes()) {
-      this.enter.apply(this, arguments);
-    }
-
-    var parent = this._type_._super_.prototype;
-    if ('_draw_' in parent) {
-      parent._draw_.apply(this, arguments);
-    }
-
+    var datum;
+    if (el.node()) datum = el.datum();
     this._draw_.apply(this, arguments);
-  })
-
-  .meth('enter', function(el) {
-    el = sapphire.utils.ensureEl(el);
-
-    var parent = this._type_._super_.prototype;
-    if ('_enter_' in parent) {
-      parent._enter_.apply(this, arguments);
-    }
-
-    this._enter_.apply(this, arguments);
+    if (typeof datum != 'undefined') el.datum(datum);
   })
 
   .invoke(function() {
     return this.draw.apply(this, arguments);
   });
-
-
-function safeDraw(fn) {
-  return function(el) {
-    var datum;
-    if (el.node()) datum = el.datum();
-    fn.apply(this, arguments);
-    if (typeof datum != 'undefined') el.datum(datum);
-  };
-}
 
 },{}],4:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils');
@@ -227,146 +200,202 @@ module.exports = _dereq_('./widget').extend()
     this.colors(d3.scale.category10());
   })
 
-  .meth('normalize', function(el) {
-    var self = this;
-    var node = el.node();
+  .draw(function(el) {
+    var opts = this.props();
+    normalize(el, opts);
 
-    el.datum(function(d, i) {
-      var values = self.values()
-        .call(node, d, i)
-        .map(value);
+    opts.width = utils.innerWidth(el);
+    opts.color = opts.colors(el.datum().title);
+    drawWidget(el, opts);
+  });
 
-      var len = values.length;
-      var dxAvg = values.length
-        ? (values[len - 1].x - values[0].x) / len
-        : 0;
 
-      values.forEach(function(d) {
-        d.dx = utils.ensure(d.dx, dxAvg);
-      });
+function drawWidget(el, opts) {
+  el.classed('bars widget', true);
 
-      return {
-        values: values,
-        title: self.title().call(node, d, i)
-      };
+  if (!opts.explicitComponents) initComponents(el);
+
+  var component = el.select('[data-widget-component="title"]');
+  if (component.size()) component.call(drawTitle);
+
+  component = el.select('[data-widget-component="chart"]');
+  if (component.size()) component.call(drawChart, opts);
+}
+
+
+function initComponents(el) {
+  el.append('div')
+    .attr('data-widget-component', 'title');
+
+  el.append('div')
+    .attr('data-widget-component', 'chart');
+}
+
+
+function drawTitle(title) {
+  title
+    .classed('title', true)
+    .text(function(d) { return d.title; });
+}
+
+
+function drawChart(chart, opts) {
+  chart
+    .classed('chart', true)
+    .datum(function(d) { return d.values; });
+
+  var dims = utils.box()
+    .width(opts.width)
+    .height(utils.innerHeight(chart))
+    .margin(opts.chartMargin)
+    .calc();
+
+  var fx = d3.time.scale()
+    .domain([
+      d3.min(chart.datum(), function(d) { return d.x; }),
+      d3.max(chart.datum(), function(d) { return d.x + d.dx; })]);
+
+  var ys = chart.datum()
+    .map(function(d) { return d.y; });
+
+  var fy = d3.scale.linear()
+    .domain([0, opts.yMax(ys)]);
+
+  fx.range([0, dims.innerWidth]);
+  fy.range([dims.innerHeight, 0]);
+
+  chart
+    .filter(utils.isEmptyNode)
+    .call(initChart);
+
+  chart.select('svg')
+    .call(drawSvg, dims, fx, fy, opts);
+}
+
+
+function initChart(chart) {
+  var svg = chart
+    .append('svg')
+    .append('g');
+
+  svg.append('g')
+    .attr('class', 'bars');
+
+  svg.append('g')
+    .attr('class', 'y axis');
+
+  svg.append('g')
+    .attr('class', 'x axis');
+}
+
+
+function drawSvg(svg, dims, fx, fy, opts) {
+  svg
+    .attr('width', dims.width)
+    .attr('height', dims.height)
+    .select('g')
+      .attr('transform', utils.translate(
+        dims.margin.left,
+        dims.margin.top));
+
+  svg.select('.bars')
+     .call(drawBars, dims, fx, fy, opts);
+
+  svg.select('.x.axis')
+    .call(drawXAxis, dims, fx, opts);
+
+  svg.select('.y.axis')
+    .call(drawYAxis, dims, fy, opts);
+}
+
+
+function drawBars(bars, dims, fx, fy, opts) {
+  bars
+    .selectAll('.bar')
+    .data(function(d) { return d; },
+          function(d) { return d.x; })
+    .call(drawBar, dims, fx, fy, opts);
+}
+
+
+function drawBar(bar, dims, fx, fy, opts) {
+  bar.enter().append('g')
+    .attr('class', 'bar')
+    .append('rect');
+
+  bar
+    .attr('transform', function(d) {
+      return utils.translate(fx(d.x), fy(d.y));
     });
 
-    function value(d, i) {
-      return {
-        x: self.x().call(node, d, i),
-        y: self.y().call(node, d, i),
-        dx: self.dx().call(node, d, i)
-      };
-    }
-  })
+  bar.select('rect')
+    .style('fill', opts.color)
+    .attr('width', function(d) {
+      var width = fx(d.x + d.dx) - fx(d.x);
+      width -= opts.barPadding;
+      return Math.max(width, 1);
+    })
+    .attr('height', function(d) {
+      return dims.innerHeight - fy(d.y); 
+    });
 
-  .enter(function(el) {
-    el.classed('bars widget', true);
+  bar.exit()
+    .remove();
+}
 
-    el.append('div')
-      .attr('class', 'title');
 
-    var svg = el.append('div')
-      .attr('class', 'chart')
-      .append('svg')
-      .append('g');
-
-    svg.append('g')
-      .attr('class', 'bars');
-
-    svg.append('g')
-      .attr('class', 'y axis');
-
-    svg.append('g')
-      .attr('class', 'x axis');
-  })
-
-  .draw(function(el) {
-    var self = this;
-    this.normalize(el);
-
-    el.select('.widget .title')
-      .text(function(d) { return d.title; });
-
-    var chart = el.select('.chart')
-      .datum(function(d) { return d.values; });
-
-    var fx = d3.time.scale()
-      .domain([
-        d3.min(chart.datum(), function(d) { return d.x; }),
-        d3.max(chart.datum(), function(d) { return d.x + d.dx; })]);
-
-    var ys = chart.datum()
-      .map(function(d) { return d.y; });
-
-    var fy = d3.scale.linear()
-      .domain([0, this.yMax()(ys)]);
-
-    var dims = utils.box()
-      .width(utils.innerWidth(el))
-      .height(utils.innerHeight(chart))
-      .margin(this.chartMargin())
-      .calc();
-
-    fx.range([0, dims.innerWidth]);
-    fy.range([dims.innerHeight, 0]);
-
-    var svg = chart.select('svg')
-      .attr('width', dims.width)
-      .attr('height', dims.height)
-      .select('g')
-        .attr('transform', utils.translate(
-          dims.margin.left,
-          dims.margin.top));
-
-    var bar = svg.select('.bars')
-      .selectAll('.bar')
-      .data(function(d) { return d; },
-            function(d) { return d.x; });
-
-    bar.enter().append('g')
-      .attr('class', 'bar')
-      .append('rect');
-
-    bar
-      .attr('transform', function(d) {
-        return utils.translate(fx(d.x), fy(d.y));
-      });
-
-    bar.select('rect')
-      .style('fill', this.colors()(el.datum().title))
-      .attr('width', function(d) {
-        var width = fx(d.x + d.dx) - fx(d.x);
-        width -= self.barPadding();
-        return Math.max(width, 1);
-      })
-      .attr('height', function(d) {
-        return dims.innerHeight - fy(d.y); 
-      });
-
-    bar.exit()
-      .remove();
-
-    var axis = d3.svg.axis()
+function drawXAxis(axis, dims, fx, opts) {
+  axis
+    .attr('transform', utils.translate(0, dims.innerHeight))
+    .call(d3.svg.axis()
       .scale(fx)
-      .ticks(this.xTicks())
-      .tickFormat(this.xTickFormat());
+      .ticks(opts.xTicks)
+      .tickFormat(opts.xTickFormat));
+}
 
-    svg.select('.x.axis')
-      .attr('transform', utils.translate(0, dims.innerHeight))
-      .call(axis);
 
-    axis = d3.svg.axis()
-      .orient('left')
-      .scale(fy)
-      .tickPadding(8)
-      .tickSize(-dims.innerWidth)
-      .ticks(this.yTicks())
-      .tickFormat(this.yTickFormat());
-    
-    svg.select('.y.axis')
-      .call(axis);
+function drawYAxis(axis, dims, fy, opts) {
+  axis.call(d3.svg.axis()
+    .orient('left')
+    .scale(fy)
+    .tickPadding(8)
+    .tickSize(-dims.innerWidth)
+    .ticks(opts.yTicks)
+    .tickFormat(opts.yTickFormat));
+}
+
+
+function normalize(el, opts) {
+  var node = el.node();
+
+  el.datum(function(d, i) {
+    var values = opts.values
+      .call(node, d, i)
+      .map(value);
+
+    var len = values.length;
+    var dxAvg = values.length
+      ? (values[len - 1].x - values[0].x) / len
+      : 0;
+
+    values.forEach(function(d) {
+      d.dx = utils.ensure(d.dx, dxAvg);
+    });
+
+    return {
+      values: values,
+      title: opts.title.call(node, d, i)
+    };
   });
+
+  function value(d, i) {
+    return {
+      x: opts.x.call(node, d, i),
+      y: opts.y.call(node, d, i),
+      dx: opts.dx.call(node, d, i)
+    };
+  }
+}
 
 },{"../utils":2,"./widget":9}],5:[function(_dereq_,module,exports){
 exports.pie = _dereq_('./pie');
@@ -424,199 +453,248 @@ module.exports = _dereq_('./widget').extend()
     right: 4 
   })
 
-  .prop('sparkline')
-  .prop('summary')
-
-  .init(function() {
-    this.sparkline(sparkline(this));
-    this.summary(summary(this));
-  })
-
-  .enter(function(el) {
-    el.classed('last widget', true);
-
-    el.append('div')
-      .attr('class', 'title');
-
-    var values = el.append('div')
-      .attr('class', 'values');
-
-    values.append('div')
-      .attr('class', 'last value');
-
-    values.append('div')
-      .attr('class', 'sparkline chart');
-
-    values.append('div')
-      .attr('class', 'summary');
-  })
-
   .draw(function(el) {
-    var self = this;
-    var node = el.node();
+    var opts = this.props();
+    normalize(el, opts);
 
-    el.select('.title')
-      .text(function(d, i) {
-        return self.title().call(node, d, i);
-      });
-
-    var values = el.select('.values')
-      .datum(function(d, i) {
-        return self.values()
-          .call(node, d, i)
-          .map(function(d, i) {
-            return {
-              x: self.x().call(node, d, i),
-              y: self.y().call(node, d, i)
-            };
-          });
-      })
-      .attr('class', function(d) {
-        d = d.slice(-2);
-
-        d = d.length > 1
-          ? d[1].y - d[0].y
-          : 0;
-
-        if (d > 0) { return 'good values'; }
-        if (d < 0) { return 'bad values'; }
-        return 'neutral values';
-      });
-
-    values.select('.last.value')
-      .datum(function(d, i) {
-        d = d[d.length - 1];
-
-        return !d
-          ? self.none()
-          : d.y;
-      })
-      .text(this.yFormat());
-
-    values.select('.sparkline')
-      .call(this.sparkline());
-
-    values.select('.summary')
-      .call(this.summary());
+    opts.status = status(el.datum().values);
+    drawWidget(el, opts);
   });
 
 
-var summary = _dereq_('../view').extend()
-  .prop('widget')
+function drawWidget(el, opts) {
+  el.classed('last widget', true);
 
-  .init(function(widget) {
-    this.widget(widget);
-  })
+  if (!opts.explicitComponents) initComponents(el);
 
-  .enter(function(el) {
-    el.append('span')
-      .attr('class', 'diff');
+  var component = el.select('[data-widget-component="title"]');
+  if (component.size()) component.call(drawTitle);
 
-    el.append('span')
-      .attr('class', 'time');
-  })
+  component = el.select('[data-widget-component="last-value"]');
+  if (component.size()) component.datum(getValues).call(drawLastValue, opts);
 
-  .draw(function(el) {
-    var widget = this.widget();
+  component = el.select('[data-widget-component="sparkline"]');
+  if (component.size()) component.datum(getValues).call(drawSparkline, opts);
 
-    if (el.datum().length < this.widget().summaryLimit()) {
-      el.style('height', 0);
-      return;
-    }
+  component = el.select('[data-widget-component="summary"]');
+  if (component.size()) component.datum(getValues).call(drawSummary, opts);
+}
 
-    el.select('.diff')
-      .datum(function(d) {
-        d = d.slice(-2);
-        return d[1].y - d[0].y;
-      })
-      .text(widget.diffFormat());
 
-    el.select('.time')
-      .datum(function(d) {
-        d = d.slice(-2);
+function initComponents(el) {
+  el.append('div')
+    .attr('data-widget-component', 'title');
 
-        return [d[0].x, d[1].x]
-          .map(utils.date)
-          .map(widget.xFormat());
-      })
-      .text(function(d) {
-        return [' from', d[0], 'to', d[1]].join(' ');
-      });
+  el.append('div')
+    .attr('data-widget-component', 'last-value');
+
+  el.append('div')
+    .attr('data-widget-component', 'sparkline');
+
+  el.append('div')
+    .attr('data-widget-component', 'summary');
+}
+
+
+function getValues(d) {
+  return d.values;
+}
+
+
+function drawTitle(title) {
+  title
+    .classed('title', true)
+    .text(function(d) { return d.title; });
+}
+
+
+function drawLastValue(value, opts) {
+  value
+    .classed('last value', true)
+    .datum(function(d, i) {
+      d = d[d.length - 1];
+
+      return !d
+        ? opts.none
+        : d.y;
+    })
+    .text(opts.yFormat);
+}
+
+
+function drawSparkline(sparkline, opts) {
+  sparkline
+    .classed('sparkline chart', true)
+    .classed('good bad neutral', false)
+    .classed(opts.status, true);
+
+  if (sparkline.datum().length < opts.sparklineLimit) {
+    // TODO something better than this
+    sparkline.style('height', 0);
+    return;
+  }
+
+  var dims = utils.box()
+    .margin(opts.sparklineMargin)
+    .width(utils.innerWidth(sparkline))
+    .height(utils.innerHeight(sparkline))
+    .calc();
+
+  var fx = d3.scale.linear()
+    .domain(d3.extent(sparkline.datum(), function(d) { return d.x; }))
+    .range([0, dims.innerWidth]);
+
+  var fy = d3.scale.linear()
+    .domain(d3.extent(sparkline.datum(), function(d) { return d.y; }))
+    .range([dims.innerHeight, 0]);
+
+  sparkline
+    .filter(utils.isEmptyNode)
+    .call(initSparkline);
+
+  sparkline.select('svg')
+    .call(drawSvg, dims, fx, fy);
+}
+
+
+function drawSvg(svg, dims, fx, fy) {
+  svg = svg
+    .attr('width', dims.width)
+    .attr('height', dims.height)
+    .select('g')
+      .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
+
+  svg.select('.paths')
+    .call(drawPaths, fx, fy);
+
+  svg.selectAll('.dot')
+    .data(function(d) { return d.slice(-1); })
+    .call(drawDot, fx, fy);
+}
+
+
+function drawPaths(paths, fx, fy) {
+  var line = d3.svg.line()
+    .x(function(d) { return fx(d.x); })
+    .y(function(d) { return fy(d.y); });
+
+  paths.select('.rest.path')
+    .attr('d', line);
+
+  paths.select('.diff.path')
+    .datum(function(d) { return d.slice(-2); })
+    .attr('d', line);
+}
+
+
+function initSparkline(sparkline) {
+  var svg = sparkline.append('svg')
+    .append('g');
+
+  var paths = svg.append('g')
+    .attr('class', 'paths');
+
+  paths.append('path')
+    .attr('class', 'rest path');
+
+  paths.append('path')
+    .attr('class', 'diff path');
+}
+
+
+function drawDot(dot, fx, fy) {
+  dot.enter().append('circle')
+    .attr('class', 'dot')
+    .attr('r', 4);
+
+  dot
+    .attr('cx', function(d) { return fx(d.x); })
+    .attr('cy', function(d) { return fy(d.y); });
+
+  dot.exit().remove();
+}
+
+
+function drawSummary(summary, opts) {
+  summary
+    .classed('summary', true)
+    .classed('good bad neutral', false)
+    .classed(opts.status, true);
+
+  if (summary.datum().length < opts.summaryLimit) {
+    // TODO something better than this
+    summary.style('height', 0);
+    return;
+  }
+
+  summary
+    .filter(utils.isEmptyNode)
+    .call(initSummary);
+
+  summary.select('.diff')
+    .datum(function(d) {
+      d = d.slice(-2);
+      return d[1].y - d[0].y;
+    })
+    .text(opts.diffFormat);
+
+  summary.select('.time')
+    .datum(function(d) {
+      d = d.slice(-2);
+
+      return [d[0].x, d[1].x]
+        .map(utils.date)
+        .map(opts.xFormat);
+    })
+    .text(function(d) {
+      return [' from', d[0], 'to', d[1]].join(' ');
+    });
+}
+
+
+function initSummary(summary) {
+  summary.append('span')
+    .attr('class', 'diff');
+
+  summary.append('span')
+    .attr('class', 'time');
+}
+
+
+function normalize(el, opts) {
+  var node = el.node();
+
+  el.datum(function(d, i) {
+    return {
+      title: opts.title.call(node, d, i),
+      values: opts.values.call(node, d, i)
+        .map(value)
+    };
   });
 
 
-var sparkline = _dereq_('../view').extend()
-  .prop('widget')
+  function value(d, i) {
+    return {
+      x: opts.x.call(node, d, i),
+      y: opts.y.call(node, d, i)
+    };
+  }
+}
 
-  .init(function(widget) {
-    this.widget(widget);
-  })
 
-  .enter(function(el) {
-    var svg = el.append('svg')
-      .append('g');
+function status(values) {
+  values = values.slice(-2);
 
-    svg.append('path')
-      .attr('class', 'rest path');
+  var diff = values.length > 1
+    ? values[1].y - values[0].y
+    : 0;
 
-    svg.append('path')
-      .attr('class', 'diff path');
-  })
+  if (diff > 0) return 'good';
+  if (diff < 0) return 'bad';
+  return 'neutral';
+}
 
-  .draw(function(el) {
-    var widget = this.widget();
-
-    if (el.datum().length < widget.sparklineLimit()) {
-      el.style('height', 0);
-      return;
-    }
-
-    var dims = utils.box()
-      .margin(widget.sparklineMargin())
-      .width(utils.innerWidth(el))
-      .height(utils.innerHeight(el))
-      .calc();
-
-    var fx = d3.scale.linear()
-      .domain(d3.extent(el.datum(), function(d) { return d.x; }))
-      .range([0, dims.innerWidth]);
-
-    var fy = d3.scale.linear()
-      .domain(d3.extent(el.datum(), function(d) { return d.y; }))
-      .range([dims.innerHeight, 0]);
-
-    var line = d3.svg.line()
-      .x(function(d) { return fx(d.x); })
-      .y(function(d) { return fy(d.y); });
-
-    var svg = el.select('svg')
-      .attr('width', dims.width)
-      .attr('height', dims.height)
-      .select('g')
-        .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
-
-    svg.select('.rest.path')
-      .attr('d', line);
-
-    svg.select('.diff.path')
-      .datum(function(d) { return d.slice(-2); })
-      .attr('d', line);
-
-    var dot = svg.selectAll('.dot')
-      .data(function(d) { return d.slice(-1); });
-
-    dot.enter().append('circle')
-      .attr('class', 'dot')
-      .attr('r', 4);
-
-    dot
-      .attr('cx', function(d) { return fx(d.x); })
-      .attr('cy', function(d) { return fy(d.y); });
-
-    dot.exit().remove();
-  });
-
-},{"../utils":2,"../view":3,"./widget":9}],7:[function(_dereq_,module,exports){
+},{"../utils":2,"./widget":9}],7:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils');
 
 
@@ -688,258 +766,302 @@ module.exports = _dereq_('./widget').extend()
   .prop('legend')
 
   .init(function() {
-    this.chart(chart(this));
-    this.legend(legend(this));
     this.colors(d3.scale.category10());
   })
 
-  .enter(function(el) {
-    el.classed('lines widget', true);
-
-    el.append('div')
-      .attr('class', 'title');
-
-    var values = el.append('div')
-      .attr('class', 'values');
-
-    values.append('div')
-      .attr('class', 'chart');
-
-    values.append('div')
-      .attr('class', 'legend');
-  })
-
-  .meth('normalize', function(el) {
-    var self = this;
-    var node = el.node();
-
-    el.datum(function(d, i) {
-      var title = self.title().call(node, d, i);
-
-      return {
-        title: title,
-        metrics: self.metrics()
-          .call(node, d, i)
-          .map(metric)
-      };
-    });
-
-    function metric(d, i) {
-      var key = self.key()
-        .call(node, d, i)
-        .toString();
-
-      return {
-        key: key,
-        color: self.colors()(key),
-        title: self.metricTitle().call(node, d, i),
-        values: self.values()
-          .call(node, d, i)
-          .map(value)
-      };
-    }
-
-    function value(d, i) {
-      return {
-        x: self.x().call(node, d, i),
-        y: self.y().call(node, d, i)
-      };
-    }
-  })
-
   .draw(function(el) {
-    this.normalize(el);
-
-    el.select('.widget .title')
-      .text(function(d) { return d.title; });
-
-    var values = el.select('.values')
-      .datum(function(d, i) { return d.metrics; });
-
-    values.select('.chart')
-      .call(this.chart());
-
-    values.select('.legend')
-      .call(this.legend());
+    var opts = this.props();
+    normalize(el, opts);
+    drawWidget(el, opts);
   });
 
 
-var chart = _dereq_('../view').extend()
-  .prop('widget')
+function drawWidget(el, opts) {
+  el.classed('lines widget', true);
 
-  .init(function(widget) {
-    this.widget(widget);
-  })
+  if (!opts.explicitComponents) initComponents(el);
 
-  .enter(function(el) {
-    var svg = el.append('svg')
-      .append('g');
+  var component = el.select('[data-widget-component="title"]');
+  if (component.size()) component.call(drawTitle);
 
-    svg.append('g')
-      .attr('class', 'x axis');
+  component = el.select('[data-widget-component="chart"]');
+  if (component.size()) component.datum(getMetrics).call(drawChart, opts);
 
-    svg.append('g')
-      .attr('class', 'y axis');
+  component = el.select('[data-widget-component="legend"]');
+  if (component.size()) component.datum(getMetrics).call(drawLegend, opts);
+}
 
-    svg.append('g')
-      .attr('class', 'lines');
-  })
 
-  .draw(function(el) {
-    var widget = this.widget();
+function initComponents(el) {
+  el.append('div')
+    .attr('data-widget-component', 'title');
 
-    var dims = utils.box()
-      .margin(widget.chartMargin())
-      .width(utils.innerWidth(el))
-      .height(utils.innerHeight(el))
-      .calc();
+  el.append('div')
+    .attr('data-widget-component', 'chart');
 
-    var allValues = el
-      .datum()
-      .reduce(function(results, metric) {
-        results.push.apply(results, metric.values);
-        return results;
-      }, []);
+  el.append('div')
+    .attr('data-widget-component', 'legend');
+}
 
-    var fx = d3.time.scale()
-      .domain(d3.extent(allValues, function(d) { return d.x; }))
-      .range([0, dims.innerWidth]);
 
-    var ys = allValues
-      .map(function(d) { return d.y; });
+function drawTitle(title) {
+  title
+    .classed('title', true)
+    .text(function(d) { return d.title; });
+}
 
-    var fy = d3.scale.linear()
-      .domain([widget.yMin()(ys), widget.yMax()(ys)])
-      .range([dims.innerHeight, 0]);
 
-    var line = d3.svg.line()
-      .x(function(d) { return fx(d.x); })
-      .y(function(d) { return fy(d.y); });
+function drawChart(chart, opts) {
+  chart
+    .classed('chart', true);
 
-    var svg = el.select('svg')
-      .attr('width', dims.width)
-      .attr('height', dims.height)
-      .select('g')
-        .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
+  var dims = utils.box()
+    .margin(opts.chartMargin)
+    .width(utils.innerWidth(chart))
+    .height(utils.innerHeight(chart))
+    .calc();
 
-    var metric = svg.select('.lines').selectAll('.metric')
-      .data(function(d) { return d; },
-            function(d) { return d.key; });
+  var allValues = chart
+    .datum()
+    .reduce(function(results, metric) {
+      results.push.apply(results, metric.values);
+      return results;
+    }, []);
 
-    metric.enter().append('g')
-      .attr('class', 'metric')
-      .attr('data-key', function(d) { return d.key; })
-      .append('path')
-        .attr('class', 'line');
+  var fx = d3.time.scale()
+    .domain(d3.extent(allValues, function(d) { return d.x; }))
+    .range([0, dims.innerWidth]);
 
-    metric.select('.line')
-      .attr('stroke', function(d) { return d.color; })
-      .attr('d', function(d) { return line(d.values); });
+  var ys = allValues
+    .map(function(d) { return d.y; });
 
-    var dot = metric.selectAll('.dot')
-      .data(function(d) {
-        if (!d.values.length) { return []; }
-        var last = d.values[d.values.length - 1];
+  var fy = d3.scale.linear()
+    .domain([opts.yMin(ys), opts.yMax(ys)])
+    .range([dims.innerHeight, 0]);
 
-        return [{
-          x: last.x,
-          y: last.y,
-          color: d.color
-        }];
-      });
+  chart
+    .filter(utils.isEmptyNode)
+    .call(initChart);
 
-    dot.enter().append('circle')
-      .attr('class', 'dot')
-      .attr('r', 4);
+  chart.select('svg')
+    .call(drawSvg, dims, fx, fy, opts);
+}
 
-    dot
-      .attr('fill', function(d) { return d.color; })
-      .attr('cx', function(d) { return fx(d.x); })
-      .attr('cy', function(d) { return fy(d.y); });
 
-    dot.exit()
-      .remove();
+function initChart(chart) {
+  var svg = chart.append('svg')
+    .append('g');
 
-    metric.exit()
-      .remove();
+  svg.append('g')
+    .attr('class', 'x axis');
 
-    var axis = d3.svg.axis()
+  svg.append('g')
+    .attr('class', 'y axis');
+
+  svg.append('g')
+    .attr('class', 'metrics');
+}
+
+
+function drawSvg(svg, dims, fx, fy, opts) {
+  svg
+    .attr('width', dims.width)
+    .attr('height', dims.height)
+    .select('g')
+      .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
+
+  svg.select('.metrics')
+    .call(drawChartMetrics, fx, fy);
+
+  svg.select('.x.axis')
+    .call(drawXAxis, dims, fx, opts);
+
+  svg.select('.y.axis')
+    .call(drawYAxis, dims, fy, opts);
+}
+
+
+function drawChartMetrics(metrics, fx, fy) {
+  var line = d3.svg.line()
+    .x(function(d) { return fx(d.x); })
+    .y(function(d) { return fy(d.y); });
+
+  metrics.selectAll('.metric')
+    .data(function(d) { return d; },
+          function(d) { return d.key; })
+    .call(drawChartMetric, fx, fy, line);
+}
+
+
+function drawChartMetric(metric, fx, fy, line) {
+  metric.enter().append('g')
+    .attr('class', 'metric')
+    .attr('data-key', function(d) { return d.key; })
+    .append('path')
+      .attr('class', 'line');
+
+  metric.select('.line')
+    .attr('stroke', function(d) { return d.color; })
+    .attr('d', function(d) { return line(d.values); });
+
+  metric.exit()
+    .remove();
+
+  metric.selectAll('.dot')
+    .data(function(d) {
+      if (!d.values.length) { return []; }
+      var last = d.values[d.values.length - 1];
+
+      return [{
+        x: last.x,
+        y: last.y,
+        color: d.color
+      }];
+    })
+    .call(drawDot, fx, fy);
+}
+
+
+function drawDot(dot, fx, fy) {
+  dot.enter().append('circle')
+    .attr('class', 'dot')
+    .attr('r', 4);
+
+  dot
+    .attr('fill', function(d) { return d.color; })
+    .attr('cx', function(d) { return fx(d.x); })
+    .attr('cy', function(d) { return fy(d.y); });
+
+  dot.exit()
+    .remove();
+}
+
+
+function drawXAxis(axis, dims, fx, opts) {
+  axis
+    .attr('transform', utils.translate(0, dims.innerHeight))
+    .call(d3.svg.axis()
       .scale(fx)
       .tickPadding(8)
-      .ticks(widget.xTicks())
-      .tickFormat(widget.xTickFormat())
-      .tickSize(-dims.innerHeight);
+      .ticks(opts.xTicks)
+      .tickFormat(opts.xTickFormat)
+      .tickSize(-dims.innerHeight));
+}
 
-    svg.select('.x.axis')
-      .attr('transform', utils.translate(0, dims.innerHeight))
-      .call(axis);
 
-    axis = d3.svg.axis()
-      .orient('left')
-      .scale(fy)
-      .tickPadding(8)
-      .ticks(widget.yTicks())
-      .tickFormat(widget.yTickFormat())
-      .tickSize(-dims.innerWidth);
-    
-    svg.select('.y.axis')
-      .call(axis);
+function drawYAxis(axis, dims, fy, opts) {
+  axis.call(d3.svg.axis()
+    .orient('left')
+    .scale(fy)
+    .tickPadding(8)
+    .ticks(opts.yTicks)
+    .tickFormat(opts.yTickFormat)
+    .tickSize(-dims.innerWidth));
+}
+
+
+function drawLegend(legend, opts) {
+  legend
+    .classed('legend', true);
+
+  legend
+    .filter(utils.isEmptyNode)
+    .call(initLegend);
+
+  legend.select('.table').selectAll('.metric')
+    .data(function(d) { return d; },
+          function(d) { return d.key; })
+    .call(drawLegendMetric, opts);
+}
+
+
+function initLegend(legend) {
+  legend.append('table')
+    .attr('class', 'table');
+}
+
+
+function drawLegendMetric(metric, opts) {
+  var none = opts.yFormat(opts.none);
+
+  metric.enter().append('tr')
+    .call(enterLegendMetric);
+
+  metric.select('.swatch')
+    .style('background', function(d) { return d.color; });
+
+  metric.select('.title')
+    .text(function(d) { return d.title; });
+
+  metric.select('.value')
+    .text(function(d) {
+      d = d.values[d.values.length - 1];
+
+      return d
+        ? opts.yFormat(d.y)
+        : none;
+    });
+
+  metric.exit()
+    .remove();
+}
+
+
+function enterLegendMetric(metric) {
+  metric
+    .attr('data-key', function(d) { return d.key; })
+    .attr('class', 'metric');
+
+  metric.append('td')
+    .attr('class', 'swatch');
+
+  metric.append('td')
+    .attr('class', 'title');
+
+  metric.append('td')
+    .attr('class', 'value');
+}
+
+
+function normalize(el, opts) {
+  var node = el.node();
+
+  el.datum(function(d, i) {
+    var title = opts.title.call(node, d, i);
+
+    return {
+      title: title,
+      metrics: opts.metrics.call(node, d, i).map(metric)
+    };
   });
 
+  function metric(d, i) {
+    var key = opts.key
+      .call(node, d, i)
+      .toString();
 
-var legend = _dereq_('../view').extend()
-  .prop('widget')
+    return {
+      key: key,
+      color: opts.colors(key),
+      title: opts.metricTitle.call(node, d, i),
+      values: opts.values.call(node, d, i).map(value)
+    };
+  }
 
-  .init(function(widget) {
-    this.widget(widget);
-  })
+  function value(d, i) {
+    return {
+      x: opts.x.call(node, d, i),
+      y: opts.y.call(node, d, i)
+    };
+  }
+}
 
-  .enter(function(el) {
-    el.append('table')
-      .attr('class', 'table');
-  })
 
-  .draw(function(el) {
-    var none = this.widget().none();
-    var yFormat = this.widget().yFormat();
+function getMetrics(d) {
+  return d.metrics;
+}
 
-    var metric = el.select('.table').selectAll('.metric')
-      .data(function(d) { return d; },
-            function(d) { return d.key; });
-
-    var enterMetric = metric.enter().append('tr')
-      .attr('data-key', function(d) { return d.key; })
-      .attr('class', 'metric');
-
-    enterMetric.append('td')
-      .attr('class', 'swatch');
-
-    enterMetric.append('td')
-      .attr('class', 'title');
-
-    enterMetric.append('td')
-      .attr('class', 'value');
-
-    metric.select('.swatch')
-      .style('background', function(d) { return d.color; });
-
-    metric.select('.title')
-      .text(function(d) { return d.title; });
-
-    metric.select('.value')
-      .text(function(d) {
-        d = d.values[d.values.length - 1];
-
-        return d
-          ? yFormat(d.y)
-          : yFormat(none);
-      });
-
-    metric.exit()
-      .remove();
-  });
-
-},{"../utils":2,"../view":3,"./widget":9}],8:[function(_dereq_,module,exports){
+},{"../utils":2,"./widget":9}],8:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils');
 
 
@@ -988,172 +1110,215 @@ module.exports = _dereq_('./widget').extend()
     this.colors(d3.scale.category10());
   })
 
-  .meth('normalize', function(el) {
-    var self = this;
-    var node = el.node();
-
-    el.datum(function(d, i) {
-      return {
-        title: self.title().call(node, d, i),
-        metrics: self.metrics()
-          .call(node, d, i)
-          .map(metric)
-      };
-    });
-
-    function metric(d, i) {
-      var key = self.key()
-        .call(node, d, i)
-        .toString();
-
-      return {
-        key: key,
-        color: self.colors()(key),
-        title: self.metricTitle().call(node, d, i),
-        value: self.value().call(node, d, i)
-      };
-    }
-
-    var sum = d3.sum(el.datum().metrics, function(d) { return d.value; });
-    el.datum().metrics.forEach(function(d) { d.percent = d.value / sum; });
-  })
-
-  .enter(function(el) {
-    el.classed('pie widget', true);
-
-    el.append('div')
-      .attr('class', 'title');
-
-    el.append('div')
-      .attr('class', 'chart');
-
-    el.append('div')
-      .attr('class', 'legend');
-  })
-
   .draw(function(el) {
-    this.normalize(el);
-
-    el.select('.widget .title')
-      .text(function(d) { return d.title; });
-
-    el.select('.legend')
-      .call(legend(this));
-
-    el.select('.chart')
-      .call(chart(this));
+    var opts = this.props();
+    normalize(el, opts);
+    drawWidget(el, opts);
   });
 
 
-var chart = _dereq_('../view').extend()
-  .prop('widget')
+function drawWidget(el, opts) {
+  el.classed('pie widget', true);
 
-  .init(function(widget) {
-    this.widget(widget);
-  })
+  if (!opts.explicitComponents) initComponents(el);
 
-  .enter(function(el) {
-    el.append('svg')
-      .append('g');
-  })
+  var component = el.select('[data-widget-component="title"]');
+  if (component.size()) component.call(drawTitle);
 
-  .draw(function(el) {
-    var dims = utils.box()
-      .margin(this.widget().chartMargin())
-      .width(utils.innerWidth(el))
-      .height(utils.innerHeight(el))
-      .calc();
+  component = el.select('[data-widget-component="chart"]');
+  if (component.size()) component.datum(getMetrics).call(drawChart, opts);
 
-    var radius = Math.min(dims.innerWidth, dims.innerHeight) / 2;
+  component = el.select('[data-widget-component="legend"]');
+  if (component.size()) component.datum(getMetrics).call(drawLegend, opts);
+}
 
-    var svg = el.select('svg')
-      .attr('width', dims.width)
-      .attr('height', dims.height)
-      .select('g')
-        .attr('transform', utils.translate(
-          (dims.width / 2) - radius,
-          (dims.height / 2) - radius));
 
-    var arc = d3.svg.arc()
-      .innerRadius(this.widget().innerRadius()(radius))
-      .outerRadius(radius);
+function initComponents(el) {
+  el.append('div')
+    .attr('data-widget-component', 'title');
 
-    var layout = d3.layout.pie()
-      .value(function(d) { return d.value; });
+  el.append('div')
+    .attr('data-widget-component', 'chart');
 
-    var slice = svg.selectAll('.slice')
-      .data(function(d) { return layout(d.metrics); },
-            function(d) { return d.data.key; });
+  el.append('div')
+    .attr('data-widget-component', 'legend');
+}
 
-    slice.enter().append('g')
-      .attr('class', 'slice')
-      .append('path');
 
-    slice
-      .attr('transform', utils.translate(radius, radius));
+function drawTitle(title) {
+  title
+    .classed('title', true)
+    .text(function(d) { return d.title; });
+}
 
-    slice.select('path')
-      .attr('d', arc)
-      .style('fill', function(d) { return d.data.color; });
 
-    slice.exit()
-      .remove();
+function drawChart(chart, opts) {
+  chart
+    .classed('chart', true);
+
+  chart
+    .filter(utils.isEmptyNode)
+    .call(initChart);
+
+  var dims = utils.box()
+    .margin(opts.chartMargin)
+    .width(utils.innerWidth(chart))
+    .height(utils.innerHeight(chart))
+    .calc();
+
+  dims.radius = Math.min(dims.innerWidth, dims.innerHeight) / 2;
+
+  chart.select('svg')
+    .call(drawSvg, dims, opts);
+}
+
+
+function initChart(chart) {
+  chart.append('svg')
+    .append('g');
+}
+
+
+function drawSvg(svg, dims, opts) {
+  svg
+    .attr('width', dims.width)
+    .attr('height', dims.height)
+    .select('g')
+      .attr('transform', utils.translate(
+        (dims.width / 2) - dims.radius,
+        (dims.height / 2) - dims.radius))
+      .call(drawSlices, dims, opts);
+}
+
+
+function drawSlices(svg, dims, opts) {
+  var arc = d3.svg.arc()
+    .innerRadius(opts.innerRadius(dims.radius))
+    .outerRadius(dims.radius);
+
+  var layout = d3.layout.pie()
+    .value(function(d) { return d.value; });
+
+  svg.selectAll('.slice')
+    .data(function(d) { return layout(d); },
+          function(d) { return d.data.key; })
+    .call(drawSlice, dims, arc, opts);
+}
+
+
+function drawSlice(slice, dims, arc, opts) {
+  slice.enter().append('g')
+    .attr('class', 'slice')
+    .append('path');
+
+  slice
+    .attr('transform', utils.translate(dims.radius, dims.radius));
+
+  slice.select('path')
+    .attr('d', arc)
+    .style('fill', function(d) { return d.data.color; });
+
+  slice.exit()
+    .remove();
+}
+
+
+function drawLegend(legend, opts) {
+  legend
+    .classed('legend', true);
+
+  legend
+    .filter(utils.isEmptyNode)
+    .call(initLegend);
+
+  legend.select('.table').selectAll('.metric')
+    .data(function(d) { return d; },
+          function(d) { return d.key; })
+    .call(drawLegendMetric, opts);
+}
+
+
+function initLegend(legend) {
+  legend.append('table')
+    .attr('class', 'table');
+}
+
+
+function drawLegendMetric(metric, opts) {
+  metric.enter().append('tr')
+    .call(enterLegendMetric);
+
+  metric.select('.swatch')
+    .style('background', function(d) { return d.color; });
+
+  metric.select('.title')
+    .text(function(d) { return d.title; });
+
+  metric.select('.percent')
+    .text(function(d) { return opts.percentFormat(d.percent); });
+
+  metric.select('.value')
+    .text(function(d) { return opts.valueFormat(d.value); });
+
+  metric.exit()
+    .remove();
+}
+
+
+function enterLegendMetric(metric) {
+  metric
+    .attr('class', 'metric');
+
+  metric.append('td')
+    .attr('class', 'swatch');
+
+  metric.append('td')
+    .attr('class', 'title');
+
+  metric.append('td')
+    .attr('class', 'percent');
+
+  metric.append('td')
+    .attr('class', 'value');
+}
+
+
+function normalize(el, opts) {
+  var node = el.node();
+
+  el.datum(function(d, i) {
+    return {
+      title: opts.title.call(node, d, i),
+      metrics: opts.metrics.call(node, d, i).map(metric)
+    };
   });
 
+  function metric(d, i) {
+    var key = opts.key
+      .call(node, d, i)
+      .toString();
 
-var legend = _dereq_('../view').extend()
-  .prop('widget')
+    return {
+      key: key,
+      color: opts.colors(key),
+      title: opts.metricTitle.call(node, d, i),
+      value: opts.value.call(node, d, i)
+    };
+  }
 
-  .init(function(widget) {
-    this.widget(widget);
-  })
+  var sum = d3.sum(el.datum().metrics, function(d) { return d.value; });
+  el.datum().metrics.forEach(function(d) { d.percent = d.value / sum; });
+}
 
-  .enter(function(el) {
-    el.append('table')
-      .attr('class', 'table');
-  })
 
-  .draw(function(el) {
-    var valueFormat = this.widget().valueFormat();
-    var percentFormat = this.widget().percentFormat();
+function getMetrics(d) {
+  return d.metrics;
+}
 
-    var metric = el.select('.table').selectAll('.metric')
-      .data(function(d) { return d.metrics; },
-            function(d) { return d.key; });
-
-    var enterMetric = metric.enter().append('tr')
-      .attr('class', 'metric');
-
-    enterMetric.append('td')
-      .attr('class', 'swatch');
-
-    enterMetric.append('td')
-      .attr('class', 'title');
-
-    enterMetric.append('td')
-      .attr('class', 'percent');
-
-    enterMetric.append('td')
-      .attr('class', 'value');
-
-    metric.select('.swatch')
-      .style('background', function(d) { return d.color; });
-
-    metric.select('.title')
-      .text(function(d) { return d.title; });
-
-    metric.select('.percent')
-      .text(function(d) { return percentFormat(d.percent); });
-
-    metric.select('.value')
-      .text(function(d) { return valueFormat(d.value); });
-
-    metric.exit()
-      .remove();
-  });
-
-},{"../utils":2,"../view":3,"./widget":9}],9:[function(_dereq_,module,exports){
-module.exports = _dereq_('../view').extend();
+},{"../utils":2,"./widget":9}],9:[function(_dereq_,module,exports){
+module.exports = _dereq_('../view').extend()
+  .prop('explicitComponents')
+  .default(false);
 
 },{"../view":3}]},{},[1])
 (1)
