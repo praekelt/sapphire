@@ -80,7 +80,7 @@ module.exports = require('./widget').extend()
 
 
 function drawWidget(el, opts) {
-  el.classed('lines widget', true);
+  el.classed('sph-widget sph-lines', true);
 
   if (!opts.explicitComponents) initComponents(el);
 
@@ -109,14 +109,14 @@ function initComponents(el) {
 
 function drawTitle(title) {
   title
-    .classed('title', true)
+    .classed('sph-title', true)
     .text(function(d) { return d.title; });
 }
 
 
 function drawChart(chart, opts) {
   chart
-    .classed('chart', true);
+    .classed('sph-chart sph-chart-lines', true);
 
   var dims = utils.box()
     .margin(opts.chartMargin)
@@ -156,13 +156,13 @@ function initChart(chart) {
     .append('g');
 
   svg.append('g')
-    .attr('class', 'x axis');
+    .attr('class', 'sph-axis sph-axis-lines sph-axis-lines-x');
 
   svg.append('g')
-    .attr('class', 'y axis');
+    .attr('class', 'sph-axis sph-axis-lines sph-axis-lines-y');
 
   svg.append('g')
-    .attr('class', 'metrics');
+    .attr('class', 'sph-lines-metrics');
 }
 
 
@@ -173,13 +173,13 @@ function drawSvg(svg, dims, fx, fy, opts) {
     .select('g')
       .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
 
-  svg.select('.metrics')
+  svg.select('.sph-lines-metrics')
     .call(drawChartMetrics, fx, fy);
 
-  svg.select('.x.axis')
+  svg.select('.sph-axis-lines-x')
     .call(drawXAxis, dims, fx, opts);
 
-  svg.select('.y.axis')
+  svg.select('.sph-axis-lines-y')
     .call(drawYAxis, dims, fy, opts);
 }
 
@@ -189,7 +189,7 @@ function drawChartMetrics(metrics, fx, fy) {
     .x(function(d) { return fx(d.x); })
     .y(function(d) { return fy(d.y); });
 
-  metrics.selectAll('.metric')
+  metrics.selectAll('.sph-lines-metric')
     .data(function(d) { return d; },
           function(d) { return d.key; })
     .call(drawChartMetric, fx, fy, line);
@@ -198,19 +198,19 @@ function drawChartMetrics(metrics, fx, fy) {
 
 function drawChartMetric(metric, fx, fy, line) {
   metric.enter().append('g')
-    .attr('class', 'metric')
+    .attr('class', 'sph-lines-metric')
     .attr('data-key', function(d) { return d.key; })
     .append('path')
-      .attr('class', 'line');
+      .attr('class', 'sph-lines-line');
 
-  metric.select('.line')
+  metric.select('.sph-lines-line')
     .attr('stroke', function(d) { return d.color; })
     .attr('d', function(d) { return line(d.values); });
 
   metric.exit()
     .remove();
 
-  metric.selectAll('.dot')
+  metric.selectAll('.sph-lines-dot')
     .data(function(d) {
       if (!d.values.length) { return []; }
       var last = d.values[d.values.length - 1];
@@ -227,7 +227,7 @@ function drawChartMetric(metric, fx, fy, line) {
 
 function drawDot(dot, fx, fy) {
   dot.enter().append('circle')
-    .attr('class', 'dot')
+    .attr('class', 'sph-lines-dot')
     .attr('r', 4);
 
   dot
@@ -265,13 +265,10 @@ function drawYAxis(axis, dims, fy, opts) {
 
 function drawLegend(legend, opts) {
   legend
-    .classed('legend', true);
-
-  legend
     .filter(utils.isEmptyNode)
     .call(initLegend);
 
-  legend.select('.table').selectAll('.metric')
+  legend.select('.sph-table-lines').selectAll('.sph-row-lines-metric')
     .data(function(d) { return d; },
           function(d) { return d.key; })
     .call(drawLegendMetric, opts);
@@ -280,7 +277,7 @@ function drawLegend(legend, opts) {
 
 function initLegend(legend) {
   legend.append('table')
-    .attr('class', 'table');
+    .classed('sph-table sph-table-lines', true);
 }
 
 
@@ -290,13 +287,13 @@ function drawLegendMetric(metric, opts) {
   metric.enter().append('tr')
     .call(enterLegendMetric);
 
-  metric.select('.swatch')
+  metric.select('.sph-col-swatch')
     .style('background', function(d) { return d.color; });
 
-  metric.select('.title')
+  metric.select('.sph-col-lines-title')
     .text(function(d) { return d.title; });
 
-  metric.select('.value')
+  metric.select('.sph-col-lines-value')
     .text(function(d) {
       d = d.values[d.values.length - 1];
 
@@ -313,16 +310,16 @@ function drawLegendMetric(metric, opts) {
 function enterLegendMetric(metric) {
   metric
     .attr('data-key', function(d) { return d.key; })
-    .attr('class', 'metric');
+    .attr('class', 'sph-row-lines-metric');
 
   metric.append('td')
-    .attr('class', 'swatch');
+    .attr('class', 'sph-col-swatch');
 
   metric.append('td')
-    .attr('class', 'title');
+    .attr('class', 'sph-col-lines-title');
 
   metric.append('td')
-    .attr('class', 'value');
+    .attr('class', 'sph-col-lines-value');
 }
 
 

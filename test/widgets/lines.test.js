@@ -88,7 +88,7 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    var title = el.selectAll('.widget > .title');
+    var title = el.selectAll('.sph-title');
     expect(title.size()).to.equal(1);
     expect(title.text()).to.equal(datum.title);
 
@@ -97,7 +97,7 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    title = el.selectAll('.widget > .title');
+    title = el.selectAll('.sph-title');
     expect(title.size()).to.equal(1);
     expect(title.text()).to.equal(datum.title);
   });
@@ -170,13 +170,20 @@ describe("sapphire.widgets.lines", function() {
     fx.domain([123, 567]);
     fy.domain([234, 889]);
 
-    expect(el.selectAll('.chart .metric .line').size()).to.equal(2);
-    var line = el.selectAll('.chart .metric[data-key=foo] .line');
+    expect(el.selectAll('.sph-lines-line').size()).to.equal(2);
+
+    var line = el
+      .selectAll('.sph-lines-metric[data-key=foo]')
+      .selectAll('.sph-lines-line');
+
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.metrics[0].values));
     expect(line.style('stroke')).to.equal(colors('foo'));
 
-    line = el.selectAll('.chart .metric[data-key=bar] .line');
+    line = el
+      .selectAll('.sph-lines-metric[data-key=bar]')
+      .selectAll('.sph-lines-line');
+
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.metrics[1].values));
     expect(line.style('stroke')).to.equal(colors('bar'));
@@ -210,13 +217,20 @@ describe("sapphire.widgets.lines", function() {
     fx.domain([1123, 1567]);
     fy.domain([1234, 3789]);
 
-    expect(el.selectAll('.chart .metric .line').size()).to.equal(2);
-    line = el.selectAll('.chart .metric[data-key=foo] .line');
+    expect(el.selectAll('.sph-lines-line').size()).to.equal(2);
+
+    line = el
+      .selectAll('.sph-lines-metric[data-key=foo]')
+      .selectAll('.sph-lines-line');
+
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.metrics[0].values));
     expect(line.style('stroke')).to.equal(colors('foo'));
 
-    line = el.selectAll('.chart .metric[data-key=baz] .line');
+    line = el
+      .selectAll('.sph-lines-metric[data-key=baz]')
+      .selectAll('.sph-lines-line');
+
     expect(line.size()).to.equal(1);
     expect(line.attr('d')).to.equal(path(datum.metrics[1].values));
     expect(line.style('stroke')).to.equal(colors('baz'));
@@ -284,14 +298,21 @@ describe("sapphire.widgets.lines", function() {
     fx.domain([123, 567]);
     fy.domain([234, 889]);
 
-    expect(el.selectAll('.chart .metric .dot').size()).to.equal(2);
-    var dot = el.selectAll('.chart .metric[data-key=foo] .dot');
+    expect(el.selectAll('.sph-lines-dot').size()).to.equal(2);
+
+    var dot = el
+      .selectAll('.sph-lines-metric[data-key=foo]')
+      .selectAll('.sph-lines-dot');
+
     expect(dot.size()).to.equal(1);
     expect(dot.style('fill')).to.equal(colors('foo'));
     expect(+dot.attr('cx')).to.equal(fx(567));
     expect(+dot.attr('cy')).to.equal(fy(789));
 
-    dot = el.selectAll('.chart .metric[data-key=bar] .dot');
+    dot = el
+      .selectAll('.sph-lines-metric[data-key=bar]')
+      .selectAll('.sph-lines-dot');
+
     expect(dot.size()).to.equal(1);
     expect(dot.style('fill')).to.equal(colors('bar'));
     expect(+dot.attr('cx')).to.equal(fx(567));
@@ -326,14 +347,21 @@ describe("sapphire.widgets.lines", function() {
     fx.domain([1123, 1567]);
     fy.domain([1234, 3789]);
 
-    expect(el.selectAll('.chart .metric .dot').size()).to.equal(2);
-    dot = el.selectAll('.chart .metric[data-key=foo] .dot');
+    expect(el.selectAll('.sph-lines-dot').size()).to.equal(2);
+
+    dot = el
+      .selectAll('.sph-lines-metric[data-key=foo]')
+      .selectAll('.sph-lines-dot');
+
     expect(dot.size()).to.equal(1);
     expect(dot.style('fill')).to.equal(colors('foo'));
     expect(+dot.attr('cx')).to.equal(fx(1567));
     expect(+dot.attr('cy')).to.equal(fy(1789));
 
-    dot = el.selectAll('.chart .metric[data-key=baz] .dot');
+    dot = el
+      .selectAll('.sph-lines-metric[data-key=baz]')
+      .selectAll('.sph-lines-dot');
+
     expect(dot.size()).to.equal(1);
     expect(dot.style('fill')).to.equal(colors('baz'));
     expect(+dot.attr('cx')).to.equal(fx(1567));
@@ -356,8 +384,15 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    expect(el.selectAll('.chart .metric[data-key=foo] .dot').size()).to.equal(1);
-    expect(el.selectAll('.chart .metric[data-key=bar] .dot').size()).to.equal(0);
+    expect(el
+      .selectAll('.sph-lines-metric[data-key=foo]')
+      .selectAll('.sph-lines-dot')
+      .size()).to.equal(1);
+
+    expect(el
+      .selectAll('.sph-lines-metric[data-key=bar]')
+      .selectAll('.sph-lines-dot')
+      .size()).to.equal(0);
 
     datum.metrics[0].values = [];
 
@@ -370,9 +405,20 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    expect(el.selectAll('.chart .metric[data-key=foo] .dot').size()).to.equal(0);
-    expect(el.selectAll('.chart .metric[data-key=bar] .dot').size()).to.equal(0);
-    expect(el.selectAll('.chart .metric[data-key=baz] .dot').size()).to.equal(1);
+    expect(el
+      .selectAll('.sph-lines-metric[data-key=joo]')
+      .selectAll('.sph-lines-dot')
+      .size()).to.equal(0);
+
+    expect(el
+      .selectAll('.sph-lines-metric[data-key=bar]')
+      .selectAll('.sph-lines-dot')
+      .size()).to.equal(0);
+
+    expect(el
+      .selectAll('.sph-lines-metric[data-key=baz]')
+      .selectAll('.sph-lines-dot')
+      .size()).to.equal(1);
   });
 
   it("should draw a chart x axis", function() {
@@ -407,7 +453,7 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    var axis = el.selectAll('.chart .x.axis');
+    var axis = el.selectAll('.sph-axis-lines-x');
     expect(axis.size()).to.equal(1);
     expect(axis.text()).to.equal(['Mar', 'Apr', 'May'].join(''));
 
@@ -436,7 +482,7 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    axis = el.selectAll('.chart .x.axis');
+    axis = el.selectAll('.sph-axis-lines-x');
     expect(axis.size()).to.equal(1);
     expect(axis.text()).to.equal(['Jun', 'Jul', 'Aug'].join(''));
   });
@@ -474,7 +520,7 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    var axis = el.selectAll('.chart .y.axis');
+    var axis = el.selectAll('.sph-axis-lines-y');
     expect(axis.size()).to.equal(1);
     expect(axis.text()).to.equal(['400k', '600k', '800k'].join(''));
 
@@ -503,7 +549,7 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    axis = el.selectAll('.chart .y.axis');
+    axis = el.selectAll('.sph-axis-lines-y');
     expect(axis.size()).to.equal(1);
     expect(axis.text()).to.equal(['4M', '6M', '8M'].join(''));
   });
@@ -542,9 +588,9 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    var legend = el.selectAll('.legend');
+    var legend = el.selectAll('.sph-table-lines');
     expect(legend.size()).to.equal(1);
-    expect(legend.selectAll('.metric').size()).to.equal(2);
+    expect(legend.selectAll('.sph-row-lines-metric').size()).to.equal(2);
 
     datum.metrics[0].values = [{
       x: 4,
@@ -578,9 +624,9 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    legend = el.selectAll('.legend');
+    legend = el.selectAll('.sph-table-lines');
     expect(legend.size()).to.equal(1);
-    expect(legend.selectAll('.metric').size()).to.equal(2);
+    expect(legend.selectAll('.sph-row-lines-metric').size()).to.equal(2);
   });
 
   it("should draw its legend's metric swatches", function() {
@@ -621,13 +667,13 @@ describe("sapphire.widgets.lines", function() {
       .call(lines);
 
     var swatch = el
-      .select('.legend .metric[data-key=foo] .swatch')
+      .select('.sph-row-lines-metric[data-key=foo] .sph-col-swatch')
       .style('background-color');
 
     expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('foo')));
 
     swatch = el
-      .select('.legend .metric[data-key=bar] .swatch')
+      .select('.sph-row-lines-metric[data-key=bar] .sph-col-swatch')
       .style('background-color');
 
     expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('bar')));
@@ -665,13 +711,13 @@ describe("sapphire.widgets.lines", function() {
       .call(lines);
 
     swatch = el
-      .select('.legend .metric[data-key=foo] .swatch')
+      .select('.sph-row-lines-metric[data-key=foo] .sph-col-swatch')
       .style('background-color');
 
     expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('foo')));
 
     swatch = el
-      .select('.legend .metric[data-key=baz] .swatch')
+      .select('.sph-row-lines-metric[data-key=baz] .sph-col-swatch')
       .style('background-color');
 
     expect(d3.rgb(swatch)).to.deep.equal(d3.rgb(colors('baz')));
@@ -712,10 +758,16 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    var title = el.select('.legend .metric[data-key=foo] .title');
+    var title = el
+      .select('.sph-row-lines-metric[data-key=foo]')
+      .select('.sph-col-lines-title');
+
     expect(title.text()).to.equal('Total Foo');
 
-    title = el.select('.legend .metric[data-key=bar] .title');
+    title = el
+      .select('.sph-row-lines-metric[data-key=bar]')
+      .select('.sph-col-lines-title');
+
     expect(title.text()).to.equal('Total Bar');
 
     datum.metrics[0].values = [{
@@ -751,10 +803,16 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    title = el.select('.legend .metric[data-key=foo] .title');
+    title = el
+      .select('.sph-row-lines-metric[data-key=foo]')
+      .select('.sph-col-lines-title');
+
     expect(title.text()).to.equal('Total Foo');
 
-    title = el.select('.legend .metric[data-key=baz] .title');
+    title = el
+      .select('.sph-row-lines-metric[data-key=baz]')
+      .select('.sph-col-lines-title');
+
     expect(title.text()).to.equal('Total Baz');
   });
 
@@ -793,10 +851,16 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    var value = el.select('.legend .metric[data-key=foo] .value');
+    var value = el
+      .select('.sph-row-lines-metric[data-key=foo]')
+      .select('.sph-col-lines-value');
+
     expect(value.text()).to.equal('4,000,000');
 
-    value = el.select('.legend .metric[data-key=bar] .value');
+    value = el
+      .select('.sph-row-lines-metric[data-key=bar]')
+      .select('.sph-col-lines-value');
+
     expect(value.text()).to.equal('5,000,000');
 
     datum.metrics[0].values = [{
@@ -831,10 +895,16 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    value = el.select('.legend .metric[data-key=foo] .value');
+    value = el
+      .select('.sph-row-lines-metric[data-key=foo]')
+      .select('.sph-col-lines-value');
+
     expect(value.text()).to.equal('9,000,000');
 
-    value = el.select('.legend .metric[data-key=baz] .value');
+    value = el
+      .select('.sph-row-lines-metric[data-key=baz]')
+      .select('.sph-col-lines-value');
+
     expect(value.text()).to.equal('4,000,000');
   });
 
@@ -856,7 +926,7 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    var axis = el.selectAll('.chart .y.axis');
+    var axis = el.selectAll('.sph-axis-lines-y');
     expect(axis.text()).to.equal(['2M', '4M', '6M'].join(''));
   });
 
@@ -880,7 +950,7 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    var axis = el.selectAll('.chart .y.axis');
+    var axis = el.selectAll('.sph-axis-lines-y');
     expect(axis.text()).to.equal(['4M', '6M', '8M', '10M'].join(''));
 
     datum.metrics[0].values = [{
@@ -894,7 +964,7 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    axis = el.selectAll('.chart .y.axis');
+    axis = el.selectAll('.sph-axis-lines-y');
     expect(axis.text()).to.equal(['2M', '4M', '6M', '8M'].join(''));
   });
 
@@ -916,7 +986,7 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    var axis = el.selectAll('.chart .y.axis');
+    var axis = el.selectAll('.sph-axis-lines-y');
     expect(axis.text()).to.equal(['3M', '4M', '5M', '6M'].join(''));
   });
 
@@ -940,7 +1010,7 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    var axis = el.selectAll('.chart .y.axis');
+    var axis = el.selectAll('.sph-axis-lines-y');
     expect(axis.text()).to.equal(['3M', '4M', '5M', '6M'].join(''));
 
     datum.metrics[0].values = [{
@@ -954,7 +1024,7 @@ describe("sapphire.widgets.lines", function() {
     el.datum(datum)
       .call(lines);
 
-    axis = el.selectAll('.chart .y.axis');
+    axis = el.selectAll('.sph-axis-lines-y');
     expect(axis.text()).to.equal(['4M', '6M', '8M', '10M'].join(''));
   });
 

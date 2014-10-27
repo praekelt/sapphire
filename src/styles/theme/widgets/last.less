@@ -1,0 +1,34 @@
+@import "../vars";
+
+
+.sph-sparkline-path {
+  stroke: @fg-color;
+  stroke-width: 4px;
+}
+
+
+.sph-sparkline-path-diff {
+  stroke-width: 4.5px;
+}
+
+
+.sph-last-status(@color) {
+  .sph-summary-diff { color: @color; }
+  .sph-sparkline-path-diff { stroke: @color; }
+  .sph-sparkline-dot { fill: @color; }
+}
+
+
+.sph-last.sph-is-status-good {
+  .sph-last-status(@good-color); 
+}
+
+
+.sph-last.sph-is-status-bad {
+  .sph-last-status(@bad-color); 
+}
+
+
+.sph-last.sph-is-status-neutral {
+  .sph-last-status(@fg-color); 
+}

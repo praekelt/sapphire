@@ -54,7 +54,7 @@ module.exports = require('./widget').extend()
 
 
 function drawWidget(el, opts) {
-  el.classed('pie widget', true);
+  el.classed('sph-widget sph-pie', true);
 
   if (!opts.explicitComponents) initComponents(el);
 
@@ -83,14 +83,14 @@ function initComponents(el) {
 
 function drawTitle(title) {
   title
-    .classed('title', true)
+    .classed('sph-title', true)
     .text(function(d) { return d.title; });
 }
 
 
 function drawChart(chart, opts) {
   chart
-    .classed('chart', true);
+    .classed('sph-chart sph-chart-pie', true);
 
   chart
     .filter(utils.isEmptyNode)
@@ -135,7 +135,7 @@ function drawSlices(svg, dims, opts) {
   var layout = d3.layout.pie()
     .value(function(d) { return d.value; });
 
-  svg.selectAll('.slice')
+  svg.selectAll('.sph-pie-slice')
     .data(function(d) { return layout(d); },
           function(d) { return d.data.key; })
     .call(drawSlice, dims, arc, opts);
@@ -144,7 +144,7 @@ function drawSlices(svg, dims, opts) {
 
 function drawSlice(slice, dims, arc, opts) {
   slice.enter().append('g')
-    .attr('class', 'slice')
+    .attr('class', 'sph-pie-slice')
     .append('path');
 
   slice
@@ -161,13 +161,10 @@ function drawSlice(slice, dims, arc, opts) {
 
 function drawLegend(legend, opts) {
   legend
-    .classed('legend', true);
-
-  legend
     .filter(utils.isEmptyNode)
     .call(initLegend);
 
-  legend.select('.table').selectAll('.metric')
+  legend.select('.sph-table-pie').selectAll('.sph-row-pie-metric')
     .data(function(d) { return d; },
           function(d) { return d.key; })
     .call(drawLegendMetric, opts);
@@ -176,7 +173,7 @@ function drawLegend(legend, opts) {
 
 function initLegend(legend) {
   legend.append('table')
-    .attr('class', 'table');
+    .attr('class', 'sph-table sph-table-pie');
 }
 
 
@@ -184,16 +181,16 @@ function drawLegendMetric(metric, opts) {
   metric.enter().append('tr')
     .call(enterLegendMetric);
 
-  metric.select('.swatch')
+  metric.select('.sph-col-swatch')
     .style('background', function(d) { return d.color; });
 
-  metric.select('.title')
+  metric.select('.sph-col-pie-title')
     .text(function(d) { return d.title; });
 
-  metric.select('.percent')
+  metric.select('.sph-col-pie-percent')
     .text(function(d) { return opts.percentFormat(d.percent); });
 
-  metric.select('.value')
+  metric.select('.sph-col-pie-value')
     .text(function(d) { return opts.valueFormat(d.value); });
 
   metric.exit()
@@ -203,19 +200,19 @@ function drawLegendMetric(metric, opts) {
 
 function enterLegendMetric(metric) {
   metric
-    .attr('class', 'metric');
+    .attr('class', 'sph-row-pie-metric');
 
   metric.append('td')
-    .attr('class', 'swatch');
+    .attr('class', 'sph-col-swatch');
 
   metric.append('td')
-    .attr('class', 'title');
+    .attr('class', 'sph-col-pie-title');
 
   metric.append('td')
-    .attr('class', 'percent');
+    .attr('class', 'sph-col-pie-percent');
 
   metric.append('td')
-    .attr('class', 'value');
+    .attr('class', 'sph-col-pie-value');
 }
 
 
