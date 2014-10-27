@@ -211,7 +211,7 @@ module.exports = _dereq_('./widget').extend()
 
 
 function drawWidget(el, opts) {
-  el.classed('bars widget', true);
+  el.classed('sph-widget sph-bars', true);
 
   if (!opts.explicitComponents) initComponents(el);
 
@@ -234,14 +234,14 @@ function initComponents(el) {
 
 function drawTitle(title) {
   title
-    .classed('title', true)
+    .classed('sph-title', true)
     .text(function(d) { return d.title; });
 }
 
 
 function drawChart(chart, opts) {
   chart
-    .classed('chart', true)
+    .classed('sph-chart sph-chart-bars', true)
     .datum(function(d) { return d.values; });
 
   var dims = utils.box()
@@ -279,13 +279,13 @@ function initChart(chart) {
     .append('g');
 
   svg.append('g')
-    .attr('class', 'bars');
+    .attr('class', 'sph-bars-bars');
 
   svg.append('g')
-    .attr('class', 'y axis');
+    .attr('class', 'sph-axis sph-axis-bars-y');
 
   svg.append('g')
-    .attr('class', 'x axis');
+    .attr('class', 'sph-axis sph-axis-bars-x');
 }
 
 
@@ -298,20 +298,20 @@ function drawSvg(svg, dims, fx, fy, opts) {
         dims.margin.left,
         dims.margin.top));
 
-  svg.select('.bars')
+  svg.select('.sph-bars-bars')
      .call(drawBars, dims, fx, fy, opts);
 
-  svg.select('.x.axis')
+  svg.select('.sph-axis-bars-x')
     .call(drawXAxis, dims, fx, opts);
 
-  svg.select('.y.axis')
+  svg.select('.sph-axis-bars-y')
     .call(drawYAxis, dims, fy, opts);
 }
 
 
 function drawBars(bars, dims, fx, fy, opts) {
   bars
-    .selectAll('.bar')
+    .selectAll('.sph-bars-bar')
     .data(function(d) { return d; },
           function(d) { return d.x; })
     .call(drawBar, dims, fx, fy, opts);
@@ -320,7 +320,7 @@ function drawBars(bars, dims, fx, fy, opts) {
 
 function drawBar(bar, dims, fx, fy, opts) {
   bar.enter().append('g')
-    .attr('class', 'bar')
+    .attr('class', 'sph-bars-bar')
     .append('rect');
 
   bar
@@ -456,14 +456,16 @@ module.exports = _dereq_('./widget').extend()
   .draw(function(el) {
     var opts = this.props();
     normalize(el, opts);
-
-    opts.status = status(el.datum().values);
     drawWidget(el, opts);
   });
 
 
 function drawWidget(el, opts) {
-  el.classed('last widget', true);
+  el.classed('sph-widget sph-last', true)
+    .classed('sph-is-status-good', false)
+    .classed('sph-is-status-bad', false)
+    .classed('sph-is-status-neutral', false)
+    .classed(getStatus(el.datum().values), true);
 
   if (!opts.explicitComponents) initComponents(el);
 
@@ -503,14 +505,14 @@ function getValues(d) {
 
 function drawTitle(title) {
   title
-    .classed('title', true)
+    .classed('sph-title', true)
     .text(function(d) { return d.title; });
 }
 
 
 function drawLastValue(value, opts) {
   value
-    .classed('last value', true)
+    .classed('sph-last-value', true)
     .datum(function(d, i) {
       d = d[d.length - 1];
 
@@ -524,9 +526,7 @@ function drawLastValue(value, opts) {
 
 function drawSparkline(sparkline, opts) {
   sparkline
-    .classed('sparkline chart', true)
-    .classed('good bad neutral', false)
-    .classed(opts.status, true);
+    .classed('sph-chart sph-chart-sparkline', true);
 
   if (sparkline.datum().length < opts.sparklineLimit) {
     // TODO something better than this
@@ -564,10 +564,10 @@ function drawSvg(svg, dims, fx, fy) {
     .select('g')
       .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
 
-  svg.select('.paths')
+  svg.select('.sph-sparkline-paths')
     .call(drawPaths, fx, fy);
 
-  svg.selectAll('.dot')
+  svg.selectAll('.sph-sparkline-dot')
     .data(function(d) { return d.slice(-1); })
     .call(drawDot, fx, fy);
 }
@@ -578,10 +578,10 @@ function drawPaths(paths, fx, fy) {
     .x(function(d) { return fx(d.x); })
     .y(function(d) { return fy(d.y); });
 
-  paths.select('.rest.path')
+  paths.select('.sph-sparkline-path-rest')
     .attr('d', line);
 
-  paths.select('.diff.path')
+  paths.select('.sph-sparkline-path-diff')
     .datum(function(d) { return d.slice(-2); })
     .attr('d', line);
 }
@@ -592,19 +592,19 @@ function initSparkline(sparkline) {
     .append('g');
 
   var paths = svg.append('g')
-    .attr('class', 'paths');
+    .attr('class', 'sph-sparkline-paths');
 
   paths.append('path')
-    .attr('class', 'rest path');
+    .attr('class', 'sph-sparkline-path sph-sparkline-path-rest');
 
   paths.append('path')
-    .attr('class', 'diff path');
+    .attr('class', 'sph-sparkline-path sph-sparkline-path-diff');
 }
 
 
 function drawDot(dot, fx, fy) {
   dot.enter().append('circle')
-    .attr('class', 'dot')
+    .attr('class', 'sph-sparkline-dot')
     .attr('r', 4);
 
   dot
@@ -617,9 +617,7 @@ function drawDot(dot, fx, fy) {
 
 function drawSummary(summary, opts) {
   summary
-    .classed('summary', true)
-    .classed('good bad neutral', false)
-    .classed(opts.status, true);
+    .classed('sph-summary', true);
 
   if (summary.datum().length < opts.summaryLimit) {
     // TODO something better than this
@@ -631,14 +629,14 @@ function drawSummary(summary, opts) {
     .filter(utils.isEmptyNode)
     .call(initSummary);
 
-  summary.select('.diff')
+  summary.select('.sph-summary-diff')
     .datum(function(d) {
       d = d.slice(-2);
       return d[1].y - d[0].y;
     })
     .text(opts.diffFormat);
 
-  summary.select('.time')
+  summary.select('.sph-summary-time')
     .datum(function(d) {
       d = d.slice(-2);
 
@@ -654,10 +652,10 @@ function drawSummary(summary, opts) {
 
 function initSummary(summary) {
   summary.append('span')
-    .attr('class', 'diff');
+    .attr('class', 'sph-summary-diff');
 
   summary.append('span')
-    .attr('class', 'time');
+    .attr('class', 'sph-summary-time');
 }
 
 
@@ -682,16 +680,16 @@ function normalize(el, opts) {
 }
 
 
-function status(values) {
+function getStatus(values) {
   values = values.slice(-2);
 
   var diff = values.length > 1
     ? values[1].y - values[0].y
     : 0;
 
-  if (diff > 0) return 'good';
-  if (diff < 0) return 'bad';
-  return 'neutral';
+  if (diff > 0) return 'sph-is-status-good';
+  if (diff < 0) return 'sph-is-status-bad';
+  return 'sph-is-status-neutral';
 }
 
 },{"../utils":2,"./widget":9}],7:[function(_dereq_,module,exports){
@@ -777,7 +775,7 @@ module.exports = _dereq_('./widget').extend()
 
 
 function drawWidget(el, opts) {
-  el.classed('lines widget', true);
+  el.classed('sph-widget sph-lines', true);
 
   if (!opts.explicitComponents) initComponents(el);
 
@@ -806,14 +804,14 @@ function initComponents(el) {
 
 function drawTitle(title) {
   title
-    .classed('title', true)
+    .classed('sph-title', true)
     .text(function(d) { return d.title; });
 }
 
 
 function drawChart(chart, opts) {
   chart
-    .classed('chart', true);
+    .classed('sph-chart sph-chart-lines', true);
 
   var dims = utils.box()
     .margin(opts.chartMargin)
@@ -853,13 +851,13 @@ function initChart(chart) {
     .append('g');
 
   svg.append('g')
-    .attr('class', 'x axis');
+    .attr('class', 'sph-axis sph-axis-lines sph-axis-lines-x');
 
   svg.append('g')
-    .attr('class', 'y axis');
+    .attr('class', 'sph-axis sph-axis-lines sph-axis-lines-y');
 
   svg.append('g')
-    .attr('class', 'metrics');
+    .attr('class', 'sph-lines-metrics');
 }
 
 
@@ -870,13 +868,13 @@ function drawSvg(svg, dims, fx, fy, opts) {
     .select('g')
       .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
 
-  svg.select('.metrics')
+  svg.select('.sph-lines-metrics')
     .call(drawChartMetrics, fx, fy);
 
-  svg.select('.x.axis')
+  svg.select('.sph-axis-lines-x')
     .call(drawXAxis, dims, fx, opts);
 
-  svg.select('.y.axis')
+  svg.select('.sph-axis-lines-y')
     .call(drawYAxis, dims, fy, opts);
 }
 
@@ -886,7 +884,7 @@ function drawChartMetrics(metrics, fx, fy) {
     .x(function(d) { return fx(d.x); })
     .y(function(d) { return fy(d.y); });
 
-  metrics.selectAll('.metric')
+  metrics.selectAll('.sph-lines-metric')
     .data(function(d) { return d; },
           function(d) { return d.key; })
     .call(drawChartMetric, fx, fy, line);
@@ -895,19 +893,19 @@ function drawChartMetrics(metrics, fx, fy) {
 
 function drawChartMetric(metric, fx, fy, line) {
   metric.enter().append('g')
-    .attr('class', 'metric')
+    .attr('class', 'sph-lines-metric')
     .attr('data-key', function(d) { return d.key; })
     .append('path')
-      .attr('class', 'line');
+      .attr('class', 'sph-lines-line');
 
-  metric.select('.line')
+  metric.select('.sph-lines-line')
     .attr('stroke', function(d) { return d.color; })
     .attr('d', function(d) { return line(d.values); });
 
   metric.exit()
     .remove();
 
-  metric.selectAll('.dot')
+  metric.selectAll('.sph-lines-dot')
     .data(function(d) {
       if (!d.values.length) { return []; }
       var last = d.values[d.values.length - 1];
@@ -924,7 +922,7 @@ function drawChartMetric(metric, fx, fy, line) {
 
 function drawDot(dot, fx, fy) {
   dot.enter().append('circle')
-    .attr('class', 'dot')
+    .attr('class', 'sph-lines-dot')
     .attr('r', 4);
 
   dot
@@ -962,13 +960,10 @@ function drawYAxis(axis, dims, fy, opts) {
 
 function drawLegend(legend, opts) {
   legend
-    .classed('legend', true);
-
-  legend
     .filter(utils.isEmptyNode)
     .call(initLegend);
 
-  legend.select('.table').selectAll('.metric')
+  legend.select('.sph-table-lines').selectAll('.sph-row-lines-metric')
     .data(function(d) { return d; },
           function(d) { return d.key; })
     .call(drawLegendMetric, opts);
@@ -977,7 +972,7 @@ function drawLegend(legend, opts) {
 
 function initLegend(legend) {
   legend.append('table')
-    .attr('class', 'table');
+    .classed('sph-table sph-table-lines', true);
 }
 
 
@@ -987,13 +982,13 @@ function drawLegendMetric(metric, opts) {
   metric.enter().append('tr')
     .call(enterLegendMetric);
 
-  metric.select('.swatch')
+  metric.select('.sph-col-swatch')
     .style('background', function(d) { return d.color; });
 
-  metric.select('.title')
+  metric.select('.sph-col-lines-title')
     .text(function(d) { return d.title; });
 
-  metric.select('.value')
+  metric.select('.sph-col-lines-value')
     .text(function(d) {
       d = d.values[d.values.length - 1];
 
@@ -1010,16 +1005,16 @@ function drawLegendMetric(metric, opts) {
 function enterLegendMetric(metric) {
   metric
     .attr('data-key', function(d) { return d.key; })
-    .attr('class', 'metric');
+    .attr('class', 'sph-row-lines-metric');
 
   metric.append('td')
-    .attr('class', 'swatch');
+    .attr('class', 'sph-col-swatch');
 
   metric.append('td')
-    .attr('class', 'title');
+    .attr('class', 'sph-col-lines-title');
 
   metric.append('td')
-    .attr('class', 'value');
+    .attr('class', 'sph-col-lines-value');
 }
 
 
@@ -1118,7 +1113,7 @@ module.exports = _dereq_('./widget').extend()
 
 
 function drawWidget(el, opts) {
-  el.classed('pie widget', true);
+  el.classed('sph-widget sph-pie', true);
 
   if (!opts.explicitComponents) initComponents(el);
 
@@ -1147,14 +1142,14 @@ function initComponents(el) {
 
 function drawTitle(title) {
   title
-    .classed('title', true)
+    .classed('sph-title', true)
     .text(function(d) { return d.title; });
 }
 
 
 function drawChart(chart, opts) {
   chart
-    .classed('chart', true);
+    .classed('sph-chart sph-chart-pie', true);
 
   chart
     .filter(utils.isEmptyNode)
@@ -1199,7 +1194,7 @@ function drawSlices(svg, dims, opts) {
   var layout = d3.layout.pie()
     .value(function(d) { return d.value; });
 
-  svg.selectAll('.slice')
+  svg.selectAll('.sph-pie-slice')
     .data(function(d) { return layout(d); },
           function(d) { return d.data.key; })
     .call(drawSlice, dims, arc, opts);
@@ -1208,7 +1203,7 @@ function drawSlices(svg, dims, opts) {
 
 function drawSlice(slice, dims, arc, opts) {
   slice.enter().append('g')
-    .attr('class', 'slice')
+    .attr('class', 'sph-pie-slice')
     .append('path');
 
   slice
@@ -1225,13 +1220,10 @@ function drawSlice(slice, dims, arc, opts) {
 
 function drawLegend(legend, opts) {
   legend
-    .classed('legend', true);
-
-  legend
     .filter(utils.isEmptyNode)
     .call(initLegend);
 
-  legend.select('.table').selectAll('.metric')
+  legend.select('.sph-table-pie').selectAll('.sph-row-pie-metric')
     .data(function(d) { return d; },
           function(d) { return d.key; })
     .call(drawLegendMetric, opts);
@@ -1240,7 +1232,7 @@ function drawLegend(legend, opts) {
 
 function initLegend(legend) {
   legend.append('table')
-    .attr('class', 'table');
+    .attr('class', 'sph-table sph-table-pie');
 }
 
 
@@ -1248,16 +1240,16 @@ function drawLegendMetric(metric, opts) {
   metric.enter().append('tr')
     .call(enterLegendMetric);
 
-  metric.select('.swatch')
+  metric.select('.sph-col-swatch')
     .style('background', function(d) { return d.color; });
 
-  metric.select('.title')
+  metric.select('.sph-col-pie-title')
     .text(function(d) { return d.title; });
 
-  metric.select('.percent')
+  metric.select('.sph-col-pie-percent')
     .text(function(d) { return opts.percentFormat(d.percent); });
 
-  metric.select('.value')
+  metric.select('.sph-col-pie-value')
     .text(function(d) { return opts.valueFormat(d.value); });
 
   metric.exit()
@@ -1267,19 +1259,19 @@ function drawLegendMetric(metric, opts) {
 
 function enterLegendMetric(metric) {
   metric
-    .attr('class', 'metric');
+    .attr('class', 'sph-row-pie-metric');
 
   metric.append('td')
-    .attr('class', 'swatch');
+    .attr('class', 'sph-col-swatch');
 
   metric.append('td')
-    .attr('class', 'title');
+    .attr('class', 'sph-col-pie-title');
 
   metric.append('td')
-    .attr('class', 'percent');
+    .attr('class', 'sph-col-pie-percent');
 
   metric.append('td')
-    .attr('class', 'value');
+    .attr('class', 'sph-col-pie-value');
 }
 
 
