@@ -1,1 +1,3 @@
-module.exports = require('../view').extend();
+module.exports = require('../view').extend()
+  .prop('explicitComponents')
+  .default(false);

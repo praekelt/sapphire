@@ -77,8 +77,6 @@ describe("sapphire.widgets.pie", function() {
   
   it("should show its title", function() {
     var pie = sapphire.widgets.pie();
-    expect(el.html()).to.be.empty;
-
     datum.title = 'Total Bar and Baz';
 
     el.datum(datum)
@@ -163,8 +161,6 @@ describe("sapphire.widgets.pie", function() {
     var pie = sapphire.widgets.pie()
       .key(function(d) { return d.key; });
 
-    expect(el.html()).to.be.empty;
-
     datum.metrics[0].key = 'foo';
     datum.metrics[1].key = 'bar';
     datum.metrics[2].key = 'baz';
@@ -209,8 +205,6 @@ describe("sapphire.widgets.pie", function() {
       })
       .width(240)
       .innerRadius(15);
-
-    expect(el.html()).to.be.empty;
 
     datum.metrics[0].key = 'foo';
     datum.metrics[1].key = 'bar';
@@ -257,8 +251,6 @@ describe("sapphire.widgets.pie", function() {
 
     var colors = pie.colors();
 
-    expect(el.html()).to.be.empty;
-
     datum.metrics[0].key = 'foo';
     datum.metrics[1].key = 'bar';
     datum.metrics[2].key = 'baz';
@@ -291,8 +283,6 @@ describe("sapphire.widgets.pie", function() {
   it("should display its metrics in a legend", function() {
     var pie = sapphire.widgets.pie()
       .key(function(d) { return d.key; });
-
-    expect(el.html()).to.be.empty;
 
     datum.metrics[0].key = 'foo';
     datum.metrics[1].key = 'bar';
@@ -479,5 +469,29 @@ describe("sapphire.widgets.pie", function() {
         .filter(function(d) { return d.key === key; })
         .text();
     }
+  });
+
+  it("should allow the widget components to be specified explicitly", function() {
+    var pie = sapphire.widgets.pie()
+      .explicitComponents(true);
+
+    el.datum(datum).call(pie);
+    expect(el.selectAll('[data-widget-component="title"]').size()).to.equal(0);
+    expect(el.selectAll('[data-widget-component="chart"]').size()).to.equal(0);
+    expect(el.selectAll('[data-widget-component="legend"]').size()).to.equal(0);
+
+    el.append('div')
+      .attr('data-widget-component', 'title');
+
+    el.append('div')
+      .attr('data-widget-component', 'chart');
+
+    el.append('div')
+      .attr('data-widget-component', 'legend');
+
+    el.datum(datum).call(pie);
+    expect(el.selectAll('[data-widget-component="title"]').size()).to.equal(1);
+    expect(el.selectAll('[data-widget-component="chart"]').size()).to.equal(1);
+    expect(el.selectAll('[data-widget-component="legend"]').size()).to.equal(1);
   });
 });

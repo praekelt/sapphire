@@ -9,8 +9,49 @@
     .widget .title();
   }
 
-  .values {
-    padding: 2px 30px;
+  .last {
+    text-align: right;
+    font-size: 3.75em;
+  }
+
+  .summary {
+    padding: 0;
+    padding-bottom: 10px;
+    text-align: right;
+
+    &.neutral {
+      .status(@fg-color); 
+    }
+
+    &.good {
+      .status(@good-color);
+    }
+
+    &.bad {
+      .status(@bad-color);
+    }
+    
+    .status(@color) {
+      .diff {
+        color: @color;
+      }
+    }
+  }
+
+  .chart {
+    height: 25px;
+  }
+
+  .sparkline {
+    .path {
+      fill: none;
+      stroke: @fg-color;
+      stroke-width: 4px;
+    }
+
+    .diff.path {
+      stroke-width: 4.5px;
+    }
 
     &.neutral {
       .status(@fg-color); 
@@ -24,48 +65,13 @@
       .status(@bad-color);
     }
 
-    .last {
-      text-align: right;
-      font-size: 3.75em;
-    }
-
-    .summary {
-      padding: 0;
-      padding-bottom: 10px;
-      text-align: right;
-    }
-
-    .chart {
-      height: 25px;
-    }
-
-    .sparkline {
-      .path {
-        fill: none;
-        stroke: @fg-color;
-        stroke-width: 4px;
-      }
-
-      .diff.path {
-        stroke-width: 4.5px;
-      }
-    }
-
     .status(@color) {
-      .sparkline {
-        .diff.path {
-          stroke: @color;
-        }
-
-        .dot {
-          fill: @color;
-        }
+      .diff.path {
+        stroke: @color;
       }
 
-      .summary {
-        .diff {
-          color: @color;
-        }
+      .dot {
+        fill: @color;
       }
     }
   }

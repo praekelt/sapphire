@@ -69,253 +69,297 @@ module.exports = require('./widget').extend()
   .prop('legend')
 
   .init(function() {
-    this.chart(chart(this));
-    this.legend(legend(this));
     this.colors(d3.scale.category10());
   })
 
-  .enter(function(el) {
-    el.classed('lines widget', true);
-
-    el.append('div')
-      .attr('class', 'title');
-
-    var values = el.append('div')
-      .attr('class', 'values');
-
-    values.append('div')
-      .attr('class', 'chart');
-
-    values.append('div')
-      .attr('class', 'legend');
-  })
-
-  .meth('normalize', function(el) {
-    var self = this;
-    var node = el.node();
-
-    el.datum(function(d, i) {
-      var title = self.title().call(node, d, i);
-
-      return {
-        title: title,
-        metrics: self.metrics()
-          .call(node, d, i)
-          .map(metric)
-      };
-    });
-
-    function metric(d, i) {
-      var key = self.key()
-        .call(node, d, i)
-        .toString();
-
-      return {
-        key: key,
-        color: self.colors()(key),
-        title: self.metricTitle().call(node, d, i),
-        values: self.values()
-          .call(node, d, i)
-          .map(value)
-      };
-    }
-
-    function value(d, i) {
-      return {
-        x: self.x().call(node, d, i),
-        y: self.y().call(node, d, i)
-      };
-    }
-  })
-
   .draw(function(el) {
-    this.normalize(el);
-
-    el.select('.widget .title')
-      .text(function(d) { return d.title; });
-
-    var values = el.select('.values')
-      .datum(function(d, i) { return d.metrics; });
-
-    values.select('.chart')
-      .call(this.chart());
-
-    values.select('.legend')
-      .call(this.legend());
+    var opts = this.props();
+    normalize(el, opts);
+    drawWidget(el, opts);
   });
 
 
-var chart = require('../view').extend()
-  .prop('widget')
+function drawWidget(el, opts) {
+  el.classed('lines widget', true);
 
-  .init(function(widget) {
-    this.widget(widget);
-  })
+  if (!opts.explicitComponents) initComponents(el);
 
-  .enter(function(el) {
-    var svg = el.append('svg')
-      .append('g');
+  var component = el.select('[data-widget-component="title"]');
+  if (component.size()) component.call(drawTitle);
 
-    svg.append('g')
-      .attr('class', 'x axis');
+  component = el.select('[data-widget-component="chart"]');
+  if (component.size()) component.datum(getMetrics).call(drawChart, opts);
 
-    svg.append('g')
-      .attr('class', 'y axis');
+  component = el.select('[data-widget-component="legend"]');
+  if (component.size()) component.datum(getMetrics).call(drawLegend, opts);
+}
 
-    svg.append('g')
-      .attr('class', 'lines');
-  })
 
-  .draw(function(el) {
-    var widget = this.widget();
+function initComponents(el) {
+  el.append('div')
+    .attr('data-widget-component', 'title');
 
-    var dims = utils.box()
-      .margin(widget.chartMargin())
-      .width(utils.innerWidth(el))
-      .height(utils.innerHeight(el))
-      .calc();
+  el.append('div')
+    .attr('data-widget-component', 'chart');
 
-    var allValues = el
-      .datum()
-      .reduce(function(results, metric) {
-        results.push.apply(results, metric.values);
-        return results;
-      }, []);
+  el.append('div')
+    .attr('data-widget-component', 'legend');
+}
 
-    var fx = d3.time.scale()
-      .domain(d3.extent(allValues, function(d) { return d.x; }))
-      .range([0, dims.innerWidth]);
 
-    var ys = allValues
-      .map(function(d) { return d.y; });
+function drawTitle(title) {
+  title
+    .classed('title', true)
+    .text(function(d) { return d.title; });
+}
 
-    var fy = d3.scale.linear()
-      .domain([widget.yMin()(ys), widget.yMax()(ys)])
-      .range([dims.innerHeight, 0]);
 
-    var line = d3.svg.line()
-      .x(function(d) { return fx(d.x); })
-      .y(function(d) { return fy(d.y); });
+function drawChart(chart, opts) {
+  chart
+    .classed('chart', true);
 
-    var svg = el.select('svg')
-      .attr('width', dims.width)
-      .attr('height', dims.height)
-      .select('g')
-        .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
+  var dims = utils.box()
+    .margin(opts.chartMargin)
+    .width(utils.innerWidth(chart))
+    .height(utils.innerHeight(chart))
+    .calc();
 
-    var metric = svg.select('.lines').selectAll('.metric')
-      .data(function(d) { return d; },
-            function(d) { return d.key; });
+  var allValues = chart
+    .datum()
+    .reduce(function(results, metric) {
+      results.push.apply(results, metric.values);
+      return results;
+    }, []);
 
-    metric.enter().append('g')
-      .attr('class', 'metric')
-      .attr('data-key', function(d) { return d.key; })
-      .append('path')
-        .attr('class', 'line');
+  var fx = d3.time.scale()
+    .domain(d3.extent(allValues, function(d) { return d.x; }))
+    .range([0, dims.innerWidth]);
 
-    metric.select('.line')
-      .attr('stroke', function(d) { return d.color; })
-      .attr('d', function(d) { return line(d.values); });
+  var ys = allValues
+    .map(function(d) { return d.y; });
 
-    var dot = metric.selectAll('.dot')
-      .data(function(d) {
-        if (!d.values.length) { return []; }
-        var last = d.values[d.values.length - 1];
+  var fy = d3.scale.linear()
+    .domain([opts.yMin(ys), opts.yMax(ys)])
+    .range([dims.innerHeight, 0]);
 
-        return [{
-          x: last.x,
-          y: last.y,
-          color: d.color
-        }];
-      });
+  chart
+    .filter(utils.isEmptyNode)
+    .call(initChart);
 
-    dot.enter().append('circle')
-      .attr('class', 'dot')
-      .attr('r', 4);
+  chart.select('svg')
+    .call(drawSvg, dims, fx, fy, opts);
+}
 
-    dot
-      .attr('fill', function(d) { return d.color; })
-      .attr('cx', function(d) { return fx(d.x); })
-      .attr('cy', function(d) { return fy(d.y); });
 
-    dot.exit()
-      .remove();
+function initChart(chart) {
+  var svg = chart.append('svg')
+    .append('g');
 
-    metric.exit()
-      .remove();
+  svg.append('g')
+    .attr('class', 'x axis');
 
-    var axis = d3.svg.axis()
+  svg.append('g')
+    .attr('class', 'y axis');
+
+  svg.append('g')
+    .attr('class', 'metrics');
+}
+
+
+function drawSvg(svg, dims, fx, fy, opts) {
+  svg
+    .attr('width', dims.width)
+    .attr('height', dims.height)
+    .select('g')
+      .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
+
+  svg.select('.metrics')
+    .call(drawChartMetrics, fx, fy);
+
+  svg.select('.x.axis')
+    .call(drawXAxis, dims, fx, opts);
+
+  svg.select('.y.axis')
+    .call(drawYAxis, dims, fy, opts);
+}
+
+
+function drawChartMetrics(metrics, fx, fy) {
+  var line = d3.svg.line()
+    .x(function(d) { return fx(d.x); })
+    .y(function(d) { return fy(d.y); });
+
+  metrics.selectAll('.metric')
+    .data(function(d) { return d; },
+          function(d) { return d.key; })
+    .call(drawChartMetric, fx, fy, line);
+}
+
+
+function drawChartMetric(metric, fx, fy, line) {
+  metric.enter().append('g')
+    .attr('class', 'metric')
+    .attr('data-key', function(d) { return d.key; })
+    .append('path')
+      .attr('class', 'line');
+
+  metric.select('.line')
+    .attr('stroke', function(d) { return d.color; })
+    .attr('d', function(d) { return line(d.values); });
+
+  metric.exit()
+    .remove();
+
+  metric.selectAll('.dot')
+    .data(function(d) {
+      if (!d.values.length) { return []; }
+      var last = d.values[d.values.length - 1];
+
+      return [{
+        x: last.x,
+        y: last.y,
+        color: d.color
+      }];
+    })
+    .call(drawDot, fx, fy);
+}
+
+
+function drawDot(dot, fx, fy) {
+  dot.enter().append('circle')
+    .attr('class', 'dot')
+    .attr('r', 4);
+
+  dot
+    .attr('fill', function(d) { return d.color; })
+    .attr('cx', function(d) { return fx(d.x); })
+    .attr('cy', function(d) { return fy(d.y); });
+
+  dot.exit()
+    .remove();
+}
+
+
+function drawXAxis(axis, dims, fx, opts) {
+  axis
+    .attr('transform', utils.translate(0, dims.innerHeight))
+    .call(d3.svg.axis()
       .scale(fx)
       .tickPadding(8)
-      .ticks(widget.xTicks())
-      .tickFormat(widget.xTickFormat())
-      .tickSize(-dims.innerHeight);
+      .ticks(opts.xTicks)
+      .tickFormat(opts.xTickFormat)
+      .tickSize(-dims.innerHeight));
+}
 
-    svg.select('.x.axis')
-      .attr('transform', utils.translate(0, dims.innerHeight))
-      .call(axis);
 
-    axis = d3.svg.axis()
-      .orient('left')
-      .scale(fy)
-      .tickPadding(8)
-      .ticks(widget.yTicks())
-      .tickFormat(widget.yTickFormat())
-      .tickSize(-dims.innerWidth);
-    
-    svg.select('.y.axis')
-      .call(axis);
+function drawYAxis(axis, dims, fy, opts) {
+  axis.call(d3.svg.axis()
+    .orient('left')
+    .scale(fy)
+    .tickPadding(8)
+    .ticks(opts.yTicks)
+    .tickFormat(opts.yTickFormat)
+    .tickSize(-dims.innerWidth));
+}
+
+
+function drawLegend(legend, opts) {
+  legend
+    .classed('legend', true);
+
+  legend
+    .filter(utils.isEmptyNode)
+    .call(initLegend);
+
+  legend.select('.table').selectAll('.metric')
+    .data(function(d) { return d; },
+          function(d) { return d.key; })
+    .call(drawLegendMetric, opts);
+}
+
+
+function initLegend(legend) {
+  legend.append('table')
+    .attr('class', 'table');
+}
+
+
+function drawLegendMetric(metric, opts) {
+  var none = opts.yFormat(opts.none);
+
+  metric.enter().append('tr')
+    .call(enterLegendMetric);
+
+  metric.select('.swatch')
+    .style('background', function(d) { return d.color; });
+
+  metric.select('.title')
+    .text(function(d) { return d.title; });
+
+  metric.select('.value')
+    .text(function(d) {
+      d = d.values[d.values.length - 1];
+
+      return d
+        ? opts.yFormat(d.y)
+        : none;
+    });
+
+  metric.exit()
+    .remove();
+}
+
+
+function enterLegendMetric(metric) {
+  metric
+    .attr('data-key', function(d) { return d.key; })
+    .attr('class', 'metric');
+
+  metric.append('td')
+    .attr('class', 'swatch');
+
+  metric.append('td')
+    .attr('class', 'title');
+
+  metric.append('td')
+    .attr('class', 'value');
+}
+
+
+function normalize(el, opts) {
+  var node = el.node();
+
+  el.datum(function(d, i) {
+    var title = opts.title.call(node, d, i);
+
+    return {
+      title: title,
+      metrics: opts.metrics.call(node, d, i).map(metric)
+    };
   });
 
+  function metric(d, i) {
+    var key = opts.key
+      .call(node, d, i)
+      .toString();
 
-var legend = require('../view').extend()
-  .prop('widget')
+    return {
+      key: key,
+      color: opts.colors(key),
+      title: opts.metricTitle.call(node, d, i),
+      values: opts.values.call(node, d, i).map(value)
+    };
+  }
 
-  .init(function(widget) {
-    this.widget(widget);
-  })
+  function value(d, i) {
+    return {
+      x: opts.x.call(node, d, i),
+      y: opts.y.call(node, d, i)
+    };
+  }
+}
 
-  .enter(function(el) {
-    el.append('table')
-      .attr('class', 'table');
-  })
 
-  .draw(function(el) {
-    var none = this.widget().none();
-    var yFormat = this.widget().yFormat();
-
-    var metric = el.select('.table').selectAll('.metric')
-      .data(function(d) { return d; },
-            function(d) { return d.key; });
-
-    var enterMetric = metric.enter().append('tr')
-      .attr('data-key', function(d) { return d.key; })
-      .attr('class', 'metric');
-
-    enterMetric.append('td')
-      .attr('class', 'swatch');
-
-    enterMetric.append('td')
-      .attr('class', 'title');
-
-    enterMetric.append('td')
-      .attr('class', 'value');
-
-    metric.select('.swatch')
-      .style('background', function(d) { return d.color; });
-
-    metric.select('.title')
-      .text(function(d) { return d.title; });
-
-    metric.select('.value')
-      .text(function(d) {
-        d = d.values[d.values.length - 1];
-
-        return d
-          ? yFormat(d.y)
-          : yFormat(none);
-      });
-
-    metric.exit()
-      .remove();
-  });
+function getMetrics(d) {
+  return d.metrics;
+}
