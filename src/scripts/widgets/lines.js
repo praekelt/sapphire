@@ -43,7 +43,7 @@ module.exports = require('./widget').extend()
   .default(5)
 
   .prop('yTickFormat')
-  .default(d3.format('.2s'))
+  .default(d3.format('s'))
 
   .prop('yMin')
   .set(d3.functor)
@@ -60,7 +60,7 @@ module.exports = require('./widget').extend()
   .default({
     top: 10,
     left: 35,
-    right: 15,
+    right: 5,
     bottom: 20
   })
 
