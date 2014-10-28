@@ -1,6 +1,5 @@
 {
   "name": "sapphire",
-  "version": "0.1.0-alpha",
   "homepage": "https://github.com/praekelt/sapphire",
   "authors": [
     "Praekelt Foundation"
@@ -21,6 +20,6 @@
   ],
   "dependencies": {
     "d3": "~3.4.8",
-    "strain": "^0.6"
+    "strain": "^0.8.3"
   }
 }

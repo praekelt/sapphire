@@ -2,12 +2,6 @@ var utils = require('../utils');
 
 
 module.exports = require('./widget').extend()
-  .prop('width')
-  .default(400)
-
-  .prop('colspan')
-  .default(4)
-
   .prop('title')
   .set(d3.functor)
   .default(function(d) { return d.title; })
@@ -44,136 +38,7 @@ module.exports = require('./widget').extend()
   .default(15)
   .set(function(v) { return Math.max(utils.ensure(v, 2), 2); })
 
-  .prop('sparkline')
-  .prop('summary')
-
-  .init(function() {
-    this.sparkline(sparkline(this));
-    this.summary(summary(this));
-  })
-
-  .enter(function(el) {
-    el.attr('class', 'last widget');
-
-    el.append('div')
-      .attr('class', 'title');
-
-    var values = el.append('div')
-      .attr('class', 'values');
-
-    values.append('div')
-      .attr('class', 'last value');
-
-    values.append('div')
-      .attr('class', 'sparkline');
-
-    values.append('div')
-      .attr('class', 'summary');
-  })
-
-  .draw(function(el) {
-    var self = this;
-    var node = el.node();
-
-    el.style('width', utils.px(this.width()));
-
-    el.select('.title')
-      .text(function(d, i) {
-        return self.title().call(node, d, i);
-      });
-
-    var values = el.select('.values')
-      .datum(function(d, i) {
-        return self.values()
-          .call(node, d, i)
-          .map(function(d, i) {
-            return {
-              x: self.x().call(node, d, i),
-              y: self.y().call(node, d, i)
-            };
-          });
-      })
-      .attr('class', function(d) {
-        d = d.slice(-2);
-
-        d = d.length > 1
-          ? d[1].y - d[0].y
-          : 0;
-
-        if (d > 0) { return 'good values'; }
-        if (d < 0) { return 'bad values'; }
-        return 'neutral values';
-      });
-
-    values.select('.last.value')
-      .datum(function(d, i) {
-        d = d[d.length - 1];
-
-        return !d
-          ? self.none()
-          : d.y;
-      })
-      .text(this.yFormat());
-
-    values.select('.sparkline')
-      .call(this.sparkline());
-
-    values.select('.summary')
-      .call(this.summary());
-  });
-
-
-var summary = require('../view').extend()
-  .prop('widget')
-
-  .init(function(widget) {
-    this.widget(widget);
-  })
-
-  .enter(function(el) {
-    el.append('span')
-      .attr('class', 'diff');
-
-    el.append('span')
-      .attr('class', 'time');
-  })
-
-  .draw(function(el) {
-    var widget = this.widget();
-
-    if (el.datum().length < this.widget().summaryLimit()) {
-      el.style('height', 0);
-      return;
-    }
-
-    el.select('.diff')
-      .datum(function(d) {
-        d = d.slice(-2);
-        return d[1].y - d[0].y;
-      })
-      .text(widget.diffFormat());
-
-    el.select('.time')
-      .datum(function(d) {
-        d = d.slice(-2);
-
-        return [d[0].x, d[1].x]
-          .map(utils.date)
-          .map(widget.xFormat());
-      })
-      .text(function(d) {
-        return [' from', d[0], 'to', d[1]].join(' ');
-      });
-  });
-
-
-var sparkline = require('../view').extend()
-  .prop('widget')
-
-  .prop('height')
-  .default(25)
-
-  .prop('margin')
+  .prop('sparklineMargin')
   .default({
     top: 4,
     left: 4,
@@ -181,68 +46,241 @@ var sparkline = require('../view').extend()
     right: 4 
   })
 
-  .init(function(widget) {
-    this.widget(widget);
-  })
-
-  .enter(function(el) {
-    var svg = el.append('svg')
-      .append('g');
-
-    svg.append('path')
-      .attr('class', 'rest path');
-
-    svg.append('path')
-      .attr('class', 'diff path');
-  })
-
   .draw(function(el) {
-    if (el.datum().length < this.widget().sparklineLimit()) {
-      el.style('height', 0);
-      return;
-    }
-
-    var dims = utils.box()
-      .margin(this.margin())
-      .width(utils.innerWidth(el))
-      .height(this.height())
-      .calc();
-
-    var fx = d3.scale.linear()
-      .domain(d3.extent(el.datum(), function(d) { return d.x; }))
-      .range([0, dims.innerWidth]);
-
-    var fy = d3.scale.linear()
-      .domain(d3.extent(el.datum(), function(d) { return d.y; }))
-      .range([dims.innerHeight, 0]);
-
-    var line = d3.svg.line()
-      .x(function(d) { return fx(d.x); })
-      .y(function(d) { return fy(d.y); });
-
-    var svg = el.select('svg')
-      .attr('width', dims.width)
-      .attr('height', dims.height)
-      .select('g')
-        .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
-
-    svg.select('.rest.path')
-      .attr('d', line);
-
-    svg.select('.diff.path')
-      .datum(function(d) { return d.slice(-2); })
-      .attr('d', line);
-
-    var dot = svg.selectAll('.dot')
-      .data(function(d) { return d.slice(-1); });
-
-    dot.enter().append('circle')
-      .attr('class', 'dot')
-      .attr('r', 4);
-
-    dot
-      .attr('cx', function(d) { return fx(d.x); })
-      .attr('cy', function(d) { return fy(d.y); });
-
-    dot.exit().remove();
+    var opts = this.props();
+    normalize(el, opts);
+    drawWidget(el, opts);
   });
+
+
+function drawWidget(el, opts) {
+  el.classed('sph-widget sph-last', true)
+    .classed('sph-is-status-good', false)
+    .classed('sph-is-status-bad', false)
+    .classed('sph-is-status-neutral', false)
+    .classed(getStatus(el.datum().values), true);
+
+  if (!opts.explicitComponents) initComponents(el);
+
+  var component = el.select('[data-widget-component="title"]');
+  if (component.size()) component.call(drawTitle);
+
+  component = el.select('[data-widget-component="last-value"]');
+  if (component.size()) component.datum(getValues).call(drawLastValue, opts);
+
+  component = el.select('[data-widget-component="sparkline"]');
+  if (component.size()) component.datum(getValues).call(drawSparkline, opts);
+
+  component = el.select('[data-widget-component="summary"]');
+  if (component.size()) component.datum(getValues).call(drawSummary, opts);
+}
+
+
+function initComponents(el) {
+  el.append('div')
+    .attr('data-widget-component', 'title');
+
+  el.append('div')
+    .attr('data-widget-component', 'last-value');
+
+  el.append('div')
+    .attr('data-widget-component', 'sparkline');
+
+  el.append('div')
+    .attr('data-widget-component', 'summary');
+}
+
+
+function getValues(d) {
+  return d.values;
+}
+
+
+function drawTitle(title) {
+  title
+    .classed('sph-title', true)
+    .text(function(d) { return d.title; });
+}
+
+
+function drawLastValue(value, opts) {
+  value
+    .classed('sph-last-value', true)
+    .datum(function(d, i) {
+      d = d[d.length - 1];
+
+      return !d
+        ? opts.none
+        : d.y;
+    })
+    .text(opts.yFormat);
+}
+
+
+function drawSparkline(sparkline, opts) {
+  sparkline
+    .classed('sph-chart sph-chart-sparkline', true);
+
+  if (sparkline.datum().length < opts.sparklineLimit) {
+    // TODO something better than this
+    sparkline.style('height', 0);
+    return;
+  }
+
+  var dims = utils.box()
+    .margin(opts.sparklineMargin)
+    .width(utils.innerWidth(sparkline))
+    .height(utils.innerHeight(sparkline))
+    .calc();
+
+  var fx = d3.scale.linear()
+    .domain(d3.extent(sparkline.datum(), function(d) { return d.x; }))
+    .range([0, dims.innerWidth]);
+
+  var fy = d3.scale.linear()
+    .domain(d3.extent(sparkline.datum(), function(d) { return d.y; }))
+    .range([dims.innerHeight, 0]);
+
+  sparkline
+    .filter(utils.isEmptyNode)
+    .call(initSparkline);
+
+  sparkline.select('svg')
+    .call(drawSvg, dims, fx, fy);
+}
+
+
+function drawSvg(svg, dims, fx, fy) {
+  svg = svg
+    .attr('width', dims.width)
+    .attr('height', dims.height)
+    .select('g')
+      .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
+
+  svg.select('.sph-sparkline-paths')
+    .call(drawPaths, fx, fy);
+
+  svg.selectAll('.sph-sparkline-dot')
+    .data(function(d) { return d.slice(-1); })
+    .call(drawDot, fx, fy);
+}
+
+
+function drawPaths(paths, fx, fy) {
+  var line = d3.svg.line()
+    .x(function(d) { return fx(d.x); })
+    .y(function(d) { return fy(d.y); });
+
+  paths.select('.sph-sparkline-path-rest')
+    .attr('d', line);
+
+  paths.select('.sph-sparkline-path-diff')
+    .datum(function(d) { return d.slice(-2); })
+    .attr('d', line);
+}
+
+
+function initSparkline(sparkline) {
+  var svg = sparkline.append('svg')
+    .append('g');
+
+  var paths = svg.append('g')
+    .attr('class', 'sph-sparkline-paths');
+
+  paths.append('path')
+    .attr('class', 'sph-sparkline-path sph-sparkline-path-rest');
+
+  paths.append('path')
+    .attr('class', 'sph-sparkline-path sph-sparkline-path-diff');
+}
+
+
+function drawDot(dot, fx, fy) {
+  dot.enter().append('circle')
+    .attr('class', 'sph-sparkline-dot')
+    .attr('r', 4);
+
+  dot
+    .attr('cx', function(d) { return fx(d.x); })
+    .attr('cy', function(d) { return fy(d.y); });
+
+  dot.exit().remove();
+}
+
+
+function drawSummary(summary, opts) {
+  summary
+    .classed('sph-summary', true);
+
+  if (summary.datum().length < opts.summaryLimit) {
+    // TODO something better than this
+    summary.style('height', 0);
+    return;
+  }
+
+  summary
+    .filter(utils.isEmptyNode)
+    .call(initSummary);
+
+  summary.select('.sph-summary-diff')
+    .datum(function(d) {
+      d = d.slice(-2);
+      return d[1].y - d[0].y;
+    })
+    .text(opts.diffFormat);
+
+  summary.select('.sph-summary-time')
+    .datum(function(d) {
+      d = d.slice(-2);
+
+      return [d[0].x, d[1].x]
+        .map(utils.date)
+        .map(opts.xFormat);
+    })
+    .text(function(d) {
+      return [' from', d[0], 'to', d[1]].join(' ');
+    });
+}
+
+
+function initSummary(summary) {
+  summary.append('span')
+    .attr('class', 'sph-summary-diff');
+
+  summary.append('span')
+    .attr('class', 'sph-summary-time');
+}
+
+
+function normalize(el, opts) {
+  var node = el.node();
+
+  el.datum(function(d, i) {
+    return {
+      title: opts.title.call(node, d, i),
+      values: opts.values.call(node, d, i)
+        .map(value)
+    };
+  });
+
+
+  function value(d, i) {
+    return {
+      x: opts.x.call(node, d, i),
+      y: opts.y.call(node, d, i)
+    };
+  }
+}
+
+
+function getStatus(values) {
+  values = values.slice(-2);
+
+  var diff = values.length > 1
+    ? values[1].y - values[0].y
+    : 0;
+
+  if (diff > 0) return 'sph-is-status-good';
+  if (diff < 0) return 'sph-is-status-bad';
+  return 'sph-is-status-neutral';
+}

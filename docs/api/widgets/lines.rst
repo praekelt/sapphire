@@ -359,6 +359,35 @@ displaying each metric's title, colour and last ``y`` value.
       .yTicks(10);
 
 
+.. function:: lines.yMin([v])
+
+  Property for the chart's minimum y axis value. If a number is given, its
+  value will be used as the chart's minimum value. If a function is given, the
+  function will be passed an array of the y values to display and should return
+  the number to use as the minimum. Defaults to ``d3.min``.
+
+  .. code-block:: javascript
+
+    var lines = sapphire.widgets.lines()
+      .yMin(function(values) {
+        return d3.min([9000].concat(values));
+      });
+
+
+.. function:: lines.yMax([v])
+
+  Property for the chart's maximum y axis value. If a number is given, its
+  value will be used as the chart's maximum value. If a function is given, the
+  function will be passed an array of the y values to display and should return
+  the number to use as the maximum. Defaults to ``d3.max``.
+
+  .. code-block:: javascript
+
+    var lines = sapphire.widgets.lines()
+      .yMax(function(values) {
+        return d3.max([9000].concat(values));
+      });
+
 .. function:: lines.colors([fn])
 
   Property for the colour function to use to calculate each metric's colour
@@ -393,16 +422,40 @@ displaying each metric's title, colour and last ``y`` value.
       .width(400);
 
 
-.. function:: lines.colspan([v])
+.. function:: lines.explicitComponents([v])
 
-  Property for the widget's default column span in a dashboard. Used if
-  the widget is not standalone (see :func:`dashboard.colspan`).
-  Defaults to ``4``.
+  Property for setting whether the widget should expect its components
+  to be layed out explictly or not.
+
+  If set to ``false``, the widget will append the components automatically.
+
+  If set to ``true``, the widget will look for the relevant element's
+  component child elements to decide where to draw each.
+
+  Defaults to ``false``.
+
+  .. code-block:: html
+
+    <div id="foo">
+      <div data-widget-component="title"></div>
+      <div data-widget-component="chart"></div>
+      <div data-widget-component="legend"></div>
+     </div>
 
   .. code-block:: javascript
 
     var lines = sapphire.widgets.lines()
-      .colspan(4);
+      .explicitComponents(true);
+
+    d3.select("#foo")
+      .datum({...})
+      .call(lines);
+
+  The lines widget's components are:
+
+    - ``'title'``: title of the widget
+    - ``'chart'``: the actual line chart
+    - ``'legend'``: table showing the color, title and values of each metric
 
 
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements

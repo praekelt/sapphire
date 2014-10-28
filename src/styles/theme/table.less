@@ -1,0 +1,31 @@
+.sph-table {
+  td {
+    border-left: 2px solid @bg-color;
+    background: fade(@fg-color, 7%);
+  }
+
+  tr:nth-child(2n) {
+    td {
+      background: fade(@fg-color, 2.5%);
+    }
+  }
+
+  tr.sph-row-tfoot {
+    td {
+      border-top: 2px solid fade(@fg-color, 16%);
+    }
+  }
+
+  tr {
+    td.sph-col-swatch {
+      padding: 0;
+      width: 12px;
+    }
+
+
+    td.sph-col-none {
+      border-top: none;
+      background: transparent;
+    }
+  }
+}

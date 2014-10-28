@@ -1,11 +1,14 @@
 describe("sapphire.widgets.bars", function() {
   var el;
   var datum;
+  var container;
 
   beforeEach(function() {
-    el = d3.select('body')
+    container = d3.select('body')
       .append('div')
       .attr('class', 'tmp');
+
+    el = container.append('div');
 
     datum = {
       title: 'Total Foo',
@@ -26,54 +29,57 @@ describe("sapphire.widgets.bars", function() {
   });
 
   afterEach(function() {
-    el.remove();
+    container.remove();
   });
 
-  it("should set its dimensions", function() {
-    var bars = sapphire.widgets.bars()
-      .width(200)
-      .height(300);
+  it("should not overwrite existing class attributes", function() {
+    var bars = sapphire.widgets.bars();
 
-    bars(el.datum(datum));
-    expect(el.style('width')).to.equal('200px');
-    expect(el.style('height')).to.equal('300px');
+    el.datum(datum)
+      .attr('class', 'foo');
+
+    bars(el);
+
+    expect(el.classed('foo')).to.be.true;
   });
 
   it("should show its title", function() {
     var bars = sapphire.widgets.bars();
-    expect(el.html()).to.be.empty;
 
     datum.title = 'Total Bar';
 
     el.datum(datum)
       .call(bars);
 
-    expect(el.select('.title').text()).to.equal('Total Bar');
+    expect(title()).to.equal('Total Bar');
 
     datum.title = 'Total Baz';
 
     el.datum(datum)
       .call(bars);
 
-    expect(el.select('.title').text()).to.equal('Total Baz');
+    expect(title()).to.equal('Total Baz');
+
+    function title() {
+      return el.select('[data-widget-component="title"]').text();
+    }
   });
 
   it("should show its bars", function() {
+    container
+      .classed('w640 with-chart-h240', true);
+
     var fx = d3.scale.linear();
     var fy = d3.scale.linear();
 
     var bars = sapphire.widgets.bars()
-      .width(400)
-      .height(150)
       .barPadding(4)
-      .margin({
+      .chartMargin({
         top: 4,
         left: 4,
         bottom: 4,
         right: 4 
       });
-
-    expect(el.html()).to.be.empty;
 
     datum.values = [{
       x: 0,
@@ -89,12 +95,17 @@ describe("sapphire.widgets.bars", function() {
     el.datum(datum)
       .call(bars);
 
-    expect(el.selectAll('.bar').size()).to.equal(3);
+    expect(el.selectAll('.sph-bars-bar').size()).to.equal(3);
 
     var dims = sapphire.utils.box()
-      .width(parseInt(el.select('.chart').style('width')))
-      .height(parseInt(el.select('.chart').style('height')))
-      .margin(bars.margin())
+      .width(640)
+      .height(240)
+      .margin({
+        top: 4,
+        left: 4,
+        bottom: 4,
+        right: 4 
+      })
       .calc();
 
     var dx = (10 - 0) / 3;
@@ -105,20 +116,20 @@ describe("sapphire.widgets.bars", function() {
     fy.domain([0, 789])
       .range([dims.innerHeight, 0]);
 
-    var bar = el.select('.bar:nth-child(1)');
+    var bar = el.select('.sph-bars-bar:nth-child(1)');
     expect(bar.attr('transform')).to.equal(transform(0, 234));
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height(234), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(+bar.select('rect').attr('height')).to.be.closeTo(height(234), 0.01);
 
-    bar = el.select('.bar:nth-child(2)');
+    bar = el.select('.sph-bars-bar:nth-child(2)');
     expect(bar.attr('transform')).to.equal(transform(5, 456));
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height(456), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(+bar.select('rect').attr('height')).to.be.closeTo(height(456), 0.01);
 
-    bar = el.select('.bar:nth-child(3)');
+    bar = el.select('.sph-bars-bar:nth-child(3)');
     expect(bar.attr('transform')).to.equal(transform(10, 789));
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height(789), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(+bar.select('rect').attr('height')).to.be.closeTo(height(789), 0.01);
 
     datum.values = [{
       x: 15,
@@ -134,26 +145,26 @@ describe("sapphire.widgets.bars", function() {
     el.datum(datum)
       .call(bars);
 
-    expect(el.selectAll('.bar').size()).to.equal(3);
+    expect(el.selectAll('.sph-bars-bar').size()).to.equal(3);
 
     dx = (25 - 15) / 3;
     fx.domain([15, 25 + dx]);
     fy.domain([0, 1789]);
 
-    bar = el.select('.bar:nth-child(1)');
+    bar = el.select('.sph-bars-bar:nth-child(1)');
     expect(bar.attr('transform')).to.equal(transform(15, 1234));
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height(1234), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(+bar.select('rect').attr('height')).to.be.closeTo(height(1234), 0.01);
 
-    bar = el.select('.bar:nth-child(2)');
+    bar = el.select('.sph-bars-bar:nth-child(2)');
     expect(bar.attr('transform')).to.equal(transform(20, 1456));
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height(1456), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(+bar.select('rect').attr('height')).to.be.closeTo(height(1456), 0.01);
 
-    bar = el.select('.bar:nth-child(3)');
+    bar = el.select('.sph-bars-bar:nth-child(3)');
     expect(bar.attr('transform')).to.equal(transform(25, 1789));
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
-    expect(bar.select('rect').attr('height')).to.be.closeTo(height(1789), 0.01);
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(), 0.01);
+    expect(+bar.select('rect').attr('height')).to.be.closeTo(height(1789), 0.01);
 
     function width() {
       return (fx(dx) - fx(0)) - (bars.barPadding());
@@ -169,19 +180,7 @@ describe("sapphire.widgets.bars", function() {
   });
 
   it("should colour its bars", function() {
-    var bars = sapphire.widgets.bars()
-      .width(400)
-      .height(150)
-      .barPadding(4)
-      .margin({
-        top: 4,
-        left: 4,
-        bottom: 4,
-        right: 4 
-      });
-
-    expect(el.html()).to.be.empty;
-
+    var bars = sapphire.widgets.bars();
     datum.title = 'Total Bar';
 
     datum.values = [{
@@ -199,10 +198,10 @@ describe("sapphire.widgets.bars", function() {
       .call(bars);
 
     var color = bars.colors()('Total Bar');
-    expect(el.selectAll('.bar').size()).to.equal(3);
-    expect(el.select('.bar:nth-child(1) rect').style('fill')).to.equal(color);
-    expect(el.select('.bar:nth-child(2) rect').style('fill')).to.equal(color);
-    expect(el.select('.bar:nth-child(3) rect').style('fill')).to.equal(color);
+    expect(el.selectAll('.sph-bars-bar').size()).to.equal(3);
+    expect(el.select('.sph-bars-bar:nth-child(1) rect').style('fill')).to.equal(color);
+    expect(el.select('.sph-bars-bar:nth-child(2) rect').style('fill')).to.equal(color);
+    expect(el.select('.sph-bars-bar:nth-child(3) rect').style('fill')).to.equal(color);
 
     datum.title = 'Total Baz';
 
@@ -221,27 +220,27 @@ describe("sapphire.widgets.bars", function() {
       .call(bars);
 
     color = bars.colors()('Total Baz');
-    expect(el.selectAll('.bar').size()).to.equal(3);
-    expect(el.select('.bar:nth-child(1) rect').style('fill')).to.equal(color);
-    expect(el.select('.bar:nth-child(2) rect').style('fill')).to.equal(color);
-    expect(el.select('.bar:nth-child(3) rect').style('fill')).to.equal(color);
+    expect(el.selectAll('.sph-bars-bar').size()).to.equal(3);
+    expect(el.select('.sph-bars-bar:nth-child(1) rect').style('fill')).to.equal(color);
+    expect(el.select('.sph-bars-bar:nth-child(2) rect').style('fill')).to.equal(color);
+    expect(el.select('.sph-bars-bar:nth-child(3) rect').style('fill')).to.equal(color);
   });
 
   it("should allow its bars to have variable widths", function() {
+    container
+      .classed('w640 with-chart-h240', true);
+
     var fx = d3.scale.linear();
 
     var bars = sapphire.widgets.bars()
-      .width(400)
       .barPadding(4)
-      .margin({
+      .chartMargin({
         top: 4,
         left: 4,
         bottom: 4,
         right: 4 
       })
       .dx(function(d) { return d.dx; });
-
-    expect(el.html()).to.be.empty;
 
     datum.values = [{
       x: 0,
@@ -260,25 +259,30 @@ describe("sapphire.widgets.bars", function() {
     el.datum(datum)
       .call(bars);
 
-    expect(el.selectAll('.bar').size()).to.equal(3);
+    expect(el.selectAll('.sph-bars-bar').size()).to.equal(3);
 
     var dims = sapphire.utils.box()
-      .width(parseInt(el.select('.chart').style('width')))
-      .height(parseInt(el.select('.chart').style('height')))
-      .margin(bars.margin())
+      .width(640)
+      .height(240)
+      .margin({
+        top: 4,
+        left: 4,
+        bottom: 4,
+        right: 4 
+      })
       .calc();
 
     fx.domain([0, 10 + 6])
       .range([0, dims.innerWidth]);
 
-    var bar = el.select('.bar:nth-child(1)');
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(0, 2), 0.01);
+    var bar = el.select('.sph-bars-bar:nth-child(1)');
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(0, 2), 0.01);
 
-    bar = el.select('.bar:nth-child(2)');
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(5, 4), 0.01);
+    bar = el.select('.sph-bars-bar:nth-child(2)');
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(5, 4), 0.01);
 
-    bar = el.select('.bar:nth-child(3)');
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(10, 6), 0.01);
+    bar = el.select('.sph-bars-bar:nth-child(3)');
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(10, 6), 0.01);
 
     datum.values = [{
       x: 15,
@@ -297,18 +301,18 @@ describe("sapphire.widgets.bars", function() {
     el.datum(datum)
       .call(bars);
 
-    expect(el.selectAll('.bar').size()).to.equal(3);
+    expect(el.selectAll('.sph-bars-bar').size()).to.equal(3);
 
     fx.domain([15, 25 + 12]);
 
-    bar = el.select('.bar:nth-child(1)');
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(15, 8), 0.01);
+    bar = el.select('.sph-bars-bar:nth-child(1)');
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(15, 8), 0.01);
 
-    bar = el.select('.bar:nth-child(2)');
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(20, 10), 0.01);
+    bar = el.select('.sph-bars-bar:nth-child(2)');
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(20, 10), 0.01);
 
-    bar = el.select('.bar:nth-child(3)');
-    expect(bar.select('rect').attr('width')).to.be.closeTo(width(25, 12), 0.01);
+    bar = el.select('.sph-bars-bar:nth-child(3)');
+    expect(+bar.select('rect').attr('width')).to.be.closeTo(width(25, 12), 0.01);
 
     function width(x, dx) {
       return (fx(x + dx) - fx(x)) - (bars.barPadding());
@@ -332,7 +336,7 @@ describe("sapphire.widgets.bars", function() {
     el.datum(datum)
       .call(bars);
 
-    var bar = el.select('.bar');
+    var bar = el.select('.sph-bars-bar');
     expect(+bar.select('rect').attr('width')).to.equal(1);
   });
 
@@ -340,8 +344,6 @@ describe("sapphire.widgets.bars", function() {
     var bars = sapphire.widgets.bars()
       .xTicks(3)
       .xTickFormat(d3.time.format('%b'));
-
-    expect(el.html()).to.be.empty;
 
     datum.values = [{
       x: +(new Date(2014, 2)),
@@ -357,7 +359,7 @@ describe("sapphire.widgets.bars", function() {
     el.datum(datum)
       .call(bars);
 
-    var axis = el.selectAll('.chart .x.axis');
+    var axis = el.selectAll('.sph-axis-bars-x');
     expect(axis.size()).to.equal(1);
     expect(axis.text()).to.equal(['Mar', 'Apr', 'May'].join(''));
 
@@ -375,7 +377,7 @@ describe("sapphire.widgets.bars", function() {
     el.datum(datum)
       .call(bars);
 
-    axis = el.selectAll('.chart .x.axis');
+    axis = el.selectAll('.sph-axis-bars-x');
     expect(axis.size()).to.equal(1);
     expect(axis.text()).to.equal(['Jun', 'Jul', 'Aug'].join(''));
   });
@@ -384,8 +386,6 @@ describe("sapphire.widgets.bars", function() {
     var bars = sapphire.widgets.bars()
       .yTicks(3)
       .yTickFormat(d3.format('s'));
-
-    expect(el.html()).to.be.empty;
 
     datum.values = [{
       x: +(new Date(2014, 2)),
@@ -401,7 +401,7 @@ describe("sapphire.widgets.bars", function() {
     el.datum(datum)
       .call(bars);
 
-    var axis = el.selectAll('.chart .y.axis');
+    var axis = el.selectAll('.sph-axis-bars-y');
     expect(axis.size()).to.equal(1);
     expect(axis.text()).to.equal(['0', '200k', '400k', '600k'].join(''));
 
@@ -419,8 +419,85 @@ describe("sapphire.widgets.bars", function() {
     el.datum(datum)
       .call(bars);
 
-    axis = el.selectAll('.chart .y.axis');
+    axis = el.selectAll('.sph-axis-bars-y');
     expect(axis.size()).to.equal(1);
     expect(axis.text()).to.equal(['0', '2M', '4M', '6M'].join(''));
+  });
+
+  it("should support a configurable maximum y value", function() {
+    var bars = sapphire.widgets.bars()
+      .yTicks(3)
+      .yTickFormat(d3.format('s'))
+      .yMax(6000000);
+
+    datum.values = [{
+      x: +(new Date(2014, 4)),
+      y: 2890000,
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 3890000,
+    }];
+
+    el.datum(datum)
+      .call(bars);
+
+    var axis = el.selectAll('.sph-axis-bars-y');
+    expect(axis.text()).to.equal(['0', '2M', '4M', '6M'].join(''));
+  });
+
+  it("should support a configurable maximum y function", function() {
+    var bars = sapphire.widgets.bars()
+      .yTicks(3)
+      .yTickFormat(d3.format('s'))
+      .yMax(function(values) {
+        return d3.max([6000000].concat(values));
+      });
+
+    datum.values = [{
+      x: +(new Date(2014, 4)),
+      y: 2890000,
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 3890000,
+    }];
+
+    el.datum(datum)
+      .call(bars);
+
+    var axis = el.selectAll('.sph-axis-bars-y');
+    expect(axis.text()).to.equal(['0', '2M', '4M', '6M'].join(''));
+
+    datum.values = [{
+      x: +(new Date(2014, 4)),
+      y: 2890000,
+    }, {
+      x: +(new Date(2014, 4)),
+      y: 10890000,
+    }];
+
+    el.datum(datum)
+      .call(bars);
+
+    axis = el.selectAll('.sph-axis-bars-y');
+    expect(axis.text()).to.equal(['0', '5M', '10M'].join(''));
+  });
+
+  it("should allow the widget components to be specified explicitly", function() {
+    var bars = sapphire.widgets.bars()
+      .explicitComponents(true);
+
+    el.datum(datum).call(bars);
+    expect(el.selectAll('[data-widget-component="title"]').size()).to.equal(0);
+    expect(el.selectAll('[data-widget-component="chart"]').size()).to.equal(0);
+
+    el.append('div')
+      .attr('data-widget-component', 'title');
+
+    el.append('div')
+      .attr('data-widget-component', 'chart');
+
+    el.datum(datum).call(bars);
+    expect(el.selectAll('[data-widget-component="title"]').size()).to.equal(1);
+    expect(el.selectAll('[data-widget-component="chart"]').size()).to.equal(1);
   });
 });

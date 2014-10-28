@@ -1,0 +1,14 @@
+body {
+  background: #f2f2f2;
+}
+
+.sapphire {
+  width: 660px;
+  margin: 0 auto;
+}
+
+.box {
+  width: 200px;
+  float: left;
+  padding: 10px;
+}

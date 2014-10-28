@@ -7,15 +7,15 @@ var streamify = require('gulp-streamify');
 var browserify = require('browserify');
 var jshint = require('gulp-jshint');
 var source = require('vinyl-source-stream');
-var version = require('./bower').version;
+var version = require('./package').version;
 
 
 gulp.task('scripts', function () {
   return browserify('./src/scripts/index.js')
     .bundle({standalone: 'sapphire'})
-    .on('error', err)
+    .on('error', error)
     .pipe(source('sapphire.js'))
-    .pipe(streamify(wrap({src: './gulp/wrapper.jst'}, {
+    .pipe(streamify(wrap({src: '.umd.jst'}, {
       version: version,
       deps: ['d3', 'strain']
     })))
@@ -29,19 +29,31 @@ gulp.task('scripts:debug', function () {
       standalone: 'sapphire',
       debug: true
     })
-    .on('error', err)
+    .on('error', error)
     .pipe(source('sapphire.debug.js'))
     .pipe(gulp.dest("./build"));
 });
 
 
-gulp.task('styles', function () {
+gulp.task('styles:modules', function () {
   return gulp
     .src('./src/styles/sapphire.less')
     .pipe(less())
-    .on('error', err)
+    .on('error', error)
     .pipe(gulp.dest('./build'));
 });
+
+
+gulp.task('styles:theme', function () {
+  return gulp
+    .src('./src/styles/sapphire-theme.less')
+    .pipe(less())
+    .on('error', error)
+    .pipe(gulp.dest('./build'));
+});
+
+
+gulp.task('styles', ['styles:modules', 'styles:theme']);
 
 
 gulp.task('test', ['scripts:debug', 'styles'], function() {
@@ -51,6 +63,7 @@ gulp.task('test', ['scripts:debug', 'styles'], function() {
       './bower_components/strain/strain.js',
       './build/sapphire.css',
       './build/sapphire.debug.js',
+      './test/helpers.css',
       './test/testutils.js',
       './test/**/*.test.js'
     ])
@@ -110,14 +123,10 @@ gulp.task('install', function() {
 });
 
 
-gulp.task('ci', ['lint'], function () {
-  gulp.start('test');
-});
+gulp.task('ci', ['lint', 'test']);
 
 
-gulp.task('default', function () {
-  gulp.start('build');
-});
+gulp.task('default', ['build', 'test']);
 
 
 gulp.task('watch', function() {
@@ -126,7 +135,7 @@ gulp.task('watch', function() {
 });
 
 
-function err(e) {
+function error(e) {
   console.error(e.toString());
   this.emit('end');
 }

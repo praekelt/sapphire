@@ -1,0 +1,25 @@
+.w480 {
+  width: 480px;
+}
+
+.w640 {
+  width: 640px;
+}
+
+.h480 {
+  height: 480px;
+}
+
+.h640 {
+  height: 480px;
+}
+
+.with-chart-h240 .sph-chart {
+  padding: 0;
+  height: 240px;
+}
+
+.with-chart-h120 .sph-chart {
+  padding: 0;
+  height: 120px;
+}

@@ -233,27 +233,52 @@ displaying each metric's title, colour, value and percentage.
       .width(400);
 
 
-.. function:: pie.colspan([v])
-
-  Property for the widget's default column span in a dashboard. Used if the
-  widget is not standalone (see :func:`dashboard.colspan`). Defaults to ``4``.
-
-  .. code-block:: javascript
-
-    var pie = sapphire.widgets.pie()
-      .colspan(4);
-
-
 .. function:: pie.innerRadius([v])
 
   Property for setting the pie chart's inner radius. If a function is given,
   the function is invoked with the pie chart's outer radius. Defaults to
-  ``function(r) { return 0.35 * r; }``.
+  ``0``.
 
   .. code-block:: javascript
 
     var pie = sapphire.widgets.pie()
       .innerRadius(0);
+
+
+.. function:: pie.explicitComponents([v])
+
+  Property for setting whether the widget should expect its components
+  to be layed out explictly or not.
+
+  If set to ``false``, the widget will append the components automatically.
+
+  If set to ``true``, the widget will look for the relevant element's
+  component child elements to decide where to draw each.
+
+  Defaults to ``false``.
+
+  .. code-block:: html
+
+    <div id="foo">
+      <div data-widget-component="title"></div>
+      <div data-widget-component="chart"></div>
+      <div data-widget-component="legend"></div>
+     </div>
+
+  .. code-block:: javascript
+
+    var pie = sapphire.widgets.pie()
+      .explicitComponents(true);
+
+    d3.select("#foo")
+      .datum({...})
+      .call(pie);
+
+  The pie widget's components are:
+
+    - ``'title'``: title of the widget
+    - ``'chart'``: the actual pie chart
+    - ``'legend'``: table showing the color, title and values of each metric
 
 
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements

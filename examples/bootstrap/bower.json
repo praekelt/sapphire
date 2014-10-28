@@ -1,0 +1,17 @@
+{
+  "name": "sapphire-bootstrap-example",
+  "version": "0.0.0",
+  "homepage": "https://github.com/praekelt/sapphire",
+  "authors": [
+    "Praekelt Foundation"
+  ],
+  "main": "index.html",
+  "keywords": [
+    "sapphire"
+  ],
+  "license": "BSD",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "~3.2.0"
+  }
+}

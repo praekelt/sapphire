@@ -223,6 +223,21 @@ each bar corresponds to a time interval.
       .yTicks(10);
 
 
+.. function:: bars.yMax([v])
+
+  Property for the chart's maximum y axis value. If a number is given, its
+  value will be used as the chart's maximum value. If a function is given, the
+  function will be passed an array of the y values to display and should return
+  the number to use as the maximum. Defaults to ``d3.max``.
+
+  .. code-block:: javascript
+
+    var bars = sapphire.widgets.bars()
+      .yMax(function(values) {
+        return d3.max([9000].concat(values));
+      });
+
+
 .. function:: bars.colors([fn])
 
   Property for the colour function to use to calculate the colour
@@ -246,18 +261,6 @@ each bar corresponds to a time interval.
       .width(400);
 
 
-.. function:: bars.colspan([v])
-
-  Property for the widget's default column span in a dashboard. Used if
-  the widget is not standalone (see and :func:`dashboard.colspan`).
-  Defaults to ``4``.
-
-  .. code-block:: javascript
-
-    var bars = sapphire.widgets.bars()
-      .colspan(4);
-
-
 .. function:: bars.height([v])
 
   Property for the :ref:`accessor <accessors>` to use to access the
@@ -269,16 +272,38 @@ each bar corresponds to a time interval.
       .height(200);
 
 
-.. function:: bars.rowspan([v])
+.. function:: bars.explicitComponents([v])
 
-  Property for the widget's default row span in a dashboard. Used if the
-  widget is not standalone (:func:`dashboard.rowspan`). Defaults to ``2``.
+  Property for setting whether the widget should expect its components
+  to be layed out explictly or not.
+
+  If set to ``false``, the widget will append the components automatically.
+
+  If set to ``true``, the widget will look for the relevant element's
+  component child elements to decide where to draw each.
+
+  Defaults to ``false``.
+
+  .. code-block:: html
+
+    <div id="foo">
+      <div data-widget-component="title"></div>
+      <div data-widget-component="chart"></div>
+     </div>
 
   .. code-block:: javascript
 
     var bars = sapphire.widgets.bars()
-      .rowspan(2);
+      .explicitComponents(true);
 
+    d3.select("#foo")
+      .datum({...})
+      .call(bars);
+
+  The bars widget's components are:
+
+    - ``'title'``: title of the widget
+    - ``'chart'``: the actual bar chart
 
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements
 .. _d3.time.scale: https://github.com/mbostock/d3/wiki/Time-Scales#scale

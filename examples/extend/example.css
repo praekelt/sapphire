@@ -1,0 +1,41 @@
+body {
+  background: #f2f2f2;
+}
+
+.sapphire {
+  width: 640px;
+  margin: 0 auto;
+}
+
+.box {
+  height: 240px;
+}
+
+.widget-titlebar {
+  padding: 6px 10px;
+  height: 25px;
+  color: #5d5d5d;
+  background: #e8e8e8;
+}
+
+.widget-title {
+  float: left;
+  font-size: 1.1em;
+}
+
+.widget-intervals {
+  float: right;
+}
+
+.widget-interval {
+  padding: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: bold;
+  border: none;
+  background-color: transparent;
+}
+
+.is-widget-interval-active {
+  border-bottom: 3px solid #5d5d5d;
+}

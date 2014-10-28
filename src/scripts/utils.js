@@ -50,15 +50,6 @@ utils.px = function(fn) {
 };
 
 
-utils.meta = function(el, fn) {
-  el = utils.ensureEl(el);
-
-  return arguments.length > 1
-    ? el.property('__sapphire_meta__', fn)
-    : el.property('__sapphire_meta__');
-};
-
-
 utils.box = strain()
   .prop('width')
   .default(0)
@@ -106,4 +97,9 @@ utils.innerHeight = function(el) {
 utils.measure = function(el, name) {
   el = utils.ensureEl(el);
   return parseInt(el.style(name));
+};
+
+
+utils.isEmptyNode = function() {
+  return !this.hasChildNodes();
 };

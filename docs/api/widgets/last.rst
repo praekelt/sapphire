@@ -204,17 +204,6 @@ value preceding it.
       .width(400);
 
 
-.. function:: last.colspan([v])
-
-  Property for the widget's default column span in a dashboard. Used if the
-  widget is not standalone (see :func:`dashboard.colspan`). Defaults to ``4``.
-
-  .. code-block:: javascript
-
-    var last = sapphire.widgets.last()
-      .colspan(4);
-
-
 .. function:: last.sparklineLimit([v])
 
   Property for the minimum number of values or datapoints needed for the
@@ -239,6 +228,44 @@ value preceding it.
 
     var last = sapphire.widgets.last()
       .summaryLimit(3);
+
+
+.. function:: last.explicitComponents([v])
+
+  Property for setting whether the widget should expect its components
+  to be layed out explictly or not.
+
+  If set to ``false``, the widget will append the components automatically.
+
+  If set to ``true``, the widget will look for the relevant element's
+  component child elements to decide where to draw each.
+
+  Defaults to ``false``.
+
+  .. code-block:: html
+
+    <div id="foo">
+      <div data-widget-component="title"></div>
+      <div data-widget-component="last-value"></div>
+      <div data-widget-component="sparkline"></div>
+      <div data-widget-component="summary"></div>
+     </div>
+
+  .. code-block:: javascript
+
+    var last = sapphire.widgets.last()
+      .explicitComponents(true);
+
+    d3.select("#foo")
+      .datum({...})
+      .call(last);
+
+  The last widget's components are:
+
+    - ``'title'``: title of the widget
+    - ``'last-value'``: text showing the last given y value
+    - ``'sparkline'``: the widget's sparkline summarising the changes in values
+    - ``'summary'``: textual summary of the most recent change in value
 
 
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements

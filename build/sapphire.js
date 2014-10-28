@@ -11,337 +11,11 @@
   }
 }(function(d3, strain) {
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.sapphire=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
-var utils = _dereq_('./utils');
-var layout = _dereq_('./grid');
-var widgets = _dereq_('./widgets');
-
-
-module.exports = _dereq_('./view').extend()
-  .prop('scale')
-  .default(100)
-
-  .prop('types')
-
-  .prop('title')
-  .set(d3.functor)
-  .default(function(d) { return d.title; })
-
-  .prop('key')
-  .set(d3.functor)
-  .default(function(d, i) { return i; })
-
-  .prop('type')
-  .set(d3.functor)
-  .default(function(d) { return d.type; })
-
-  .prop('widgets')
-  .set(d3.functor)
-  .default(function(d) { return d.widgets; })
-
-  .prop('col')
-  .set(d3.functor)
-  .default(function(d) {
-    return utils.access(d, 'col');
-  })
-
-  .prop('row')
-  .set(d3.functor)
-  .default(function(d) {
-    return utils.access(d, 'row');
-  })
-
-  .prop('colspan')
-  .set(d3.functor)
-  .default(function(d) {
-    return utils.access(d, 'colspan');
-  })
-
-  .prop('rowspan')
-  .set(d3.functor)
-  .default(function(d) {
-    return utils.access(d, 'rowspan');
-  })
-
-  .prop('numcols')
-  .default(8)
-
-  .prop('padding')
-  .default(5)
-
-  .init(function() {
-    var types = d3.map();
-
-    d3.keys(widgets).forEach(function(k) {
-      types.set(k, widgets[k].new());
-    });
-
-    this.types(types);
-  })
-
-  .enter(function(el) {
-    el.attr('class', 'dashboard')
-      .append('div')
-        .attr('class', 'widgets');
-  })
-
-  .meth('normalize', function(el) {
-    var self = this;
-    var node = el.node();
-
-    el.datum(function(d, i) {
-      return {
-        title: self.title()
-          .call(node, d, i),
-        widgets: self.widgets()
-          .call(node, d, i)
-          .map(widgetDatum)
-      };
-    });
-
-    function widgetDatum(d, i) {
-      var typename = self.type().call(node, d, i);
-      var type = self.types().get(typename);
-
-      if (!type) {
-        throw new Error("Unrecognised dashboard widget type '" + typename + "'");
-      }
-
-      var colspan = self.colspan().call(node, d, i);
-      colspan = utils.ensure(colspan, type.colspan());
-      var rowspan = self.rowspan().call(node, d, i);
-      rowspan = utils.ensure(rowspan, type.rowspan());
-
-      return {
-        data: d,
-        type: type,
-        colspan: colspan,
-        rowspan: rowspan,
-        key: self.key().call(node, d, i),
-        col: self.col().call(node, d, i),
-        row: self.row().call(node, d, i)
-      };
-    }
-  })
-
-  .draw(function(el) {
-    this.normalize(el);
-    var widgetData = el.datum().widgets;
-
-    this.types()
-      .forEach(function(name, type) {
-        type.width(widgetWidth);
-        type.height(widgetHeight);
-      });
-
-    var grid = layout()
-      .scale(this.scale())
-      .numcols(this.numcols())
-      .padding(this.padding())
-      .col(function(d) { return d.col; })
-      .row(function(d) { return d.row; })
-      .colspan(function(d) { return d.colspan; })
-      .rowspan(function(d) { return d.rowspan; });
-    
-    el.style('width', utils.px(grid.scale() * grid.numcols()));
-
-    var widget = el.select('.widgets').selectAll('.widget')
-      .data(widgetData, function(d) { return d.key; });
-
-    widget.enter().append('div');
-    utils.meta(widget, function(d) { return d; });
-
-    widget
-      .classed('widget', true)
-      .each(function(d) {
-        var widgetEl = d3.select(this)
-          .datum(d.data)
-          .call(d.type);
-
-        var width = parseInt(widgetEl.style('width'));
-        d.colspan = Math.max(d.colspan, grid.lengthSpan(width));
-
-        var height = parseInt(widgetEl.style('height'));
-        d.rowspan = Math.max(d.rowspan, grid.lengthSpan(height));
-      });
-
-    var gridEls = grid(widgetData);
-
-    widget
-      .style('left', utils.px(function(d, i) { return gridEls[i].x; }))
-      .style('top', utils.px(function(d, i) { return gridEls[i].y; }));
-
-    widget.exit().remove();
-
-    function widgetWidth() {
-      return grid.spanLength(utils.meta(this).colspan);
-    }
-
-    function widgetHeight() {
-      return grid.spanLength(utils.meta(this).rowspan);
-    }
-  });
-
-},{"./grid":2,"./utils":4,"./view":5,"./widgets":7}],2:[function(_dereq_,module,exports){
-var utils = _dereq_('./utils');
-
-
-var grid = module.exports = strain()
-  .prop('col')
-  .set(d3.functor)
-  .default(function(d) {
-    return utils.access(d, 'col');
-  })
-
-  .prop('row')
-  .set(d3.functor)
-  .default(function(d) {
-    return utils.access(d, 'row');
-  })
-
-  .prop('numcols')
-  .default(8)
-
-  .prop('scale')
-  .default(10)
-
-  .prop('padding')
-  .default(5)
-
-  .prop('colspan')
-  .set(d3.functor)
-  .default(function(d) {
-    return utils.access(d, 'colspan', 1);
-  })
-
-  .prop('rowspan')
-  .set(d3.functor)
-  .default(function(d) {
-    return utils.access(d, 'rowspan', 1);
-  })
-
-  .invoke(function(data) {
-    var self = this;
-    var best = counter().numcols(this.numcols());
-
-    data = (data || [])
-      .map(function(d, i) {
-        return {
-          data: d,
-          col: self.col().call(self, d, i), 
-          row: self.row().call(self, d, i),
-          rowspan: self.rowspan().call(self, d, i),
-          colspan: self.colspan().call(self, d, i)
-        };
-      })
-      .map(best);
-
-    var quadtree = d3.geom.quadtree()
-      .x(function(d) { return d.col; })
-      .y(function(d) { return d.row; });
-
-    var root = quadtree(data);
-
-    data.forEach(function(d) {
-      root.visit(grid.uncollide(d));
-      d.x = self.indexOffset(d.col);
-      d.y = self.indexOffset(d.row);
-      d.width = self.spanLength(d.colspan);
-      d.height = self.spanLength(d.rowspan);
-    });
-
-    return data;
-  })
-
-  .meth('indexOffset', function(index) {
-    return (index * this.scale()) + this.padding();
-  })
-
-  .meth('spanLength', function(span) {
-    return (span * this.scale()) - (this.padding() * 2);
-  })
-
-  .meth('offsetIndex', function(offset) {
-    return Math.ceil((offset - this.padding()) / this.scale());
-  })
-
-  .meth('lengthSpan', function(len) {
-    return Math.ceil((len + (this.padding() * 2)) / this.scale());
-  })
-
-  .static('box', function(d) {
-    return {
-      x1: d.col,
-      x2: d.col + d.colspan - 1,
-      y1: d.row,
-      y2: d.row + d.rowspan - 1
-    };
-  })
-
-  .static('uncollide', function(a) {
-    var boxA = grid.box(a);
-    
-    return function(node, x1, y1, x2, y2) {
-      var b = node.point;
-
-      if (b && a !== b && grid.intersection(boxA, grid.box(b))) {
-        b.row = boxA.y2 + 1;
-      }
-
-      return !grid.intersection(boxA, {
-        x1: x1, 
-        y1: y1, 
-        x2: x2,
-        y2: y2
-      });
-    };
-  })
-
-  .static('intersection', function(a, b) {
-    return ((a.x1 <= b.x1 && b.x1 <= a.x2) && (a.y1 <= b.y1 && b.y1 <= a.y2))
-        || ((b.x1 <= a.x1 && a.x1 <= b.x2) && (b.y1 <= a.y1 && a.y1 <= b.y2))
-        || ((a.x1 <= b.x2 && b.x2 <= a.x2) && (a.y1 <= b.y1 && b.y1 <= a.y2))
-        || ((b.x1 <= a.x2 && a.x2 <= b.x2) && (b.y1 <= a.y1 && a.y1 <= b.y2));
-  });
-
-
-var counter = strain()
-  .prop('numcols')
-
-  .prop('rowspan')
-  .default(0)
-
-  .prop('col')
-  .default(0)
-
-  .prop('row')
-  .default(0)
-
-  .invoke(function(d) {
-    d.col = utils.ensure(d.col, this.col());
-    d.row = utils.ensure(d.row, this.row());
-
-    if (d.col + d.colspan > this.numcols()) {
-      d.col = 0;
-      d.row += this.rowspan();
-      this.rowspan(0);
-    }
-
-    this
-      .col(d.col + d.colspan)
-      .row(d.row)
-      .rowspan(Math.max(this.rowspan(), d.rowspan));
-
-    return d;
-  });
-
-},{"./utils":4}],3:[function(_dereq_,module,exports){
 exports.utils = _dereq_('./utils');
 exports.view = _dereq_('./view');
-exports.grid = _dereq_('./grid');
 exports.widgets = _dereq_('./widgets');
-exports.dashboard = _dereq_('./dashboard');
 
-},{"./dashboard":1,"./grid":2,"./utils":4,"./view":5,"./widgets":7}],4:[function(_dereq_,module,exports){
+},{"./utils":2,"./view":3,"./widgets":5}],2:[function(_dereq_,module,exports){
 var utils = exports;
 
 
@@ -394,15 +68,6 @@ utils.px = function(fn) {
 };
 
 
-utils.meta = function(el, fn) {
-  el = utils.ensureEl(el);
-
-  return arguments.length > 1
-    ? el.property('__sapphire_meta__', fn)
-    : el.property('__sapphire_meta__');
-};
-
-
 utils.box = strain()
   .prop('width')
   .default(0)
@@ -452,78 +117,40 @@ utils.measure = function(el, name) {
   return parseInt(el.style(name));
 };
 
-},{}],5:[function(_dereq_,module,exports){
+
+utils.isEmptyNode = function() {
+  return !this.hasChildNodes();
+};
+
+},{}],3:[function(_dereq_,module,exports){
 module.exports = strain()
   .static('draw', function(fn) {
     this.meth('_draw_', fn);
   })
   .draw(function() {})
 
-  .static('enter', function(fn) {
-    this.meth('_enter_', fn);
-  })
-  .enter(function() {})
-
   .meth('draw', function(el) {
+    el = sapphire.utils.ensureEl(el);
+
     var datum;
-    el = sapphire.utils.ensureEl(el);
-
-    if (el.node()) {
-      datum = el.datum();
-    }
-
-    if (el.node() && !el.node().hasChildNodes()) {
-      this.enter.apply(this, arguments);
-    }
-
-    var parent = this._type_._super_.prototype;
-    if ('_draw_' in parent) {
-      parent._draw_.apply(this, arguments);
-    }
-
+    if (el.node()) datum = el.datum();
     this._draw_.apply(this, arguments);
-
-    if (typeof datum != 'undefined') {
-      el.datum(datum);
-    }
-  })
-
-  .meth('enter', function(el) {
-    el = sapphire.utils.ensureEl(el);
-
-    var parent = this._type_._super_.prototype;
-    if ('_enter_' in parent) {
-      parent._enter_.apply(this, arguments);
-    }
-
-    this._enter_.apply(this, arguments);
+    if (typeof datum != 'undefined') el.datum(datum);
   })
 
   .invoke(function() {
     return this.draw.apply(this, arguments);
   });
 
-},{}],6:[function(_dereq_,module,exports){
+},{}],4:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils');
 
 
 module.exports = _dereq_('./widget').extend()
-  .prop('width')
-  .default(400)
-
-  .prop('colspan')
-  .default(4)
-
-  .prop('rowspan')
-  .default(2)
-
-  .prop('height')
-  .default(200)
-
   .prop('barPadding')
   .default(2.5)
 
-  .prop('margin')
+  .prop('chartMargin')
   .default({
     top: 10,
     left: 38,
@@ -558,10 +185,14 @@ module.exports = _dereq_('./widget').extend()
   .default(8)
 
   .prop('yTickFormat')
-  .default(d3.format('.2s'))
+  .default(d3.format('s'))
 
   .prop('yTicks')
   .default(5)
+
+  .prop('yMax')
+  .set(d3.functor)
+  .default(d3.max)
 
   .prop('colors')
 
@@ -569,171 +200,215 @@ module.exports = _dereq_('./widget').extend()
     this.colors(d3.scale.category10());
   })
 
-  .meth('normalize', function(el) {
-    var self = this;
-    var node = el.node();
-
-    el.datum(function(d, i) {
-      var values = self.values()
-        .call(node, d, i)
-        .map(value);
-
-      var len = values.length;
-      var dxAvg = values.length
-        ? (values[len - 1].x - values[0].x) / len
-        : 0;
-
-      values.forEach(function(d) {
-        d.dx = utils.ensure(d.dx, dxAvg);
-      });
-
-      return {
-        values: values,
-        title: self.title().call(node, d, i)
-      };
-    });
-
-    function value(d, i) {
-      return {
-        x: self.x().call(node, d, i),
-        y: self.y().call(node, d, i),
-        dx: self.dx().call(node, d, i),
-        width: self.width().call(node, d, i),
-        height: self.height().call(node, d, i)
-      };
-    }
-  })
-
-  .enter(function(el) {
-    el.attr('class', 'bars widget');
-
-    el.append('div')
-      .attr('class', 'title');
-
-    var svg = el.append('div')
-      .attr('class', 'chart')
-      .append('svg')
-      .append('g');
-
-    svg.append('g')
-      .attr('class', 'bars');
-
-    svg.append('g')
-      .attr('class', 'y axis');
-
-    svg.append('g')
-      .attr('class', 'x axis');
-  })
-
   .draw(function(el) {
-    var self = this;
-    this.normalize(el);
+    var opts = this.props();
+    normalize(el, opts);
 
-    el.style('width', utils.px(this.width()))
-      .style('height', utils.px(this.height()));
-
-    el.select('.widget .title')
-      .text(function(d) { return d.title; });
-
-    var chart = el.select('.chart')
-      .datum(function(d) { return d.values; });
-
-    var fx = d3.time.scale()
-      .domain([
-        d3.min(chart.datum(), function(d) { return d.x; }),
-        d3.max(chart.datum(), function(d) { return d.x + d.dx; })]);
-
-    var fy = d3.scale.linear()
-      .domain([0, d3.max(chart.datum(), function(d) { return d.y; })]);
-
-    var dims = utils.box()
-      .width(utils.innerWidth(chart))
-      .height(utils.innerHeight(chart))
-      .margin(this.margin())
-      .calc();
-
-    chart
-      .style('width', utils.px(dims.width))
-      .style('height', utils.px(dims.height));
-
-    fx.range([0, dims.innerWidth]);
-    fy.range([dims.innerHeight, 0]);
-
-    var svg = chart.select('svg')
-      .attr('width', dims.width)
-      .attr('height', dims.height)
-      .select('g')
-        .attr('transform', utils.translate(
-          dims.margin.left,
-          dims.margin.top));
-
-    var bar = svg.select('.bars')
-      .selectAll('.bar')
-      .data(function(d) { return d; },
-            function(d) { return d.x; });
-
-    bar.enter().append('g')
-      .attr('class', 'bar')
-      .append('rect');
-
-    bar
-      .attr('transform', function(d) {
-        return utils.translate(fx(d.x), fy(d.y));
-      });
-
-    bar.select('rect')
-      .style('fill', this.colors()(el.datum().title))
-      .attr('width', function(d) {
-        var width = fx(d.x + d.dx) - fx(d.x);
-        width -= self.barPadding();
-        return Math.max(width, 1);
-      })
-      .attr('height', function(d) {
-        return dims.innerHeight - fy(d.y); 
-      });
-
-    bar.exit()
-      .remove();
-
-    var axis = d3.svg.axis()
-      .scale(fx)
-      .ticks(this.xTicks())
-      .tickFormat(this.xTickFormat());
-
-    svg.select('.x.axis')
-      .attr('transform', utils.translate(0, dims.innerHeight))
-      .call(axis);
-
-    axis = d3.svg.axis()
-      .orient('left')
-      .scale(fy)
-      .tickPadding(8)
-      .tickSize(-dims.innerWidth)
-      .ticks(this.yTicks())
-      .tickFormat(this.yTickFormat());
-    
-    svg.select('.y.axis')
-      .call(axis);
+    opts.width = utils.innerWidth(el);
+    opts.color = opts.colors(el.datum().title);
+    drawWidget(el, opts);
   });
 
-},{"../utils":4,"./widget":11}],7:[function(_dereq_,module,exports){
+
+function drawWidget(el, opts) {
+  el.classed('sph-widget sph-bars', true);
+
+  if (!opts.explicitComponents) initComponents(el);
+
+  var component = el.select('[data-widget-component="title"]');
+  if (component.size()) component.call(drawTitle);
+
+  component = el.select('[data-widget-component="chart"]');
+  if (component.size()) component.call(drawChart, opts);
+}
+
+
+function initComponents(el) {
+  el.append('div')
+    .attr('data-widget-component', 'title');
+
+  el.append('div')
+    .attr('data-widget-component', 'chart');
+}
+
+
+function drawTitle(title) {
+  title
+    .classed('sph-title', true)
+    .text(function(d) { return d.title; });
+}
+
+
+function drawChart(chart, opts) {
+  chart
+    .classed('sph-chart sph-chart-bars', true)
+    .datum(function(d) { return d.values; });
+
+  var dims = utils.box()
+    .width(opts.width)
+    .height(utils.innerHeight(chart))
+    .margin(opts.chartMargin)
+    .calc();
+
+  var fx = d3.time.scale()
+    .domain([
+      d3.min(chart.datum(), function(d) { return d.x; }),
+      d3.max(chart.datum(), function(d) { return d.x + d.dx; })]);
+
+  var ys = chart.datum()
+    .map(function(d) { return d.y; });
+
+  var fy = d3.scale.linear()
+    .domain([0, opts.yMax(ys)]);
+
+  fx.range([0, dims.innerWidth]);
+  fy.range([dims.innerHeight, 0]);
+
+  chart
+    .filter(utils.isEmptyNode)
+    .call(initChart);
+
+  chart.select('svg')
+    .call(drawSvg, dims, fx, fy, opts);
+}
+
+
+function initChart(chart) {
+  var svg = chart
+    .append('svg')
+    .append('g');
+
+  svg.append('g')
+    .attr('class', 'sph-bars-bars');
+
+  svg.append('g')
+    .attr('class', 'sph-axis sph-axis-bars-y');
+
+  svg.append('g')
+    .attr('class', 'sph-axis sph-axis-bars-x');
+}
+
+
+function drawSvg(svg, dims, fx, fy, opts) {
+  svg
+    .attr('width', dims.width)
+    .attr('height', dims.height)
+    .select('g')
+      .attr('transform', utils.translate(
+        dims.margin.left,
+        dims.margin.top));
+
+  svg.select('.sph-bars-bars')
+     .call(drawBars, dims, fx, fy, opts);
+
+  svg.select('.sph-axis-bars-x')
+    .call(drawXAxis, dims, fx, opts);
+
+  svg.select('.sph-axis-bars-y')
+    .call(drawYAxis, dims, fy, opts);
+}
+
+
+function drawBars(bars, dims, fx, fy, opts) {
+  bars
+    .selectAll('.sph-bars-bar')
+    .data(function(d) { return d; },
+          function(d) { return d.x; })
+    .call(drawBar, dims, fx, fy, opts);
+}
+
+
+function drawBar(bar, dims, fx, fy, opts) {
+  bar.enter().append('g')
+    .attr('class', 'sph-bars-bar')
+    .append('rect');
+
+  bar
+    .attr('transform', function(d) {
+      return utils.translate(fx(d.x), fy(d.y));
+    });
+
+  bar.select('rect')
+    .style('fill', opts.color)
+    .attr('width', function(d) {
+      var width = fx(d.x + d.dx) - fx(d.x);
+      width -= opts.barPadding;
+      return Math.max(width, 1);
+    })
+    .attr('height', function(d) {
+      return dims.innerHeight - fy(d.y); 
+    });
+
+  bar.exit()
+    .remove();
+}
+
+
+function drawXAxis(axis, dims, fx, opts) {
+  axis
+    .attr('transform', utils.translate(0, dims.innerHeight))
+    .call(d3.svg.axis()
+      .scale(fx)
+      .ticks(opts.xTicks)
+      .tickFormat(opts.xTickFormat));
+}
+
+
+function drawYAxis(axis, dims, fy, opts) {
+  axis.call(d3.svg.axis()
+    .orient('left')
+    .scale(fy)
+    .tickPadding(8)
+    .tickSize(-dims.innerWidth)
+    .ticks(opts.yTicks)
+    .tickFormat(opts.yTickFormat));
+}
+
+
+function normalize(el, opts) {
+  var node = el.node();
+
+  el.datum(function(d, i) {
+    var values = opts.values
+      .call(node, d, i)
+      .map(value);
+
+    var len = values.length;
+    var dxAvg = values.length
+      ? (values[len - 1].x - values[0].x) / len
+      : 0;
+
+    values.forEach(function(d) {
+      d.dx = utils.ensure(d.dx, dxAvg);
+    });
+
+    return {
+      values: values,
+      title: opts.title.call(node, d, i)
+    };
+  });
+
+  function value(d, i) {
+    return {
+      x: opts.x.call(node, d, i),
+      y: opts.y.call(node, d, i),
+      dx: opts.dx.call(node, d, i)
+    };
+  }
+}
+
+},{"../utils":2,"./widget":9}],5:[function(_dereq_,module,exports){
 exports.pie = _dereq_('./pie');
 exports.bars = _dereq_('./bars');
 exports.last = _dereq_('./last');
 exports.lines = _dereq_('./lines');
 exports.widget = _dereq_('./widget');
 
-},{"./bars":6,"./last":8,"./lines":9,"./pie":10,"./widget":11}],8:[function(_dereq_,module,exports){
+},{"./bars":4,"./last":6,"./lines":7,"./pie":8,"./widget":9}],6:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils');
 
 
 module.exports = _dereq_('./widget').extend()
-  .prop('width')
-  .default(400)
-
-  .prop('colspan')
-  .default(4)
-
   .prop('title')
   .set(d3.functor)
   .default(function(d) { return d.title; })
@@ -770,136 +445,7 @@ module.exports = _dereq_('./widget').extend()
   .default(15)
   .set(function(v) { return Math.max(utils.ensure(v, 2), 2); })
 
-  .prop('sparkline')
-  .prop('summary')
-
-  .init(function() {
-    this.sparkline(sparkline(this));
-    this.summary(summary(this));
-  })
-
-  .enter(function(el) {
-    el.attr('class', 'last widget');
-
-    el.append('div')
-      .attr('class', 'title');
-
-    var values = el.append('div')
-      .attr('class', 'values');
-
-    values.append('div')
-      .attr('class', 'last value');
-
-    values.append('div')
-      .attr('class', 'sparkline');
-
-    values.append('div')
-      .attr('class', 'summary');
-  })
-
-  .draw(function(el) {
-    var self = this;
-    var node = el.node();
-
-    el.style('width', utils.px(this.width()));
-
-    el.select('.title')
-      .text(function(d, i) {
-        return self.title().call(node, d, i);
-      });
-
-    var values = el.select('.values')
-      .datum(function(d, i) {
-        return self.values()
-          .call(node, d, i)
-          .map(function(d, i) {
-            return {
-              x: self.x().call(node, d, i),
-              y: self.y().call(node, d, i)
-            };
-          });
-      })
-      .attr('class', function(d) {
-        d = d.slice(-2);
-
-        d = d.length > 1
-          ? d[1].y - d[0].y
-          : 0;
-
-        if (d > 0) { return 'good values'; }
-        if (d < 0) { return 'bad values'; }
-        return 'neutral values';
-      });
-
-    values.select('.last.value')
-      .datum(function(d, i) {
-        d = d[d.length - 1];
-
-        return !d
-          ? self.none()
-          : d.y;
-      })
-      .text(this.yFormat());
-
-    values.select('.sparkline')
-      .call(this.sparkline());
-
-    values.select('.summary')
-      .call(this.summary());
-  });
-
-
-var summary = _dereq_('../view').extend()
-  .prop('widget')
-
-  .init(function(widget) {
-    this.widget(widget);
-  })
-
-  .enter(function(el) {
-    el.append('span')
-      .attr('class', 'diff');
-
-    el.append('span')
-      .attr('class', 'time');
-  })
-
-  .draw(function(el) {
-    var widget = this.widget();
-
-    if (el.datum().length < this.widget().summaryLimit()) {
-      el.style('height', 0);
-      return;
-    }
-
-    el.select('.diff')
-      .datum(function(d) {
-        d = d.slice(-2);
-        return d[1].y - d[0].y;
-      })
-      .text(widget.diffFormat());
-
-    el.select('.time')
-      .datum(function(d) {
-        d = d.slice(-2);
-
-        return [d[0].x, d[1].x]
-          .map(utils.date)
-          .map(widget.xFormat());
-      })
-      .text(function(d) {
-        return [' from', d[0], 'to', d[1]].join(' ');
-      });
-  });
-
-
-var sparkline = _dereq_('../view').extend()
-  .prop('widget')
-
-  .prop('height')
-  .default(25)
-
-  .prop('margin')
+  .prop('sparklineMargin')
   .default({
     top: 4,
     left: 4,
@@ -907,83 +453,250 @@ var sparkline = _dereq_('../view').extend()
     right: 4 
   })
 
-  .init(function(widget) {
-    this.widget(widget);
-  })
-
-  .enter(function(el) {
-    var svg = el.append('svg')
-      .append('g');
-
-    svg.append('path')
-      .attr('class', 'rest path');
-
-    svg.append('path')
-      .attr('class', 'diff path');
-  })
-
   .draw(function(el) {
-    if (el.datum().length < this.widget().sparklineLimit()) {
-      el.style('height', 0);
-      return;
-    }
-
-    var dims = utils.box()
-      .margin(this.margin())
-      .width(utils.innerWidth(el))
-      .height(this.height())
-      .calc();
-
-    var fx = d3.scale.linear()
-      .domain(d3.extent(el.datum(), function(d) { return d.x; }))
-      .range([0, dims.innerWidth]);
-
-    var fy = d3.scale.linear()
-      .domain(d3.extent(el.datum(), function(d) { return d.y; }))
-      .range([dims.innerHeight, 0]);
-
-    var line = d3.svg.line()
-      .x(function(d) { return fx(d.x); })
-      .y(function(d) { return fy(d.y); });
-
-    var svg = el.select('svg')
-      .attr('width', dims.width)
-      .attr('height', dims.height)
-      .select('g')
-        .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
-
-    svg.select('.rest.path')
-      .attr('d', line);
-
-    svg.select('.diff.path')
-      .datum(function(d) { return d.slice(-2); })
-      .attr('d', line);
-
-    var dot = svg.selectAll('.dot')
-      .data(function(d) { return d.slice(-1); });
-
-    dot.enter().append('circle')
-      .attr('class', 'dot')
-      .attr('r', 4);
-
-    dot
-      .attr('cx', function(d) { return fx(d.x); })
-      .attr('cy', function(d) { return fy(d.y); });
-
-    dot.exit().remove();
+    var opts = this.props();
+    normalize(el, opts);
+    drawWidget(el, opts);
   });
 
-},{"../utils":4,"../view":5,"./widget":11}],9:[function(_dereq_,module,exports){
+
+function drawWidget(el, opts) {
+  el.classed('sph-widget sph-last', true)
+    .classed('sph-is-status-good', false)
+    .classed('sph-is-status-bad', false)
+    .classed('sph-is-status-neutral', false)
+    .classed(getStatus(el.datum().values), true);
+
+  if (!opts.explicitComponents) initComponents(el);
+
+  var component = el.select('[data-widget-component="title"]');
+  if (component.size()) component.call(drawTitle);
+
+  component = el.select('[data-widget-component="last-value"]');
+  if (component.size()) component.datum(getValues).call(drawLastValue, opts);
+
+  component = el.select('[data-widget-component="sparkline"]');
+  if (component.size()) component.datum(getValues).call(drawSparkline, opts);
+
+  component = el.select('[data-widget-component="summary"]');
+  if (component.size()) component.datum(getValues).call(drawSummary, opts);
+}
+
+
+function initComponents(el) {
+  el.append('div')
+    .attr('data-widget-component', 'title');
+
+  el.append('div')
+    .attr('data-widget-component', 'last-value');
+
+  el.append('div')
+    .attr('data-widget-component', 'sparkline');
+
+  el.append('div')
+    .attr('data-widget-component', 'summary');
+}
+
+
+function getValues(d) {
+  return d.values;
+}
+
+
+function drawTitle(title) {
+  title
+    .classed('sph-title', true)
+    .text(function(d) { return d.title; });
+}
+
+
+function drawLastValue(value, opts) {
+  value
+    .classed('sph-last-value', true)
+    .datum(function(d, i) {
+      d = d[d.length - 1];
+
+      return !d
+        ? opts.none
+        : d.y;
+    })
+    .text(opts.yFormat);
+}
+
+
+function drawSparkline(sparkline, opts) {
+  sparkline
+    .classed('sph-chart sph-chart-sparkline', true);
+
+  if (sparkline.datum().length < opts.sparklineLimit) {
+    // TODO something better than this
+    sparkline.style('height', 0);
+    return;
+  }
+
+  var dims = utils.box()
+    .margin(opts.sparklineMargin)
+    .width(utils.innerWidth(sparkline))
+    .height(utils.innerHeight(sparkline))
+    .calc();
+
+  var fx = d3.scale.linear()
+    .domain(d3.extent(sparkline.datum(), function(d) { return d.x; }))
+    .range([0, dims.innerWidth]);
+
+  var fy = d3.scale.linear()
+    .domain(d3.extent(sparkline.datum(), function(d) { return d.y; }))
+    .range([dims.innerHeight, 0]);
+
+  sparkline
+    .filter(utils.isEmptyNode)
+    .call(initSparkline);
+
+  sparkline.select('svg')
+    .call(drawSvg, dims, fx, fy);
+}
+
+
+function drawSvg(svg, dims, fx, fy) {
+  svg = svg
+    .attr('width', dims.width)
+    .attr('height', dims.height)
+    .select('g')
+      .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
+
+  svg.select('.sph-sparkline-paths')
+    .call(drawPaths, fx, fy);
+
+  svg.selectAll('.sph-sparkline-dot')
+    .data(function(d) { return d.slice(-1); })
+    .call(drawDot, fx, fy);
+}
+
+
+function drawPaths(paths, fx, fy) {
+  var line = d3.svg.line()
+    .x(function(d) { return fx(d.x); })
+    .y(function(d) { return fy(d.y); });
+
+  paths.select('.sph-sparkline-path-rest')
+    .attr('d', line);
+
+  paths.select('.sph-sparkline-path-diff')
+    .datum(function(d) { return d.slice(-2); })
+    .attr('d', line);
+}
+
+
+function initSparkline(sparkline) {
+  var svg = sparkline.append('svg')
+    .append('g');
+
+  var paths = svg.append('g')
+    .attr('class', 'sph-sparkline-paths');
+
+  paths.append('path')
+    .attr('class', 'sph-sparkline-path sph-sparkline-path-rest');
+
+  paths.append('path')
+    .attr('class', 'sph-sparkline-path sph-sparkline-path-diff');
+}
+
+
+function drawDot(dot, fx, fy) {
+  dot.enter().append('circle')
+    .attr('class', 'sph-sparkline-dot')
+    .attr('r', 4);
+
+  dot
+    .attr('cx', function(d) { return fx(d.x); })
+    .attr('cy', function(d) { return fy(d.y); });
+
+  dot.exit().remove();
+}
+
+
+function drawSummary(summary, opts) {
+  summary
+    .classed('sph-summary', true);
+
+  if (summary.datum().length < opts.summaryLimit) {
+    // TODO something better than this
+    summary.style('height', 0);
+    return;
+  }
+
+  summary
+    .filter(utils.isEmptyNode)
+    .call(initSummary);
+
+  summary.select('.sph-summary-diff')
+    .datum(function(d) {
+      d = d.slice(-2);
+      return d[1].y - d[0].y;
+    })
+    .text(opts.diffFormat);
+
+  summary.select('.sph-summary-time')
+    .datum(function(d) {
+      d = d.slice(-2);
+
+      return [d[0].x, d[1].x]
+        .map(utils.date)
+        .map(opts.xFormat);
+    })
+    .text(function(d) {
+      return [' from', d[0], 'to', d[1]].join(' ');
+    });
+}
+
+
+function initSummary(summary) {
+  summary.append('span')
+    .attr('class', 'sph-summary-diff');
+
+  summary.append('span')
+    .attr('class', 'sph-summary-time');
+}
+
+
+function normalize(el, opts) {
+  var node = el.node();
+
+  el.datum(function(d, i) {
+    return {
+      title: opts.title.call(node, d, i),
+      values: opts.values.call(node, d, i)
+        .map(value)
+    };
+  });
+
+
+  function value(d, i) {
+    return {
+      x: opts.x.call(node, d, i),
+      y: opts.y.call(node, d, i)
+    };
+  }
+}
+
+
+function getStatus(values) {
+  values = values.slice(-2);
+
+  var diff = values.length > 1
+    ? values[1].y - values[0].y
+    : 0;
+
+  if (diff > 0) return 'sph-is-status-good';
+  if (diff < 0) return 'sph-is-status-bad';
+  return 'sph-is-status-neutral';
+}
+
+},{"../utils":2,"./widget":9}],7:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils');
 
 
 module.exports = _dereq_('./widget').extend()
-  .prop('width')
-  .default(400)
-
-  .prop('colspan')
-  .default(4)
-
   .prop('title')
   .set(d3.functor)
   .default(function(d) { return d.title; })
@@ -1025,286 +738,329 @@ module.exports = _dereq_('./widget').extend()
   .default(5)
 
   .prop('yTickFormat')
-  .default(d3.format('.2s'))
+  .default(d3.format('s'))
+
+  .prop('yMin')
+  .set(d3.functor)
+  .default(d3.min)
+
+  .prop('yMax')
+  .set(d3.functor)
+  .default(d3.max)
 
   .prop('none')
   .default(0)
+
+  .prop('chartMargin')
+  .default({
+    top: 10,
+    left: 35,
+    right: 5,
+    bottom: 20
+  })
 
   .prop('colors')
   .prop('chart')
   .prop('legend')
 
   .init(function() {
-    this.chart(chart(this));
-    this.legend(legend(this));
     this.colors(d3.scale.category10());
   })
 
-  .enter(function(el) {
-    el.attr('class', 'lines widget');
-
-    el.append('div')
-      .attr('class', 'title');
-
-    var values = el.append('div')
-      .attr('class', 'values');
-
-    values.append('div')
-      .attr('class', 'chart');
-
-    values.append('div')
-      .attr('class', 'legend');
-  })
-
-  .meth('normalize', function(el) {
-    var self = this;
-    var node = el.node();
-
-    el.datum(function(d, i) {
-      var title = self.title().call(node, d, i);
-
-      return {
-        title: title,
-        metrics: self.metrics()
-          .call(node, d, i)
-          .map(metric)
-      };
-    });
-
-    function metric(d, i) {
-      var key = self.key()
-        .call(node, d, i)
-        .toString();
-
-      return {
-        key: key,
-        color: self.colors()(key),
-        title: self.metricTitle().call(node, d, i),
-        values: self.values()
-          .call(node, d, i)
-          .map(value)
-      };
-    }
-
-    function value(d, i) {
-      return {
-        x: self.x().call(node, d, i),
-        y: self.y().call(node, d, i)
-      };
-    }
-  })
-
   .draw(function(el) {
-    this.normalize(el);
-
-    el.style('width', utils.px(this.width()));
-
-    el.select('.widget .title')
-      .text(function(d) { return d.title; });
-
-    var values = el.select('.values')
-      .datum(function(d, i) { return d.metrics; });
-
-    values.select('.chart')
-      .call(this.chart());
-
-    values.select('.legend')
-      .call(this.legend());
+    var opts = this.props();
+    normalize(el, opts);
+    drawWidget(el, opts);
   });
 
 
-var chart = _dereq_('../view').extend()
-  .prop('height')
-  .default(150)
+function drawWidget(el, opts) {
+  el.classed('sph-widget sph-lines', true);
 
-  .prop('margin')
-  .default({
-    top: 10,
-    left: 35,
-    right: 15,
-    bottom: 20
-  })
+  if (!opts.explicitComponents) initComponents(el);
 
-  .prop('widget')
+  var component = el.select('[data-widget-component="title"]');
+  if (component.size()) component.call(drawTitle);
 
-  .init(function(widget) {
-    this.widget(widget);
-  })
+  component = el.select('[data-widget-component="chart"]');
+  if (component.size()) component.datum(getMetrics).call(drawChart, opts);
 
-  .enter(function(el) {
-    var svg = el.append('svg')
-      .append('g');
+  component = el.select('[data-widget-component="legend"]');
+  if (component.size()) component.datum(getMetrics).call(drawLegend, opts);
+}
 
-    svg.append('g')
-      .attr('class', 'x axis');
 
-    svg.append('g')
-      .attr('class', 'y axis');
+function initComponents(el) {
+  el.append('div')
+    .attr('data-widget-component', 'title');
 
-    svg.append('g')
-      .attr('class', 'lines');
-  })
+  el.append('div')
+    .attr('data-widget-component', 'chart');
 
-  .draw(function(el) {
-    var dims = utils.box()
-      .margin(this.margin())
-      .width(utils.innerWidth(el))
-      .height(this.height())
-      .calc();
+  el.append('div')
+    .attr('data-widget-component', 'legend');
+}
 
-    var allValues = el
-      .datum()
-      .reduce(function(results, metric) {
-        results.push.apply(results, metric.values);
-        return results;
-      }, []);
 
-    var fx = d3.time.scale()
-      .domain(d3.extent(allValues, function(d) { return d.x; }))
-      .range([0, dims.innerWidth]);
+function drawTitle(title) {
+  title
+    .classed('sph-title', true)
+    .text(function(d) { return d.title; });
+}
 
-    var fy = d3.scale.linear()
-      .domain(d3.extent(allValues, function(d) { return d.y; }))
-      .range([dims.innerHeight, 0]);
 
-    var line = d3.svg.line()
-      .x(function(d) { return fx(d.x); })
-      .y(function(d) { return fy(d.y); });
+function drawChart(chart, opts) {
+  chart
+    .classed('sph-chart sph-chart-lines', true);
 
-    var svg = el.select('svg')
-      .attr('width', dims.width)
-      .attr('height', dims.height)
-      .select('g')
-        .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
+  var dims = utils.box()
+    .margin(opts.chartMargin)
+    .width(utils.innerWidth(chart))
+    .height(utils.innerHeight(chart))
+    .calc();
 
-    var metric = svg.select('.lines').selectAll('.metric')
-      .data(function(d) { return d; },
-            function(d) { return d.key; });
+  var allValues = chart
+    .datum()
+    .reduce(function(results, metric) {
+      results.push.apply(results, metric.values);
+      return results;
+    }, []);
 
-    metric.enter().append('g')
-      .attr('class', 'metric')
-      .attr('data-key', function(d) { return d.key; })
-      .append('path')
-        .attr('class', 'line');
+  var fx = d3.time.scale()
+    .domain(d3.extent(allValues, function(d) { return d.x; }))
+    .range([0, dims.innerWidth]);
 
-    metric.select('.line')
-      .attr('stroke', function(d) { return d.color; })
-      .attr('d', function(d) { return line(d.values); });
+  var ys = allValues
+    .map(function(d) { return d.y; });
 
-    var dot = metric.selectAll('.dot')
-      .data(function(d) {
-        if (!d.values.length) { return []; }
-        var last = d.values[d.values.length - 1];
+  var fy = d3.scale.linear()
+    .domain([opts.yMin(ys), opts.yMax(ys)])
+    .range([dims.innerHeight, 0]);
 
-        return [{
-          x: last.x,
-          y: last.y,
-          color: d.color
-        }];
-      });
+  chart
+    .filter(utils.isEmptyNode)
+    .call(initChart);
 
-    dot.enter().append('circle')
-      .attr('class', 'dot')
-      .attr('r', 4);
+  chart.select('svg')
+    .call(drawSvg, dims, fx, fy, opts);
+}
 
-    dot
-      .attr('fill', function(d) { return d.color; })
-      .attr('cx', function(d) { return fx(d.x); })
-      .attr('cy', function(d) { return fy(d.y); });
 
-    dot.exit()
-      .remove();
+function initChart(chart) {
+  var svg = chart.append('svg')
+    .append('g');
 
-    metric.exit()
-      .remove();
+  svg.append('g')
+    .attr('class', 'sph-axis sph-axis-lines sph-axis-lines-x');
 
-    var axis = d3.svg.axis()
+  svg.append('g')
+    .attr('class', 'sph-axis sph-axis-lines sph-axis-lines-y');
+
+  svg.append('g')
+    .attr('class', 'sph-lines-metrics');
+}
+
+
+function drawSvg(svg, dims, fx, fy, opts) {
+  svg
+    .attr('width', dims.width)
+    .attr('height', dims.height)
+    .select('g')
+      .attr('transform', utils.translate(dims.margin.left, dims.margin.top));
+
+  svg.select('.sph-lines-metrics')
+    .call(drawChartMetrics, fx, fy);
+
+  svg.select('.sph-axis-lines-x')
+    .call(drawXAxis, dims, fx, opts);
+
+  svg.select('.sph-axis-lines-y')
+    .call(drawYAxis, dims, fy, opts);
+}
+
+
+function drawChartMetrics(metrics, fx, fy) {
+  var line = d3.svg.line()
+    .x(function(d) { return fx(d.x); })
+    .y(function(d) { return fy(d.y); });
+
+  metrics.selectAll('.sph-lines-metric')
+    .data(function(d) { return d; },
+          function(d) { return d.key; })
+    .call(drawChartMetric, fx, fy, line);
+}
+
+
+function drawChartMetric(metric, fx, fy, line) {
+  metric.enter().append('g')
+    .attr('class', 'sph-lines-metric')
+    .attr('data-key', function(d) { return d.key; })
+    .append('path')
+      .attr('class', 'sph-lines-line');
+
+  metric.select('.sph-lines-line')
+    .attr('stroke', function(d) { return d.color; })
+    .attr('d', function(d) { return line(d.values); });
+
+  metric.exit()
+    .remove();
+
+  metric.selectAll('.sph-lines-dot')
+    .data(function(d) {
+      if (!d.values.length) { return []; }
+      var last = d.values[d.values.length - 1];
+
+      return [{
+        x: last.x,
+        y: last.y,
+        color: d.color
+      }];
+    })
+    .call(drawDot, fx, fy);
+}
+
+
+function drawDot(dot, fx, fy) {
+  dot.enter().append('circle')
+    .attr('class', 'sph-lines-dot')
+    .attr('r', 4);
+
+  dot
+    .attr('fill', function(d) { return d.color; })
+    .attr('cx', function(d) { return fx(d.x); })
+    .attr('cy', function(d) { return fy(d.y); });
+
+  dot.exit()
+    .remove();
+}
+
+
+function drawXAxis(axis, dims, fx, opts) {
+  axis
+    .attr('transform', utils.translate(0, dims.innerHeight))
+    .call(d3.svg.axis()
       .scale(fx)
       .tickPadding(8)
-      .ticks(this.widget().xTicks())
-      .tickFormat(this.widget().xTickFormat())
-      .tickSize(-dims.innerHeight);
+      .ticks(opts.xTicks)
+      .tickFormat(opts.xTickFormat)
+      .tickSize(-dims.innerHeight));
+}
 
-    svg.select('.x.axis')
-      .attr('transform', utils.translate(0, dims.innerHeight))
-      .call(axis);
 
-    axis = d3.svg.axis()
-      .orient('left')
-      .scale(fy)
-      .tickPadding(8)
-      .ticks(this.widget().yTicks())
-      .tickFormat(this.widget().yTickFormat())
-      .tickSize(-dims.innerWidth);
-    
-    svg.select('.y.axis')
-      .call(axis);
+function drawYAxis(axis, dims, fy, opts) {
+  axis.call(d3.svg.axis()
+    .orient('left')
+    .scale(fy)
+    .tickPadding(8)
+    .ticks(opts.yTicks)
+    .tickFormat(opts.yTickFormat)
+    .tickSize(-dims.innerWidth));
+}
+
+
+function drawLegend(legend, opts) {
+  legend
+    .filter(utils.isEmptyNode)
+    .call(initLegend);
+
+  legend.select('.sph-table-lines').selectAll('.sph-row-lines-metric')
+    .data(function(d) { return d; },
+          function(d) { return d.key; })
+    .call(drawLegendMetric, opts);
+}
+
+
+function initLegend(legend) {
+  legend.append('table')
+    .classed('sph-table sph-table-lines', true);
+}
+
+
+function drawLegendMetric(metric, opts) {
+  var none = opts.yFormat(opts.none);
+
+  metric.enter().append('tr')
+    .call(enterLegendMetric);
+
+  metric.select('.sph-col-swatch')
+    .style('background', function(d) { return d.color; });
+
+  metric.select('.sph-col-lines-title')
+    .text(function(d) { return d.title; });
+
+  metric.select('.sph-col-lines-value')
+    .text(function(d) {
+      d = d.values[d.values.length - 1];
+
+      return d
+        ? opts.yFormat(d.y)
+        : none;
+    });
+
+  metric.exit()
+    .remove();
+}
+
+
+function enterLegendMetric(metric) {
+  metric
+    .attr('data-key', function(d) { return d.key; })
+    .attr('class', 'sph-row-lines-metric');
+
+  metric.append('td')
+    .attr('class', 'sph-col-swatch');
+
+  metric.append('td')
+    .attr('class', 'sph-col-lines-title');
+
+  metric.append('td')
+    .attr('class', 'sph-col-lines-value');
+}
+
+
+function normalize(el, opts) {
+  var node = el.node();
+
+  el.datum(function(d, i) {
+    var title = opts.title.call(node, d, i);
+
+    return {
+      title: title,
+      metrics: opts.metrics.call(node, d, i).map(metric)
+    };
   });
 
+  function metric(d, i) {
+    var key = opts.key
+      .call(node, d, i)
+      .toString();
 
-var legend = _dereq_('../view').extend()
-  .prop('widget')
+    return {
+      key: key,
+      color: opts.colors(key),
+      title: opts.metricTitle.call(node, d, i),
+      values: opts.values.call(node, d, i).map(value)
+    };
+  }
 
-  .init(function(widget) {
-    this.widget(widget);
-  })
+  function value(d, i) {
+    return {
+      x: opts.x.call(node, d, i),
+      y: opts.y.call(node, d, i)
+    };
+  }
+}
 
-  .enter(function(el) {
-    el.append('table')
-      .attr('class', 'table');
-  })
 
-  .draw(function(el) {
-    var none = this.widget().none();
-    var yFormat = this.widget().yFormat();
+function getMetrics(d) {
+  return d.metrics;
+}
 
-    var metric = el.select('.table').selectAll('.metric')
-      .data(function(d) { return d; },
-            function(d) { return d.key; });
-
-    var enterMetric = metric.enter().append('tr')
-      .attr('data-key', function(d) { return d.key; })
-      .attr('class', 'metric');
-
-    enterMetric.append('td')
-      .attr('class', 'swatch');
-
-    enterMetric.append('td')
-      .attr('class', 'title');
-
-    enterMetric.append('td')
-      .attr('class', 'value');
-
-    metric.select('.swatch')
-      .style('background', function(d) { return d.color; });
-
-    metric.select('.title')
-      .text(function(d) { return d.title; });
-
-    metric.select('.value')
-      .text(function(d) {
-        d = d.values[d.values.length - 1];
-
-        return d
-          ? yFormat(d.y)
-          : yFormat(none);
-      });
-
-    metric.exit()
-      .remove();
-  });
-
-},{"../utils":4,"../view":5,"./widget":11}],10:[function(_dereq_,module,exports){
+},{"../utils":2,"./widget":9}],8:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils');
 
 
 module.exports = _dereq_('./widget').extend()
-  .prop('width')
-  .default(400)
-
-  .prop('colspan')
-  .default(4)
-
   .prop('colors')
 
   .prop('title')
@@ -1327,7 +1083,7 @@ module.exports = _dereq_('./widget').extend()
   .set(d3.functor)
   .default(function(d) { return d.value; })
 
-  .prop('margin')
+  .prop('chartMargin')
   .default({
     top: 20,
     left: 20,
@@ -1337,7 +1093,7 @@ module.exports = _dereq_('./widget').extend()
 
   .prop('innerRadius')
   .set(d3.functor)
-  .default(function(r) { return 0.35 * r; })
+  .default(0)
 
   .prop('valueFormat')
   .default(d3.format(',2s'))
@@ -1349,191 +1105,250 @@ module.exports = _dereq_('./widget').extend()
     this.colors(d3.scale.category10());
   })
 
-  .meth('normalize', function(el) {
-    var self = this;
-    var node = el.node();
-
-    el.datum(function(d, i) {
-      return {
-        title: self.title().call(node, d, i),
-        metrics: self.metrics()
-          .call(node, d, i)
-          .map(metric)
-      };
-    });
-
-    function metric(d, i) {
-      var key = self.key()
-        .call(node, d, i)
-        .toString();
-
-      return {
-        key: key,
-        color: self.colors()(key),
-        title: self.metricTitle().call(node, d, i),
-        value: self.value().call(node, d, i)
-      };
-    }
-
-    var sum = d3.sum(el.datum().metrics, function(d) { return d.value; });
-    el.datum().metrics.forEach(function(d) { d.percent = d.value / sum; });
-  })
-
-  .enter(function(el) {
-    el.attr('class', 'pie widget');
-
-    el.append('div')
-      .attr('class', 'title');
-
-    el.append('div')
-      .attr('class', 'chart');
-
-    el.append('div')
-      .attr('class', 'legend');
-  })
-
   .draw(function(el) {
-    this.normalize(el);
-
-    el.style('width', utils.px(this.width()));
-
-    el.select('.widget .title')
-      .text(function(d) { return d.title; });
-
-    el.select('.legend')
-      .call(legend(this));
-
-    el.select('.chart')
-      .call(chart(this));
+    var opts = this.props();
+    normalize(el, opts);
+    drawWidget(el, opts);
   });
 
 
-var chart = _dereq_('../view').extend()
-  .prop('widget')
+function drawWidget(el, opts) {
+  el.classed('sph-widget sph-pie', true);
 
-  .init(function(widget) {
-    this.widget(widget);
-  })
+  if (!opts.explicitComponents) initComponents(el);
 
-  .enter(function(el) {
-    el.append('svg')
-      .append('g');
-  })
+  var component = el.select('[data-widget-component="title"]');
+  if (component.size()) component.call(drawTitle);
 
-  .draw(function(el) {
-    var width = utils.innerWidth(el);
+  component = el.select('[data-widget-component="chart"]');
+  if (component.size()) component.datum(getMetrics).call(drawChart, opts);
 
-    var dims = utils.box()
-      .margin(this.widget().margin())
-      .width(width)
-      .height(width)
-      .calc();
+  component = el.select('[data-widget-component="legend"]');
+  if (component.size()) component.datum(getMetrics).call(drawLegend, opts);
+}
 
-    var radius = Math.min(dims.innerWidth, dims.innerHeight) / 2;
 
-    var svg = el.select('svg')
-      .attr('width', dims.width)
-      .attr('height', dims.height)
-      .select('g')
-        .attr('transform', utils.translate(
-          (dims.width / 2) - radius,
-          (dims.height / 2) - radius));
+function initComponents(el) {
+  el.append('div')
+    .attr('data-widget-component', 'title');
 
-    var arc = d3.svg.arc()
-      .innerRadius(this.widget().innerRadius()(radius))
-      .outerRadius(radius);
+  el.append('div')
+    .attr('data-widget-component', 'chart');
 
-    var layout = d3.layout.pie()
-      .value(function(d) { return d.value; });
+  el.append('div')
+    .attr('data-widget-component', 'legend');
+}
 
-    var slice = svg.selectAll('.slice')
-      .data(function(d) { return layout(d.metrics); },
-            function(d) { return d.data.key; });
 
-    slice.enter().append('g')
-      .attr('class', 'slice')
-      .append('path');
+function drawTitle(title) {
+  title
+    .classed('sph-title', true)
+    .text(function(d) { return d.title; });
+}
 
-    slice
-      .attr('transform', utils.translate(radius, radius));
 
-    slice.select('path')
-      .attr('d', arc)
-      .style('fill', function(d) { return d.data.color; });
+function drawChart(chart, opts) {
+  chart
+    .classed('sph-chart sph-chart-pie', true);
 
-    slice.exit()
-      .remove();
+  chart
+    .filter(utils.isEmptyNode)
+    .call(initChart);
+
+  var dims = utils.box()
+    .margin(opts.chartMargin)
+    .width(utils.innerWidth(chart))
+    .height(utils.innerHeight(chart))
+    .calc();
+
+  dims.radius = Math.min(dims.innerWidth, dims.innerHeight) / 2;
+
+  chart.select('svg')
+    .call(drawSvg, dims, opts);
+}
+
+
+function initChart(chart) {
+  chart.append('svg')
+    .append('g');
+}
+
+
+function drawSvg(svg, dims, opts) {
+  svg
+    .attr('width', dims.width)
+    .attr('height', dims.height)
+    .select('g')
+      .attr('transform', utils.translate(
+        (dims.width / 2) - dims.radius,
+        (dims.height / 2) - dims.radius))
+      .call(drawSlices, dims, opts);
+}
+
+
+function drawSlices(svg, dims, opts) {
+  var arc = d3.svg.arc()
+    .innerRadius(opts.innerRadius(dims.radius))
+    .outerRadius(dims.radius);
+
+  var layout = d3.layout.pie()
+    .value(function(d) { return d.value; });
+
+  svg.selectAll('.sph-pie-slice')
+    .data(function(d) { return layout(d); },
+          function(d) { return d.data.key; })
+    .call(drawSlice, dims, arc, opts);
+}
+
+
+function drawSlice(slice, dims, arc, opts) {
+  slice.enter().append('g')
+    .attr('class', 'sph-pie-slice')
+    .append('path');
+
+  slice
+    .attr('transform', utils.translate(dims.radius, dims.radius));
+
+  slice.select('path')
+    .attr('d', arc)
+    .style('fill', function(d) { return d.data.color; });
+
+  slice.exit()
+    .remove();
+}
+
+
+function drawLegend(legend, opts) {
+  legend
+    .filter(utils.isEmptyNode)
+    .call(initLegend);
+
+  var table = legend.select('.sph-table-pie');
+
+  table.selectAll('.sph-row-pie-metric')
+    .data(function(d) { return d; },
+          function(d) { return d.key; })
+    .call(drawLegendMetric, opts);
+
+  table
+    .datum(function(d) { return d; })
+    .call(drawLegendTotal, opts);
+}
+
+
+function initLegend(legend) {
+  var table = legend.append('table')
+    .attr('class', 'sph-table sph-table-pie');
+
+  var tfoot = table
+    .append('tr')
+    .attr('class', 'sph-row-tfoot');
+
+  tfoot.append('td')
+    .attr('class', 'sph-col-swatch sph-col-none');
+
+  tfoot.append('td')
+    .attr('class', 'sph-col-pie-title')
+    .text('Total');
+
+  tfoot.append('td')
+    .attr('class', 'sph-col-pie-percent')
+    .text('100%');
+
+  tfoot.append('td')
+    .attr('class', 'sph-col-pie-value sph-col-pie-value-total');
+}
+
+
+function drawLegendMetric(metric, opts) {
+  metric.enter().insert('tr', '.sph-row-tfoot')
+    .call(enterLegendMetric);
+
+  metric.select('.sph-col-swatch')
+    .style('background', function(d) { return d.color; });
+
+  metric.select('.sph-col-pie-title')
+    .text(function(d) { return d.title; });
+
+  metric.select('.sph-col-pie-percent')
+    .text(function(d) { return opts.percentFormat(d.percent); });
+
+  metric.select('.sph-col-pie-value')
+    .text(function(d) { return opts.valueFormat(d.value); });
+
+  metric.exit()
+    .remove();
+}
+
+
+function drawLegendTotal(tfoot, opts) {
+  tfoot.select('.sph-col-pie-value-total')
+    .datum(function(d) { return d3.sum(d, getValue); })
+    .text(opts.valueFormat);
+}
+
+
+function enterLegendMetric(metric) {
+  metric
+    .attr('class', 'sph-row-pie-metric');
+
+  metric.append('td')
+    .attr('class', 'sph-col-swatch');
+
+  metric.append('td')
+    .attr('class', 'sph-col-pie-title');
+
+  metric.append('td')
+    .attr('class', 'sph-col-pie-percent');
+
+  metric.append('td')
+    .attr('class', 'sph-col-pie-value');
+}
+
+
+function normalize(el, opts) {
+  var node = el.node();
+
+  el.datum(function(d, i) {
+    return {
+      title: opts.title.call(node, d, i),
+      metrics: opts.metrics.call(node, d, i).map(metric)
+    };
   });
 
+  function metric(d, i) {
+    var key = opts.key
+      .call(node, d, i)
+      .toString();
 
-var legend = _dereq_('../view').extend()
-  .prop('widget')
+    return {
+      key: key,
+      color: opts.colors(key),
+      title: opts.metricTitle.call(node, d, i),
+      value: opts.value.call(node, d, i)
+    };
+  }
 
-  .init(function(widget) {
-    this.widget(widget);
-  })
+  var sum = d3.sum(el.datum().metrics, function(d) { return d.value; });
+  el.datum().metrics.forEach(function(d) { d.percent = d.value / sum; });
+}
 
-  .enter(function(el) {
-    el.append('table')
-      .attr('class', 'table');
-  })
 
-  .draw(function(el) {
-    var valueFormat = this.widget().valueFormat();
-    var percentFormat = this.widget().percentFormat();
+function getMetrics(d) {
+  return d.metrics;
+}
 
-    var metric = el.select('.table').selectAll('.metric')
-      .data(function(d) { return d.metrics; },
-            function(d) { return d.key; });
 
-    var enterMetric = metric.enter().append('tr')
-      .attr('class', 'metric');
+function getValue(d) {
+  return d.value;
+}
 
-    enterMetric.append('td')
-      .attr('class', 'swatch');
-
-    enterMetric.append('td')
-      .attr('class', 'title');
-
-    enterMetric.append('td')
-      .attr('class', 'percent');
-
-    enterMetric.append('td')
-      .attr('class', 'value');
-
-    metric.select('.swatch')
-      .style('background', function(d) { return d.color; });
-
-    metric.select('.title')
-      .text(function(d) { return d.title; });
-
-    metric.select('.percent')
-      .text(function(d) { return percentFormat(d.percent); });
-
-    metric.select('.value')
-      .text(function(d) { return valueFormat(d.value); });
-
-    metric.exit()
-      .remove();
-  });
-
-},{"../utils":4,"../view":5,"./widget":11}],11:[function(_dereq_,module,exports){
+},{"../utils":2,"./widget":9}],9:[function(_dereq_,module,exports){
 module.exports = _dereq_('../view').extend()
-  .prop('colspan')
-  .default(0)
+  .prop('explicitComponents')
+  .default(false);
 
-  .prop('rowspan')
-  .default(0)
-
-  .prop('width')
-  .set(d3.functor)
-  .default(0)
-
-  .prop('height')
-  .set(d3.functor)
-  .default(0);
-
-},{"../view":5}]},{},[3])
-(3)
+},{"../view":3}]},{},[1])
+(1)
 });
 }));

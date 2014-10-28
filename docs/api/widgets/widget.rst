@@ -34,21 +34,6 @@ as `view.extend` and :func:`view.draw` are also available on widget types.
       .width(100);
 
 
-.. function:: widget.colspan([v])
-
-  Property for the widget's default column span in a dashboard. Used if the
-  widget is not standalone (see :func:`dashboard.colspan`).
-  Defaults to ``1``.
-
-  Note that widgets may exceed this width, depending on the behaviour of the
-  widget type.
-
-  .. code-block:: javascript
-
-    var widget = sapphire.widget()
-      .colspan(1);
-
-
 .. function:: widget.height([v])
 
   Property for the :ref:`accessor <accessors>` the widget's height. Used
@@ -62,18 +47,6 @@ as `view.extend` and :func:`view.draw` are also available on widget types.
 
     var widget = sapphire.widget()
       .height(1);
-
-
-.. function:: widget.rowspan([v])
-
-  Property for the widget's default row span in a dashboard. Used if the
-  widget is not standalone (see :func:`dashboard.rowspan`).
-  Defaults to ``1``.
-
-  .. code-block:: javascript
-
-    var widget = sapphire.widget()
-      .rowspan(1);
 
 
 .. _d3.select: https://github.com/mbostock/d3/wiki/Selections#selecting-elements
