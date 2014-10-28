@@ -7,7 +7,7 @@ var streamify = require('gulp-streamify');
 var browserify = require('browserify');
 var jshint = require('gulp-jshint');
 var source = require('vinyl-source-stream');
-var version = require('./bower').version;
+var version = require('./package').version;
 
 
 gulp.task('scripts', function () {
