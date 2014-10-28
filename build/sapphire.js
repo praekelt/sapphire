@@ -185,7 +185,7 @@ module.exports = _dereq_('./widget').extend()
   .default(8)
 
   .prop('yTickFormat')
-  .default(d3.format('.2s'))
+  .default(d3.format('s'))
 
   .prop('yTicks')
   .default(5)
@@ -738,7 +738,7 @@ module.exports = _dereq_('./widget').extend()
   .default(5)
 
   .prop('yTickFormat')
-  .default(d3.format('.2s'))
+  .default(d3.format('s'))
 
   .prop('yMin')
   .set(d3.functor)
@@ -755,7 +755,7 @@ module.exports = _dereq_('./widget').extend()
   .default({
     top: 10,
     left: 35,
-    right: 15,
+    right: 5,
     bottom: 20
   })
 
