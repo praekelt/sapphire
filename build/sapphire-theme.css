@@ -12,21 +12,23 @@
 .sph-axis .tick text {
   fill: #636363;
 }
+.sph-table td {
+  border-left: 2px solid #f2f2f2;
+  background: rgba(58, 58, 58, 0.07);
+}
 .sph-table tr:nth-child(2n) td {
   background: rgba(58, 58, 58, 0.025);
 }
-.sph-table tr:nth-child(2n) td:nth-child(2n + 1) {
-  background: rgba(58, 58, 58, 0.07);
+.sph-table tr.sph-row-tfoot td {
+  border-top: 2px solid rgba(58, 58, 58, 0.16);
 }
-.sph-table td {
-  background: rgba(58, 58, 58, 0.07);
-}
-.sph-table td:nth-child(2n + 1) {
-  background: rgba(58, 58, 58, 0.025);
-}
-td.sph-col-swatch {
+.sph-table tr td.sph-col-swatch {
   padding: 0;
   width: 12px;
+}
+.sph-table tr td.sph-col-none {
+  border-top: none;
+  background: transparent;
 }
 .sph-widget {
   color: #3a3a3a;

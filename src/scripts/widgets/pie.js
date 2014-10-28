@@ -164,21 +164,45 @@ function drawLegend(legend, opts) {
     .filter(utils.isEmptyNode)
     .call(initLegend);
 
-  legend.select('.sph-table-pie').selectAll('.sph-row-pie-metric')
+  var table = legend.select('.sph-table-pie');
+
+  table.selectAll('.sph-row-pie-metric')
     .data(function(d) { return d; },
           function(d) { return d.key; })
     .call(drawLegendMetric, opts);
+
+  table
+    .datum(function(d) { return d; })
+    .call(drawLegendTotal, opts);
 }
 
 
 function initLegend(legend) {
-  legend.append('table')
+  var table = legend.append('table')
     .attr('class', 'sph-table sph-table-pie');
+
+  var tfoot = table
+    .append('tr')
+    .attr('class', 'sph-row-tfoot');
+
+  tfoot.append('td')
+    .attr('class', 'sph-col-swatch sph-col-none');
+
+  tfoot.append('td')
+    .attr('class', 'sph-col-pie-title')
+    .text('Total');
+
+  tfoot.append('td')
+    .attr('class', 'sph-col-pie-percent')
+    .text('100%');
+
+  tfoot.append('td')
+    .attr('class', 'sph-col-pie-value sph-col-pie-value-total');
 }
 
 
 function drawLegendMetric(metric, opts) {
-  metric.enter().append('tr')
+  metric.enter().insert('tr', '.sph-row-tfoot')
     .call(enterLegendMetric);
 
   metric.select('.sph-col-swatch')
@@ -195,6 +219,13 @@ function drawLegendMetric(metric, opts) {
 
   metric.exit()
     .remove();
+}
+
+
+function drawLegendTotal(tfoot, opts) {
+  tfoot.select('.sph-col-pie-value-total')
+    .datum(function(d) { return d3.sum(d, getValue); })
+    .text(opts.valueFormat);
 }
 
 
@@ -246,4 +277,9 @@ function normalize(el, opts) {
 
 function getMetrics(d) {
   return d.metrics;
+}
+
+
+function getValue(d) {
+  return d.value;
 }

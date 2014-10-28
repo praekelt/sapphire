@@ -471,6 +471,36 @@ describe("sapphire.widgets.pie", function() {
     }
   });
 
+  it("should display the total in a legend", function() {
+    var format = d3.format(',4s');
+
+    var pie = sapphire.widgets.pie()
+      .valueFormat(format)
+      .key(function(d) { return d.key; });
+
+    datum.metrics[0].value = 4000000;
+    datum.metrics[1].value = 2000000;
+    datum.metrics[2].value = 3000000;
+
+    el.datum(datum)
+      .call(pie);
+
+    expect(total()).to.equal(format(9000000));
+
+    datum.metrics[0].value = 5000000;
+    datum.metrics[1].value = 6000000;
+    datum.metrics[2].value = 7000000;
+
+    el.datum(datum)
+      .call(pie);
+
+    expect(total()).to.equal(format(18000000));
+
+    function total() {
+      return el.select('.sph-col-pie-value-total').text();
+    }
+  });
+
   it("should allow the widget components to be specified explicitly", function() {
     var pie = sapphire.widgets.pie()
       .explicitComponents(true);
