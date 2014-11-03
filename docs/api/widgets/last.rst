@@ -4,7 +4,7 @@
 
 .. raw:: html
 
-  <div class="sapphire">
+  <div class="sph-docs-col-sm">
     <div id="last"></div>
   </div>
 

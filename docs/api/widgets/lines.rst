@@ -4,14 +4,13 @@
 
 .. raw:: html
 
-  <div class="sapphire">
+  <div class="sph-docs-col-md">
     <div id="lines"></div>
   </div>
 
   <script>
   !sapphire.docData || (function() {
     var lines = sapphire.widgets.lines()
-      .width(600)
       .key(function(d) { return d.name; })
       .metricTitle(function(d) { return d.name; });
 

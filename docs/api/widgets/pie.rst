@@ -4,14 +4,13 @@
 
 .. raw:: html
 
-  <div class="sapphire">
+  <div class="sph-docs-col-md">
     <div id="pie"></div>
   </div>
 
   <script>
   !sapphire.docData || (function() {
-    var pie = sapphire.widgets.pie()
-      .width(250);
+    var pie = sapphire.widgets.pie();
 
     d3.select('#pie')
       .datum(sapphire.docData.pie)
