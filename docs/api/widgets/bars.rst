@@ -4,14 +4,13 @@
 
 .. raw:: html
 
-  <div class="sapphire">
+  <div class="sph-docs-col-md">
     <div id="bars"></div>
   </div>
 
   <script>
   !sapphire.docData || (function() {
-    var bars = sapphire.widgets.bars()
-      .width(600);
+    var bars = sapphire.widgets.bars();
 
     d3.select('#bars')
       .datum(sapphire.docData.bars)
