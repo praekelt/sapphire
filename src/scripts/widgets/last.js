@@ -19,10 +19,14 @@ module.exports = require('./widget').extend()
   .default(function(d) { return d.y; })
 
   .prop('yFormat')
-  .default(d3.format(',2s'))
+  .default(utils.formatValue()
+    .int(d3.format(','))
+    .float(d3.format(',.3f')))
 
   .prop('diffFormat')
-  .default(d3.format('+,2s'))
+  .default(utils.formatValue()
+    .int(d3.format('+,'))
+    .float(d3.format('+,.3f')))
 
   .prop('xFormat')
   .default(d3.time.format('%-d %b %-H:%M'))

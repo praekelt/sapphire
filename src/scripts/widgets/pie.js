@@ -37,7 +37,9 @@ module.exports = require('./widget').extend()
   .default(0)
 
   .prop('valueFormat')
-  .default(d3.format(',2s'))
+  .default(utils.formatValue()
+    .int(d3.format(','))
+    .float(d3.format(',.3f')))
 
   .prop('percentFormat')
   .default(d3.format('.0%'))
