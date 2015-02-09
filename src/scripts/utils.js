@@ -80,6 +80,25 @@ utils.box = strain()
   });
 
 
+utils.formatValue = strain()
+  .prop('int')
+  .default(d3.format(','))
+
+  .prop('float')
+  .default(d3.format(',.3f'))
+
+  .invoke(function(v) {
+    return utils.isInteger(v)
+      ? this.int()(v)
+      : this.float()(v);
+  });
+
+
+utils.isInteger = function(v) {
+  return +v === parseInt(v);
+};
+
+
 utils.innerWidth = function(el) {
   return utils.measure(el, 'width')
        - utils.measure(el, 'padding-left')
