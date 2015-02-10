@@ -49,6 +49,8 @@ Run the tests to check if everything is happy:
 $ npm test
 ```
 
+# [docs](http://sapphire.rtfd.org/)
+
 # [examples](examples/)
 
 To view an example, open its `index.html` file in your browser. If the example has a `bower.json`, in the example's directory, do a: 

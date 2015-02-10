@@ -4,14 +4,13 @@
 
 .. raw:: html
 
-  <div class="sapphire">
+  <div class="sph-docs-col-md">
     <div id="lines"></div>
   </div>
 
   <script>
   !sapphire.docData || (function() {
     var lines = sapphire.widgets.lines()
-      .width(600)
       .key(function(d) { return d.name; })
       .metricTitle(function(d) { return d.name; });
 
@@ -303,7 +302,10 @@ displaying each metric's title, colour and last ``y`` value.
 .. function:: lines.yFormat([fn])
 
   Property for the formatting function to use when displaying the last
-  ``y`` value. Defaults to ``d3.format(',2s')``.
+  ``y`` value.
+
+  Defaults to a function equivalent to ``d3.format(',')`` for integer values
+  and ``d3.format(',.3f')`` for float values.
 
   .. code-block:: javascript
 

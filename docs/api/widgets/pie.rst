@@ -4,14 +4,13 @@
 
 .. raw:: html
 
-  <div class="sapphire">
+  <div class="sph-docs-col-md">
     <div id="pie"></div>
   </div>
 
   <script>
   !sapphire.docData || (function() {
-    var pie = sapphire.widgets.pie()
-      .width(250);
+    var pie = sapphire.widgets.pie();
 
     d3.select('#pie')
       .datum(sapphire.docData.pie)
@@ -189,8 +188,10 @@ displaying each metric's title, colour, value and percentage.
 
 .. function:: pie.valueFormat([fn])
 
-  Property for the formatting function to use when displaying the metric
-  values in the widget's table. Defaults to ``d3.format(',2s')``.
+  Property for the formatting function to use when displaying the metric values
+  in the widget's table. Defaults to a function equivalent to
+  ``d3.format(',')`` for integer values and ``d3.format(',.3f')`` for float
+  values.
 
   .. code-block:: javascript
 

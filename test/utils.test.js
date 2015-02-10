@@ -169,4 +169,32 @@ describe("sapphire.utils", function() {
       expect(sapphire.utils.innerHeight(el)).to.equal(192);
     });
   });
+
+  describe(".isInteger", function() {
+    it("should determine whether the value is an integer", function() {
+      expect(sapphire.utils.isInteger(23)).to.be.true;
+      expect(sapphire.utils.isInteger('23')).to.be.true;
+      expect(sapphire.utils.isInteger(23.23)).to.be.false;
+      expect(sapphire.utils.isInteger('23.23')).to.be.false;
+      expect(sapphire.utils.isInteger('o_O')).to.be.false;
+    });
+  });
+
+  describe(".formatValue", function() {
+    it("should use the float formatter if the value is a float", function() {
+      var fn = sapphire.utils.formatValue()
+        .int(function(v) { return v + '.'; })
+        .float(function(v) { return v + '!'; });
+
+      expect(fn(23.23)).to.equal('23.23!');
+    });
+
+    it("should use the integer formatter if the value is a float", function() {
+      var fn = sapphire.utils.formatValue()
+        .int(function(v) { return v + '!'; })
+        .float(function(v) { return v + '.'; });
+
+      expect(fn(23)).to.equal('23!');
+    });
+  });
 });

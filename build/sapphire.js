@@ -98,6 +98,25 @@ utils.box = strain()
   });
 
 
+utils.formatValue = strain()
+  .prop('int')
+  .default(d3.format(','))
+
+  .prop('float')
+  .default(d3.format(',.3f'))
+
+  .invoke(function(v) {
+    return utils.isInteger(v)
+      ? this.int()(v)
+      : this.float()(v);
+  });
+
+
+utils.isInteger = function(v) {
+  return +v === parseInt(v);
+};
+
+
 utils.innerWidth = function(el) {
   return utils.measure(el, 'width')
        - utils.measure(el, 'padding-left')
@@ -426,10 +445,14 @@ module.exports = _dereq_('./widget').extend()
   .default(function(d) { return d.y; })
 
   .prop('yFormat')
-  .default(d3.format(',2s'))
+  .default(utils.formatValue()
+    .int(d3.format(','))
+    .float(d3.format(',.3f')))
 
   .prop('diffFormat')
-  .default(d3.format('+,2s'))
+  .default(utils.formatValue()
+    .int(d3.format('+,'))
+    .float(d3.format('+,.3f')))
 
   .prop('xFormat')
   .default(d3.time.format('%-d %b %-H:%M'))
@@ -732,7 +755,9 @@ module.exports = _dereq_('./widget').extend()
   .default(8)
 
   .prop('yFormat')
-  .default(d3.format(',2s'))
+  .default(utils.formatValue()
+    .int(d3.format(','))
+    .float(d3.format(',.3f')))
 
   .prop('yTicks')
   .default(5)
@@ -1096,7 +1121,9 @@ module.exports = _dereq_('./widget').extend()
   .default(0)
 
   .prop('valueFormat')
-  .default(d3.format(',2s'))
+  .default(utils.formatValue()
+    .int(d3.format(','))
+    .float(d3.format(',.3f')))
 
   .prop('percentFormat')
   .default(d3.format('.0%'))

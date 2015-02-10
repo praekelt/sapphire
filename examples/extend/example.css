@@ -28,6 +28,7 @@ body {
 }
 
 .widget-interval {
+  color: #5d5d5d;
   padding: 5px;
   cursor: pointer;
   font-size: 0.9em;
