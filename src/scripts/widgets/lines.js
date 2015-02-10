@@ -37,7 +37,9 @@ module.exports = require('./widget').extend()
   .default(8)
 
   .prop('yFormat')
-  .default(d3.format(',2s'))
+  .default(utils.formatValue()
+    .int(d3.format(','))
+    .float(d3.format(',.3f')))
 
   .prop('yTicks')
   .default(5)
