@@ -150,7 +150,9 @@ value preceding it.
 .. function:: last.yFormat([fn])
 
   Property for the formatting function to use when displaying the last ``y`` value.
-  Defaults to ``d3.format(',2s')``.
+
+  Defaults to a function equivalent to ``d3.format(',')`` for integer values
+  and ``d3.format(',.3f')`` for float values.
 
   .. code-block:: javascript
 
@@ -161,8 +163,10 @@ value preceding it.
 .. function:: last.diffFormat([fn])
 
   Property for the formatting function to use when displaying the difference
-  between the last ``y`` value and the ``y`` value preceding it. Defaults to
-  ``d3.format('+,2s')``.
+  between the last ``y`` value and the ``y`` value preceding it.
+
+  Defaults to a function equivalent to ``d3.format('+,')`` for integer values
+  and ``d3.format('+,.3f')`` for float values.
 
   .. code-block:: javascript
 

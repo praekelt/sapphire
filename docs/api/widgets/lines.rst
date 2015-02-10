@@ -302,7 +302,10 @@ displaying each metric's title, colour and last ``y`` value.
 .. function:: lines.yFormat([fn])
 
   Property for the formatting function to use when displaying the last
-  ``y`` value. Defaults to ``d3.format(',2s')``.
+  ``y`` value.
+
+  Defaults to a function equivalent to ``d3.format(',')`` for integer values
+  and ``d3.format(',.3f')`` for float values.
 
   .. code-block:: javascript
 
