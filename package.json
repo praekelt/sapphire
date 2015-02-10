@@ -1,6 +1,6 @@
 {
   "name": "sapphire",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A js library for drawing dashboard widgets.",
   "scripts": {
     "ci": "gulp ci",

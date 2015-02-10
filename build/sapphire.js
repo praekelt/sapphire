@@ -1,4 +1,4 @@
-// sapphire 0.1.0-alpha
+// sapphire 0.1.1
 
 
 (function(factory) {
