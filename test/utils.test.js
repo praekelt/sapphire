@@ -174,9 +174,9 @@ describe("sapphire.utils", function() {
     it("should determine whether the value is an integer", function() {
       expect(sapphire.utils.isInteger(23)).to.be.true;
       expect(sapphire.utils.isInteger('23')).to.be.true;
-      //expect(sapphire.utils.isInteger(23.23)).to.be.false;
-      //expect(sapphire.utils.isInteger('23.23')).to.be.false;
-      //expect(sapphire.utils.isInteger('o_O')).to.be.false;
+      expect(sapphire.utils.isInteger(23.23)).to.be.false;
+      expect(sapphire.utils.isInteger('23.23')).to.be.false;
+      expect(sapphire.utils.isInteger('o_O')).to.be.false;
     });
   });
 
