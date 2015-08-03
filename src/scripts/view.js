@@ -1,3 +1,6 @@
+var strain = require('strain');
+
+
 module.exports = strain()
   .static('draw', function(fn) {
     this.meth('_draw_', fn);
