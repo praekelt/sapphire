@@ -1,4 +1,5 @@
 var strain = require('strain');
+var utils = require('./utils');
 
 
 module.exports = strain()
@@ -8,7 +9,7 @@ module.exports = strain()
   .draw(function() {})
 
   .meth('draw', function(el) {
-    el = sapphire.utils.ensureEl(el);
+    el = utils.ensureEl(el);
 
     var datum;
     if (el.node()) datum = el.datum();
