@@ -208,6 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var strain = __webpack_require__(3);
+	var utils = __webpack_require__(1);
 	
 	
 	module.exports = strain()
@@ -217,7 +218,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  .draw(function() {})
 	
 	  .meth('draw', function(el) {
-	    el = sapphire.utils.ensureEl(el);
+	    el = utils.ensureEl(el);
 	
 	    var datum;
 	    if (el.node()) datum = el.datum();
